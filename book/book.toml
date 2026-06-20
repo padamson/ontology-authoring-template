@@ -3,7 +3,7 @@ authors = ["Paul Adamson"]
 language = "en"
 src = "src"
 title = "Building myschema"
-description = "Building a LinkML ontology from scratch, following Ontology Development 101 adapted to LinkML"
+description = "Building the myschema LinkML ontology from scratch, following Ontology Development 101 adapted to LinkML"
 
 [build]
 build-dir = "build"

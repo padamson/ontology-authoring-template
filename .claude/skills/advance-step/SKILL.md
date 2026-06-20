@@ -99,6 +99,11 @@ out — those go in private notes.
 cd book && mdbook build      # must exit 0
 ```
 
+On a fresh clone this fails on a missing `mdbook-admonish.css` — the
+admonish/listings assets are gitignored and generated. If you hit that,
+run `mdbook-admonish install . && mdbook-listings install` from `book/`
+once (see README "Fresh clone"), then rebuild.
+
 `mdbook build` exiting 0 already catches a missing `{{#callout}}` label
 or broken `{{#include}}`. If callouts seem missing, suspect a **stale
 `site/`** first — confirm the freshly built `book/build/<chapter>.html`

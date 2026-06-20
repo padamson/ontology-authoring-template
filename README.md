@@ -138,6 +138,18 @@ cd book && mdbook build   # output to book/build/
 
 First time? Install the toolchain — see **[Toolchain → Install](#install)** above.
 
+> **Fresh clone:** the admonish/listings CSS+JS are generated assets,
+> intentionally gitignored (see [`.gitignore`](.gitignore)), so a bare
+> `mdbook build` fails with *"Unable to copy across static files …
+> mdbook-admonish.css"* until you generate them once:
+>
+> ```bash
+> cd book && mdbook-admonish install . && mdbook-listings install
+> ```
+>
+> Run that after cloning (and any time the assets go missing); then
+> `mdbook build` / `mdbook serve` work.
+
 ### Other formats
 
 panschema can also emit `ttl`, `jsonld`, `rdfxml`, `ntriples` via

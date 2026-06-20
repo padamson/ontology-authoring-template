@@ -61,7 +61,10 @@ mechanical files (do a straight replace):
 - `schema/<name>.yaml` — `id:`, `name:`, the `<name>:` prefix line,
   `default_prefix:` (set `id:` to the confirmed namespace)
 - `panschema-publish.toml` — `[schema].name`, `[files].main`
-- `book/book.toml` — `title` ("Building <name>")
+- `book/book.toml` — `title` ("Building <name>") and `description`. The
+  stock description carries a `myschema` token so the blind replace
+  catches it, but it's otherwise generic — offer to refine it into a
+  schema-specific sentence (it's a judgment item, not just a rename).
 - `book/listings.toml` — the example freeze command + tag
 - `.pre-commit-config.yaml`, `.yamllint`, `scripts/dev.sh`,
   `scripts/rebuild.sh`, `scripts/check-line-width.sh` — path/comment refs
@@ -98,7 +101,10 @@ don't fabricate content, just fix the name.
 ```bash
 grep -rIn 'myschema' . \
   --exclude-dir=.git --exclude-dir=build --exclude-dir=site --exclude-dir=.claude
-cd book && mdbook build      # must exit 0
+# fresh clones need the gitignored CSS/JS generated once, or mdbook build
+# fails on a missing mdbook-admonish.css (see README "Fresh clone"):
+cd book && mdbook-admonish install . && mdbook-listings install
+mdbook build                 # must exit 0
 ```
 
 The grep should return nothing (or only an intentional historical
