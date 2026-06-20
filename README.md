@@ -15,6 +15,11 @@ schema as it stood at that step.
 
 ## Use this template / SETUP
 
+> **Claude Code users:** the bundled **`setup-ontology`** skill does
+> steps 2–3 below (the `myschema` rename + namespace) for you — just say
+> "set up the template". The **`advance-step`** skill drives step 4 (one
+> N&M step at a time). Both live in `.claude/skills/`.
+
 1. **Create a repo from this template** (GitHub "Use this template"), or
    clone it and re-init git.
 2. **Rename `myschema`** to your schema's name everywhere:
@@ -104,6 +109,11 @@ releases, the version field carries a `-dev` suffix (e.g.,
 `0.1.0-dev` while the first version is being built).
 
 ## Authoring
+
+> **Claude Code users:** the **`advance-step`** skill walks one N&M step
+> at a time — advancing the schema (demand-driven), re-freezing the
+> listing tag, writing the chapter, and reconciling deferrals. Say
+> "write the next chapter" or "do Step N".
 
 The combined book + versioned schema docs run locally via:
 
