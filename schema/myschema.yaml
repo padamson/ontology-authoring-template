@@ -1,0 +1,36 @@
+id: https://w3id.org/myschema/
+name: myschema
+description: |-
+  A LinkML ontology grounded in BFO 2020 (ISO/IEC 21838-2:2020) and the
+  Common Core Ontologies (CCO), authored following Ontology Development
+  101 (Noy & McGuinness, 2001) adapted to LinkML. See the book for the
+  chapter-by-chapter journey.
+license: https://creativecommons.org/licenses/by/4.0/
+version: 0.1.0-dev
+
+prefixes:
+  # The LinkML metamodel and this schema's own namespace
+  linkml: https://w3id.org/linkml/
+  myschema: https://w3id.org/myschema/
+
+  # Foundational grounding: BFO and CCO
+  obo: http://purl.obolibrary.org/obo/
+  cco: https://www.commoncoreontologies.org/
+
+default_prefix: myschema
+default_range: string
+
+# Only linkml:types is imported. External OWL ontologies (BFO, CCO, ...)
+# are reused by URI via class_uri/slot_uri plus the prefixes above —
+# never via imports:, which is reserved for other LinkML schemas.
+imports:
+  - linkml:types
+
+classes:
+  # Step 4+ populate these.
+
+slots:
+  # Step 5+ populate these.
+
+enums:
+  # Step 4+ populate these.

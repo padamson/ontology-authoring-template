@@ -1,0 +1,210 @@
+name: Build and publish docs
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+# Opt the JS-based actions (actions/cache, actions/checkout,
+# actions/upload-artifact, ...) into Node 24 ahead of the June 2026
+# default flip. Removes the deprecation warnings; safe to drop this
+# env block once Node 24 becomes the runner default.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0    # panschema publish reads all version tags
+
+      # --- Resolve producer main HEAD SHAs (dogfood-matrix conventions) ---
+
+      - name: Resolve latest panschema main SHA
+        id: panschema
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sha=$(gh api repos/padamson/panschema/commits/main --jq .sha)
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve latest mdbook-listings main SHA
+        id: mdbook-listings
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sha=$(gh api repos/padamson/mdbook-listings/commits/main --jq .sha)
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve mdbook-admonish fork branch SHA
+        id: mdbook-admonish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sha=$(gh api repos/padamson/mdbook-admonish/commits/feat/mdbook-0.5-compat --jq .sha)
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      # --- panschema (needs wasm-pack as a build prerequisite) ---
+
+      - name: Cache panschema binary
+        id: cache-panschema
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/panschema
+          key: panschema-${{ runner.os }}-${{ steps.panschema.outputs.sha }}
+
+      - name: Cache wasm-pack binary
+        if: steps.cache-panschema.outputs.cache-hit != 'true'
+        id: cache-wasm-pack
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/wasm-pack
+          key: wasm-pack-${{ runner.os }}
+
+      - name: Install wasm-pack
+        if: steps.cache-panschema.outputs.cache-hit != 'true' && steps.cache-wasm-pack.outputs.cache-hit != 'true'
+        run: cargo install wasm-pack --locked
+
+      - name: Install panschema from main
+        if: steps.cache-panschema.outputs.cache-hit != 'true'
+        run: |
+          cargo install --git https://github.com/padamson/panschema \
+            --rev ${{ steps.panschema.outputs.sha }} \
+            --locked --force \
+            panschema
+
+      # --- mdbook + preprocessors ---
+
+      - name: Resolve latest mdbook release version
+        id: mdbook-ver
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=$(gh api repos/rust-lang/mdBook/releases/latest --jq .tag_name | sed 's/^v//')
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Cache mdbook binary
+        id: cache-mdbook
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/mdbook
+          key: mdbook-${{ runner.os }}-${{ steps.mdbook-ver.outputs.version }}
+
+      - name: Install mdbook
+        if: steps.cache-mdbook.outputs.cache-hit != 'true'
+        run: cargo install mdbook --version ${{ steps.mdbook-ver.outputs.version }} --locked
+
+      - name: Cache mdbook-listings binary
+        id: cache-mdbook-listings
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/mdbook-listings
+          key: mdbook-listings-${{ runner.os }}-${{ steps.mdbook-listings.outputs.sha }}
+
+      - name: Install mdbook-listings from main
+        # Dogfood producer: tracks the tip of mdbook-listings main so the
+        # published docs exercise post-v0.1.0 features. The cache key is the
+        # resolved SHA, so a new commit busts the cache and rebuilds.
+        if: steps.cache-mdbook-listings.outputs.cache-hit != 'true'
+        run: |
+          cargo install --git https://github.com/padamson/mdbook-listings \
+            --rev ${{ steps.mdbook-listings.outputs.sha }} \
+            --locked --force \
+            mdbook-listings
+
+      - name: Cache mdbook-admonish binary
+        id: cache-mdbook-admonish
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/mdbook-admonish
+          key: mdbook-admonish-${{ runner.os }}-${{ steps.mdbook-admonish.outputs.sha }}
+
+      - name: Install mdbook-admonish from fork branch
+        if: steps.cache-mdbook-admonish.outputs.cache-hit != 'true'
+        run: |
+          cargo install --git https://github.com/padamson/mdbook-admonish \
+            --rev ${{ steps.mdbook-admonish.outputs.sha }} \
+            --locked --force \
+            mdbook-admonish
+
+      # --- Build outputs ---
+
+      - name: Publish versioned schema docs (panschema)
+        # Output layout: site/schema/main/, site/schema/current/ (alias
+        # for the configured `current` version per panschema-publish.toml),
+        # plus site/schema/<tag>/ for each release tag once they exist.
+        # Release reminder: when cutting a new tag, flip
+        # `[publishing].current` in panschema-publish.toml to the
+        # new version so /schema/current/ aliases to it post-deploy.
+        run: panschema publish
+
+      - name: Restore mdbook-listings book assets
+        # mdbook-listings.css / .js are gitignored upstream; install
+        # repopulates them in book/ before mdbook build runs.
+        working-directory: book
+        run: mdbook-listings install
+
+      - name: Verify frozen listings (mdbook-listings)
+        # Fail fast on frozen-snapshot hash drift or a broken
+        # {{#include}} / {{#callout}} before the longer book build.
+        # Mirrors the local prek/pre-commit hook (.pre-commit-config.yaml).
+        working-directory: book
+        run: mdbook-listings verify --book-root .
+
+      - name: Build the book (mdbook)
+        # Outputs to book/build/ per the [build] build-dir config.
+        working-directory: book
+        run: mdbook build
+
+      - name: Combine book + schema docs into site/
+        # Book lands at site/ root (index.html, theme/, ch*.html);
+        # site/schema/ already populated by `panschema publish`.
+        # `cp -r book/build/* site/` is safe because mdbook never
+        # produces a `schema/` subdir.
+        run: cp -r book/build/* site/
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
+
+      - name: Smoke-test deployed Pages
+        env:
+          URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          sleep 20    # initial Pages propagation grace
+          for path in "" "schema/main/" "schema/current/"; do
+            full="${URL%/}/$path"
+            for attempt in 1 2 3; do
+              if curl -fsSL -o /dev/null "$full"; then
+                echo "OK  $full"
+                break
+              fi
+              [ "$attempt" -eq 3 ] && { echo "FAIL $full (3 attempts)"; exit 1; }
+              sleep 10
+            done
+          done
+          echo "All paths return 200."
