@@ -21,23 +21,34 @@ cd "$(git rev-parse --show-toplevel)"
 
 ts() { date '+%H:%M:%S'; }
 
+# Producer dogfooding is opt-in. Set PRODUCER_ROOT in your environment to
+# the directory where you've cloned the producer source repos (panschema,
+# mdbook-listings, the mdbook-admonish fork) — see the README "Dogfooding
+# the tooling" section. Leave it unset (the normal author-only case) and
+# this script skips all producer build/PATH logic and just uses whatever
+# producer binaries are already on PATH.
+PRODUCER_ROOT="${PRODUCER_ROOT:-}"
+
 # Shell aliases (e.g. `alias panschema=.../target/debug/panschema` in
 # ~/.zshrc) only load in *interactive* shells — non-interactive scripts
 # like this one resolve `panschema`, `mdbook-listings`, `mdbook-admonish`
 # via $PATH, which would hit the cargo-installed releases in
-# ~/.cargo/bin/ instead of the dogfood-fresh debug binaries.
-#
-# Prepend each producer's target/debug to PATH so script invocations of
-# the producer use the same binaries the user's interactive shell does.
-for producer in panschema mdbook-listings mdbook-admonish; do
-  debug_dir="$HOME/src/github-padamson/$producer/target/debug"
-  if [ -x "$debug_dir/$producer" ]; then
-    export PATH="$debug_dir:$PATH"
-  fi
-done
+# ~/.cargo/bin/ instead of the dogfood-fresh debug binaries. When
+# PRODUCER_ROOT is set, prepend each producer's target/debug to PATH so
+# script invocations use the same binaries the interactive shell does.
+if [ -n "$PRODUCER_ROOT" ]; then
+  for producer in panschema mdbook-listings mdbook-admonish; do
+    debug_dir="$PRODUCER_ROOT/$producer/target/debug"
+    if [ -x "$debug_dir/$producer" ]; then
+      export PATH="$debug_dir:$PATH"
+    fi
+  done
+fi
 
 echo ""
-if [ -n "${SKIP_PRODUCER_BUILD:-}" ]; then
+if [ -z "$PRODUCER_ROOT" ]; then
+  echo "==> [$(ts)] PRODUCER_ROOT unset — using producer binaries on PATH (author-only mode)."
+elif [ -n "${SKIP_PRODUCER_BUILD:-}" ]; then
   echo "==> [$(ts)] Skip producer rebuild (SKIP_PRODUCER_BUILD set) — using binaries on PATH."
 else
   echo "==> [$(ts)] Refresh producer debug binaries (no-op if no change):"
@@ -46,7 +57,7 @@ else
   # build is a few hundred ms when nothing changed; updates target/debug/
   # (the path the user's shell aliases resolve to) when source changed.
   for producer in panschema mdbook-listings mdbook-admonish; do
-    repo="$HOME/src/github-padamson/$producer"
+    repo="$PRODUCER_ROOT/$producer"
     if [ -d "$repo" ]; then
       echo "  - $producer"
       (cd "$repo" && cargo build 2>&1 | tail -3) || {
@@ -65,6 +76,12 @@ echo "==> [$(ts)] Rebuild the combined site:"
 # 1. Book — outputs to book/build/
 (
   cd book
+  # Admonish CSS/JS is gitignored (a produced asset). Generate it once if
+  # missing so a fresh-clone dev loop is green — guarded, not every cycle,
+  # because `mdbook-admonish install` can rewrite book.toml (watched by
+  # dev.sh) and would otherwise risk a rebuild loop. Listings install stays
+  # unconditional: it refreshes callout CSS/JS for producer dogfooding.
+  [ -f mdbook-admonish.css ] || mdbook-admonish install . >/dev/null 2>&1
   mdbook-listings install >/dev/null 2>&1
   mdbook build
 )

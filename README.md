@@ -57,9 +57,18 @@ panschema-publish.toml    # panschema's release + publish manifest
 
 ## Toolchain
 
-The build uses four Rust binaries plus a file watcher. Three of them are
-maintained by this template's author and installed **from Git rather than
-crates.io** — so don't expect a plain `cargo install <name>` to find them.
+The build uses four Rust binaries and a file watcher (all required for
+the dev loop), plus an optional static server for browser auto-reload.
+Three of the binaries are maintained by this template's author and
+installed **from Git rather than crates.io** — so don't expect a plain
+`cargo install <name>` to find them.
+
+> **Heads up — you're tracking pre-releases and a fork.** `mdbook-admonish`
+> is a fork branch (`feat/mdbook-0.5-compat`, pending upstream release),
+> and `mdbook-listings` and `panschema` are not yet published to crates.io.
+> The template dogfoods these in-development tools; pin to a known-good
+> revision if you need stability (see the CI-pinned revs in
+> [`.github/workflows/docs.yml`](.github/workflows/docs.yml)).
 
 **Prerequisites:** a Rust toolchain (`cargo`); optionally Node.js (for
 in-browser auto-reload).
@@ -70,7 +79,8 @@ in-browser auto-reload).
 | **mdbook-admonish** *(fork)* | the `admonish` blocks used for N&M quotes and jargon notes | a fork branch — upstream isn't yet compatible with mdbook 0.5; the `feat/mdbook-0.5-compat` branch adds that compat, pending an upstream release |
 | **mdbook-listings** | the frozen-listing preprocessor at the heart of this template: `freeze` a schema snapshot, embed it with `{{#include}}`, annotate with `{{#callout}}`, diff versions with `{{#diff}}` | from Git (not yet on crates.io) |
 | **panschema** | generates the versioned schema HTML docs, an interactive class-graph viz, and RDF from the LinkML schema; needs `wasm-pack` to build its embedded viz | from Git |
-| **watchexec** | file watcher that drives `scripts/dev.sh` | crates.io |
+| **watchexec** *(required)* | the file watcher that drives the `scripts/dev.sh` rebuild-on-save loop | crates.io |
+| **live-server** *(optional)* | browser auto-reload for the combined `site/`; without it `dev.sh` falls back to `python3 -m http.server` (manual refresh). The merged book + schema-docs site is plain static files, so it needs a generic server, not `mdbook serve` | npm |
 
 ### Install
 
@@ -94,8 +104,8 @@ cargo install watchexec-cli --locked
 npm install -g live-server
 ```
 
-Confirm all five are on `PATH`: `mdbook`, `mdbook-admonish`, `mdbook-listings`,
-`panschema`, `watchexec`.
+Confirm the five required tools are on `PATH`: `mdbook`, `mdbook-admonish`,
+`mdbook-listings`, `panschema`, `watchexec` (`live-server` is optional).
 
 > The exact pinned revisions CI installs are in
 > [`.github/workflows/docs.yml`](.github/workflows/docs.yml); the commands above
@@ -144,11 +154,13 @@ First time? Install the toolchain — see **[Toolchain → Install](#install)** 
 > mdbook-admonish.css"* until you generate them once:
 >
 > ```bash
-> cd book && mdbook-admonish install . && mdbook-listings install
+> ./scripts/install-assets.sh
 > ```
 >
 > Run that after cloning (and any time the assets go missing); then
-> `mdbook build` / `mdbook serve` work.
+> `mdbook build` / `mdbook serve` work. (The `./scripts/dev.sh` loop
+> regenerates them on its own, so this is only for the standalone
+> `mdbook build` path.)
 
 ### Other formats
 
@@ -167,18 +179,27 @@ site from the fresh binary, so producer changes show up live.
 `scripts/rebuild.sh` invokes producers by name (`panschema`,
 `mdbook-listings`, `mdbook-admonish`). To make both the scripts and your
 interactive shell use your **local debug builds** instead of the
-`cargo install`-ed releases, clone the producers under
-`~/src/github-padamson/` and alias each to its `target/debug` binary:
+`cargo install`-ed releases, clone the producers wherever you like, point
+`PRODUCER_ROOT` at that directory, and alias each producer to its
+`target/debug` binary:
 
 ```zsh
 # ~/.zshrc
-alias panschema="$HOME/src/github-padamson/panschema/target/debug/panschema"
-alias mdbook-listings="$HOME/src/github-padamson/mdbook-listings/target/debug/mdbook-listings"
-alias mdbook-admonish="$HOME/src/github-padamson/mdbook-admonish/target/debug/mdbook-admonish"
+export PRODUCER_ROOT="/path/to/producers"    # wherever you cloned them
+alias panschema="$PRODUCER_ROOT/panschema/target/debug/panschema"
+alias mdbook-listings="$PRODUCER_ROOT/mdbook-listings/target/debug/mdbook-listings"
+alias mdbook-admonish="$PRODUCER_ROOT/mdbook-admonish/target/debug/mdbook-admonish"
 ```
 
-Aliases load only in interactive shells; `rebuild.sh` re-derives the same
-paths via `$PATH` prepends so non-interactive runs match.
+`scripts/dev.sh` and `scripts/rebuild.sh` read `PRODUCER_ROOT` to find,
+build, and watch the producer source (and to prepend each `target/debug`
+to `$PATH`, since aliases don't load in the non-interactive shells the
+scripts run in). **Producer dogfooding is opt-in**: leave `PRODUCER_ROOT`
+unset and the scripts don't touch the producers at all — they just use the
+binaries on `PATH` (the normal author-only case). `install-assets.sh`
+ignores `PRODUCER_ROOT` entirely — it's a fresh-clone/consumer helper that
+relies on whatever `mdbook-admonish`/`mdbook-listings` the README "Install"
+step put on `PATH`.
 
 ### Three modes
 

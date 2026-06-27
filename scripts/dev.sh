@@ -49,6 +49,15 @@ export PORT
 SKIP_PRODUCER_BUILD="${SKIP_PRODUCER_BUILD:-}"
 export SKIP_PRODUCER_BUILD
 
+# Producer dogfooding is opt-in: set PRODUCER_ROOT in your environment to
+# the directory where you've cloned the producer source repos (see the README
+# "Dogfooding the tooling" section). Unset (the normal author-only case) means
+# the producers aren't watched or rebuilt; the binaries on PATH are used as-is.
+# Exported so scripts/rebuild.sh (invoked below and on every watch trigger)
+# resolves the same location.
+PRODUCER_ROOT="${PRODUCER_ROOT:-}"
+export PRODUCER_ROOT
+
 # --- Tool availability ---
 
 missing=()
@@ -85,10 +94,12 @@ watch_args=(
 # Crucially do NOT watch the whole repo — target/ would create a rebuild loop.
 producer_dirs=()
 for producer in panschema mdbook-listings mdbook-admonish; do
+  # No PRODUCER_ROOT set → not dogfooding the producers, so don't watch them.
+  [ -z "$PRODUCER_ROOT" ] && break
   # SKIP_PRODUCER_BUILD: don't watch producer source — you're driving the
   # producer's build in its own repo, so leave it out of this loop.
   [ -n "${SKIP_PRODUCER_BUILD:-}" ] && break
-  repo="$HOME/src/github-padamson/$producer"
+  repo="$PRODUCER_ROOT/$producer"
   [ -d "$repo" ] || continue
 
   [ -f "$repo/Cargo.toml" ] && watch_args+=( --watch "$repo/Cargo.toml" )

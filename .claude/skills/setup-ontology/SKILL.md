@@ -103,8 +103,8 @@ grep -rIn 'myschema' . \
   --exclude-dir=.git --exclude-dir=build --exclude-dir=site --exclude-dir=.claude
 # fresh clones need the gitignored CSS/JS generated once, or mdbook build
 # fails on a missing mdbook-admonish.css (see README "Fresh clone"):
-cd book && mdbook-admonish install . && mdbook-listings install
-mdbook build                 # must exit 0
+./scripts/install-assets.sh
+cd book && mdbook build      # must exit 0
 ```
 
 The grep should return nothing (or only an intentional historical
