@@ -1,7 +1,7 @@
 # Domain and Scope
 
 This chapter applies **Step 1** of *Ontology Development 101* (Noy &
-McGuinness, 2001) to myschema.
+McGuinness, 2001) to wine.
 
 ```admonish quote title="Noy & McGuinness 2001 — §Step 1"
 We suggest starting the development of an ontology by defining its
@@ -46,18 +46,18 @@ it's used for, the competency questions it must answer, who maintains
 it, and (crucially) what it deliberately does NOT model.
 
 SECTION OUTLINE:
-  - What domain does myschema cover?
+  - What domain does wine cover?
   - What are we going to use the ontology for? (consumers)
   - What questions should the ontology answer? (competency questions)
   - Who will use and maintain the ontology?
-  - What myschema does *not* model.
+  - What wine does *not* model.
   - On iteration (N&M's three fundamental rules).
 
 CARRIED-IN DEFERRALS -> this step:
   (none — first step)
 
 AUTHORING CHECKLIST:
-  [ ] freeze a new myschema-yaml-vN listing tag in the same change
+  [ ] freeze a new wine-yaml-vN listing tag in the same change
       (the minimal stub committed alongside this chapter)
   [ ] jargon blocks at first use; every # CALLOUT gets a {{#callout}}
   [ ] LESSON (Step 1): competency questions are a sketch, not a

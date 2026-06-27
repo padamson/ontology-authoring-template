@@ -1,7 +1,7 @@
 # Reusing Existing Ontologies
 
 This chapter applies **Step 2** of *Ontology Development 101* (Noy &
-McGuinness, 2001) to myschema.
+McGuinness, 2001) to wine.
 
 ```admonish quote title="Noy & McGuinness 2001 — §Step 2"
 It is almost always worth considering what someone else has done and
@@ -31,7 +31,7 @@ CARRIED-IN DEFERRALS -> this step:
   (land deferrals from Chapter 1 here)
 
 AUTHORING CHECKLIST:
-  [ ] freeze a new myschema-yaml-vN listing tag in the same change
+  [ ] freeze a new wine-yaml-vN listing tag in the same change
   [ ] {{#diff}} from the prior tag, context sized to show what changed
   [ ] jargon blocks at first use; every # CALLOUT gets a {{#callout}}
   [ ] LESSON (Step 2): ground by URI, not imports; verify every

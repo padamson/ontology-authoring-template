@@ -1,7 +1,7 @@
 # Classes and Hierarchy
 
 This chapter applies **Step 4** of *Ontology Development 101* (Noy &
-McGuinness, 2001) to myschema.
+McGuinness, 2001) to wine.
 
 ```admonish quote title="Noy & McGuinness 2001 — §Step 4"
 There are several possible approaches in developing a class hierarchy
@@ -30,7 +30,7 @@ CARRIED-IN DEFERRALS -> this step:
   (land deferrals from earlier chapters here)
 
 AUTHORING CHECKLIST:
-  [ ] freeze a new myschema-yaml-vN listing tag in the same change
+  [ ] freeze a new wine-yaml-vN listing tag in the same change
   [ ] {{#diff}} from the prior tag, context sized to show what changed
   [ ] jargon blocks at first use; every # CALLOUT gets a {{#callout}}
   [ ] LESSON (Step 4): verify upper-ontology CATEGORY fit, not just IRI

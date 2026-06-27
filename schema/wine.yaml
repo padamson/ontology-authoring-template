@@ -1,5 +1,5 @@
-id: https://w3id.org/myschema/
-name: myschema
+id: https://w3id.org/wine-linkml/
+name: wine
 description: |-
   A LinkML ontology grounded in BFO 2020 (ISO/IEC 21838-2:2020) and the
   Common Core Ontologies (CCO), authored following Ontology Development
@@ -11,13 +11,13 @@ version: 0.1.0-dev
 prefixes:
   # The LinkML metamodel and this schema's own namespace
   linkml: https://w3id.org/linkml/
-  myschema: https://w3id.org/myschema/
+  wine: https://w3id.org/wine-linkml/
 
   # Foundational grounding: BFO and CCO
   obo: http://purl.obolibrary.org/obo/
   cco: https://www.commoncoreontologies.org/
 
-default_prefix: myschema
+default_prefix: wine
 default_range: string
 
 # Only linkml:types is imported. External OWL ontologies (BFO, CCO, ...)

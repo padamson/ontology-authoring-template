@@ -1,7 +1,7 @@
 # Important Terms
 
 This chapter applies **Step 3** of *Ontology Development 101* (Noy &
-McGuinness, 2001) to myschema.
+McGuinness, 2001) to wine.
 
 ```admonish quote title="Noy & McGuinness 2001 — §Step 3"
 It is useful to write down a list of all terms we would like either to
@@ -28,7 +28,7 @@ CARRIED-IN DEFERRALS -> this step:
   (land deferrals from earlier chapters here)
 
 AUTHORING CHECKLIST:
-  [ ] freeze a new myschema-yaml-vN listing tag in the same change
+  [ ] freeze a new wine-yaml-vN listing tag in the same change
   [ ] {{#diff}} from the prior tag, context sized to show what changed
   [ ] jargon blocks at first use; every # CALLOUT gets a {{#callout}}
   [ ] LESSON (Step 3): enumerate from the CQs / worked example, not

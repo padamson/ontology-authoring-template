@@ -2,8 +2,8 @@
 authors = ["Paul Adamson"]
 language = "en"
 src = "src"
-title = "Building myschema"
-description = "Building the myschema LinkML ontology from scratch, following Ontology Development 101 adapted to LinkML"
+title = "Building wine"
+description = "Building the wine LinkML ontology from scratch, following Ontology Development 101 adapted to LinkML"
 
 [build]
 build-dir = "build"
