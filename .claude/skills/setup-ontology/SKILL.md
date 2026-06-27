@@ -121,6 +121,39 @@ the user what changed and what's left to them: writing the Introduction
 which is the
 [[advance-step]] skill's job.
 
+## Step 8 — remove the bootstrap tooling (self-clean)
+
+This skill is one-time bootstrap tooling. Once the rename is verified and
+handed off, it's dead weight in the instance — pure template scaffolding
+that still says `myschema` throughout (correct for the *template*, stale
+and confusing inside an instantiated repo). Make the instance born clean
+by removing it as the **final** action:
+
+1. **Confirm first** — this is an irreversible cleanup of checked-in
+   files. Ask: "Bootstrap done — remove the `setup-ontology` skill from
+   this repo? (`advance-step`, the per-chapter tooling, stays.)" If the
+   user declines, stop here and leave everything in place.
+
+2. **Fix the two `advance-step` references that would otherwise dangle**
+   (the only places mentioning this skill):
+   - Step 0, the "Derive the schema name…" bullet — drop the
+     "(the repo may already be renamed via the `[[setup-ontology]]`
+     skill)" clause, leaving "…never assume `myschema` — derive it,
+     don't hardcode it."
+   - The Boundaries list — remove the line "The one-time placeholder
+     rename → the **setup-ontology** skill."
+
+3. **Remove this skill** (the last action — its instructions are already
+   loaded, so deleting the files mid-run is fine):
+
+   ```bash
+   git rm -r .claude/skills/setup-ontology/
+   ```
+
+`advance-step` is then the only skill left in the bootstrapped instance,
+which is correct — it's the per-chapter tooling kept for the whole build.
+The deletion is staged, not committed; commit only if the user asks.
+
 ## Boundaries
 
 - Tool mechanics (freezing, directives) → the **mdbook-listings** skill.
