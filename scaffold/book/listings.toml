@@ -1,0 +1,7 @@
+version = 1
+
+# Frozen mdbook-listings snapshots are appended here as each chapter
+# advances the schema. Freeze from the book root, e.g.:
+#   cd book && mdbook-listings freeze ../schema/myschema.yaml \
+#     --tag myschema-yaml-v1 --force
+# Ships empty — no chapter has frozen a listing yet.
