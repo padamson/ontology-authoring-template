@@ -112,6 +112,40 @@ Confirm the five required tools are on `PATH`: `mdbook`, `mdbook-admonish`,
 > [`.github/workflows/docs.yml`](.github/workflows/docs.yml); the commands above
 > track the latest of each, which is what you want for local authoring.
 
+### Math (optional)
+
+The stock template ships **without** math rendering, so a bare clone has
+no extra dependency. If your ontology's prose needs math (energies,
+Greek symbols, units — `$E_b$`, `$\hbar\omega_\nu$`, `$\pm$`), enable
+build-time KaTeX with [`mdbook-katex`](https://github.com/lzanini/mdbook-katex):
+
+```bash
+# pin 0.10.0-alpha — it targets official mdbook 0.5. The stable 0.9.x
+# depends on a *fork* of mdbook and fails against 0.5 with
+# "invalid type: null, expected any valid TOML value".
+cargo install mdbook-katex --version 0.10.0-alpha --locked
+```
+
+Then add the preprocessor to `book/book.toml`, ordered **after**
+`admonish` (otherwise `$…$` inside ```` ```admonish ```` blocks is skipped
+and renders literally):
+
+```toml
+[preprocessor.katex]
+after = ["admonish"]
+```
+
+Chapters can then write `$…$` / `$$…$$`. Notes:
+
+- **CSS:** 0.10.0-alpha links KaTeX CSS from a CDN (jsDelivr) by default —
+  fine for the published site. For an offline/self-contained build, set
+  `no-css = true` and vendor the KaTeX CSS+fonts (helper crate
+  `mdbook_katex_css_download`), referenced via `additional-css`.
+- **CI:** add a matching install step to
+  [`.github/workflows/docs.yml`](.github/workflows/docs.yml) (mirror the
+  `mdbook` install, cache key on the pinned `0.10.0-alpha`) so the
+  published docs render math too.
+
 ## Versioning
 
 The schema's `version:` field is the source of truth. Release tags
