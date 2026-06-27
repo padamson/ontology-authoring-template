@@ -152,11 +152,14 @@ jobs:
         # new version so /schema/current/ aliases to it post-deploy.
         run: panschema publish
 
-      - name: Restore mdbook-listings book assets
-        # mdbook-listings.css / .js are gitignored upstream; install
-        # repopulates them in book/ before mdbook build runs.
-        working-directory: book
-        run: mdbook-listings install
+      - name: Generate book assets (admonish + listings)
+        # mdbook-admonish.css and mdbook-listings.css/.js are gitignored
+        # generated assets, so a fresh CI checkout lacks them and `mdbook
+        # build` fails copying mdbook-admonish.css. install-assets.sh
+        # regenerates both from the binaries installed above — the same
+        # script the README "Fresh clone" note and setup-ontology use
+        # locally, so CI and local builds share one path.
+        run: ./scripts/install-assets.sh
 
       - name: Verify frozen listings (mdbook-listings)
         # Fail fast on frozen-snapshot hash drift or a broken
