@@ -20,8 +20,10 @@ repeated here.
 - Derive the schema name from `panschema-publish.toml` (`[schema].name`)
   or the `schema/*.yaml` filename — never assume `myschema` (the repo may
   already be renamed via the [[setup-ontology]] skill).
-- Find the next chapter to advance. ch01 is the Introduction; the seven
-  N&M steps are ch02…ch08 (mapping in CLAUDE.md). The next target is the
+- Find the next chapter to advance. The Introduction is the unnumbered
+  prefix chapter (`introduction.md`); the seven N&M steps are ch01…ch07,
+  so the rendered Chapter N is N&M Step N (mapping in CLAUDE.md). The next
+  target is the
   first step stub still at scaffold state (only seeded N&M quotes +
   HTML-comment CHARTER/OUTLINE/DEFERRALS/CHECKLIST, no authored prose).
 - Read that chapter's scaffold in full. The HTML comments are the

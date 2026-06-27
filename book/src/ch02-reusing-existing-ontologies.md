@@ -28,7 +28,7 @@ SECTION OUTLINE:
   - The grounding-by-URI pattern (prefixes manifest; never imports:).
 
 CARRIED-IN DEFERRALS -> this step:
-  (land deferrals from Chapter 2 here)
+  (land deferrals from Chapter 1 here)
 
 AUTHORING CHECKLIST:
   [ ] freeze a new myschema-yaml-vN listing tag in the same change

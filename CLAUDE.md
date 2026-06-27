@@ -31,9 +31,11 @@ Chapters map to the seven N&M steps and live at
 3. Enumerate important terms · 4. Define classes and hierarchy ·
 5. Define slots · 6. Facets (`slot_usage`) · 7. Instances + validate
 
-(ch01 is the Introduction; the seven steps start at ch02.) Match the
-existing voice: design discussion aimed at a reader comfortable with
-LinkML and ontology basics, N&M quotes in `admonish quote` blocks,
+(The Introduction is the unnumbered prefix chapter `introduction.md`;
+the seven steps are `ch01`–`ch07`, so the rendered Chapter N is N&M
+Step N.) Match the existing voice: design discussion aimed at a reader
+comfortable with LinkML and ontology basics, N&M quotes in
+`admonish quote` blocks,
 external claims backed by citations.
 
 ## Authoring with mdbook-listings
@@ -114,7 +116,7 @@ site (schema HTML + the book) is built and deployed by
   schemas — only `linkml:types` is imported).
 - **Deferrals are tracked in the target chapter's scaffold.** When
   prose defers work to a later chapter or N&M step ("deferred to
-  Chapter 6", "Step 5 work", "Chapter 8 will revisit"), add a
+  Chapter 6", "Step 5 work", "Chapter 7 will revisit"), add a
   matching `[ ]` TODO line in that chapter's `.md` scaffold,
   inside the HTML-comment `CARRIED-IN DEFERRALS` block (every step
   stub ships with one), citing the source chapter/section. Write

@@ -25,7 +25,8 @@ Ask the user for the schema name unless it's already given. Validate it:
 - is not `myschema`
 
 Also confirm the **w3id namespace** (default `https://w3id.org/<name>/`)
-and grab a **one-sentence domain purpose** for CLAUDE.md / ch01. If the
+and grab a **one-sentence domain purpose** for CLAUDE.md / the
+Introduction (`introduction.md`). If the
 user only gives a name, proceed with the default namespace and leave the
 purpose as a clearly-marked TODO rather than inventing a domain.
 
@@ -91,10 +92,10 @@ to your schema's name". Instead:
 
 ## Step 5 — the book chapters
 
-`book/src/ch01-introduction.md` and the step stubs reference `myschema`
+`book/src/introduction.md` and the step stubs reference `myschema`
 in prose. Rename the identifier to `<name>`. These are mostly safe
-replaces, but ch01 is the Introduction the author still has to write —
-don't fabricate content, just fix the name.
+replaces, but `introduction.md` is the Introduction the author still has
+to write — don't fabricate content, just fix the name.
 
 ## Step 6 — verify
 
@@ -115,8 +116,9 @@ declaring done.
 ## Step 7 — hand off
 
 Don't commit unless asked (trunk-based on `main` — see CLAUDE.md). Tell
-the user what changed and what's left to them: writing ch01, setting the
-schema `version:`, and starting Step 1 — which is the
+the user what changed and what's left to them: writing the Introduction
+(`introduction.md`), setting the schema `version:`, and starting Step 1 —
+which is the
 [[advance-step]] skill's job.
 
 ## Boundaries

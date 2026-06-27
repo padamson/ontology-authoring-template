@@ -33,8 +33,9 @@ schema as it stood at that step.
 3. **Set the schema `id:` and prefixes** in `schema/<name>.yaml` to your
    own `https://w3id.org/<name>/` namespace; add any domain reuse
    vocabularies as prefixes (grounding is by URI, never `imports:`).
-4. **Write `ch01-introduction.md`**, then work **Steps 1–7** in
-   `book/src/ch02`…`ch08`. Each step stub ships pre-seeded with the
+4. **Write `introduction.md`** (the unnumbered prefix chapter), then work
+   **Steps 1–7** in `book/src/ch01`…`ch07` — so the rendered Chapter N is
+   N&M Step N. Each step stub ships pre-seeded with the
    verbatim N&M quote(s), a CHARTER, a section outline, a deferrals
    block, and an authoring checklist (including the step's lesson).
 5. **Freeze a listing per chapter** that advances the schema (see
