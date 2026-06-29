@@ -1,7 +1,7 @@
 version = 1
 
-# Frozen mdbook-listings snapshots are appended here as each chapter
-# advances the schema. Freeze from the book root, e.g.:
-#   cd book && mdbook-listings freeze ../schema/wine.yaml \
-#     --tag wine-yaml-v1 --force
-# Ships empty — no chapter has frozen a listing yet.
+[[listing]]
+tag = "wine-yaml-v1"
+source = "../schema/wine.yaml"
+frozen = "src/listings/wine-yaml-v1.yaml"
+sha256 = "d2d4abeec8997ca47ea8063156910750bd1cd9af7c2910394ca981c5e458d293"

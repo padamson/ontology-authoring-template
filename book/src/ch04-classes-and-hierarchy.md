@@ -27,7 +27,10 @@ SECTION OUTLINE:
   - The grounding pattern (subclass_of to the external URI).
 
 CARRIED-IN DEFERRALS -> this step:
-  (land deferrals from earlier chapters here)
+  [ ] (from Ch.1) promote the competency-question entities — wine, food,
+      grape, region, winery, vintage — into classes and an is_a hierarchy;
+      decide how to model the wine characteristics (color, body, sugar,
+      flavor) and the wine-food pairing relation
 
 AUTHORING CHECKLIST:
   [ ] freeze a new wine-yaml-vN listing tag in the same change

@@ -150,8 +150,6 @@ checklist.
 - **The book is a chronological log, not a snapshot.** Narrate
   reversals and dead-ends as they happened; do not retro-edit earlier
   chapters to hide a path that was later abandoned.
-- **Plain technical prose, not literary.** Keep the book's voice plain
-  and technical, em-dash-lean; no purple prose.
 - **Speculative forward-references stay in private notes.** Keep
   future-repo names, roadmap, and speculative plans out of the public
   book and commits.

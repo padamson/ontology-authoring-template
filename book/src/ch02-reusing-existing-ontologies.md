@@ -28,7 +28,10 @@ SECTION OUTLINE:
   - The grounding-by-URI pattern (prefixes manifest; never imports:).
 
 CARRIED-IN DEFERRALS -> this step:
-  (land deferrals from Chapter 1 here)
+  [ ] (from Ch.1) reuse/grounding decision: which BFO and CCO categories
+      ground the food-and-wine entities (wine, food, grape, region,
+      winery, vintage), the wine characteristics (color, body, sugar,
+      flavor), and the wine-food pairing relation
 
 AUTHORING CHECKLIST:
   [ ] freeze a new wine-yaml-vN listing tag in the same change

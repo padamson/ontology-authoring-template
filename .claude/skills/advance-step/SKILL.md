@@ -69,9 +69,9 @@ reconstruct it here.
 
 ## Step 3 — write the prose
 
-Follow the SECTION OUTLINE. Voice: plain, technical, em-dash-lean design
-discussion for a reader comfortable with LinkML and ontology basics — no
-purple prose (LESSON). The N&M quote(s) are already seeded as `admonish
+Follow the SECTION OUTLINE. Voice: plain, technical design
+discussion for a reader comfortable with LinkML and ontology basics.
+The N&M quote(s) are already seeded as `admonish
 quote` blocks; build the discussion around them. Jargon blocks at first
 use. Back external claims with citations. Every `# CALLOUT:` marker needs
 a matching `{{#callout}}` label or `mdbook build` fails.
