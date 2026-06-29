@@ -117,22 +117,42 @@ for producer in panschema mdbook-listings mdbook-admonish; do
   producer_dirs+=("$producer")
 done
 
+# --- Stop any prior dev loop for this repo ---
+
+# Re-running dev.sh, or a Ctrl-C that didn't fully tear down, otherwise
+# leaves an old watchexec and HTTP server behind: the stale watcher races
+# this run's rebuilds, and the stale server squats the port (so the new
+# server silently fails to bind and the browser keeps hitting the old one).
+# Kill any watcher bound to this repo's rebuild.sh and free the port first.
+free_port() {
+  command -v lsof >/dev/null 2>&1 || return 0
+  local pids
+  pids=$(lsof -ti "tcp:$PORT" 2>/dev/null || true)
+  [ -n "$pids" ] && kill $pids 2>/dev/null || true
+}
+pkill -f 'watchexec.*scripts/rebuild.sh' 2>/dev/null || true
+free_port
+
 # --- Initial build ---
 
 scripts/rebuild.sh
 
 # --- HTTP server ---
 
+# Launch the server directly, NOT in a `( cd site && … ) &` subshell: with a
+# subshell, $! is the subshell's PID, not the server's, so cleanup would kill
+# the wrapper and orphan the real server. Pass the directory as an argument
+# instead, so SERVER_PID is the process we actually need to kill.
 if command -v live-server >/dev/null 2>&1; then
   echo ""
   echo "Starting live-server on http://localhost:$PORT/ (browser auto-reload)"
-  (cd site && live-server --port="$PORT" --no-browser --quiet) &
+  live-server --port="$PORT" --no-browser --quiet site &
 else
   echo ""
   echo "Starting python3 -m http.server on http://localhost:$PORT/"
   echo "  (no auto-reload; refresh the browser manually after each rebuild)"
   echo "  Tip: npm install -g live-server  # for browser auto-reload"
-  (cd site && python3 -m http.server "$PORT" >/dev/null 2>&1) &
+  python3 -m http.server "$PORT" --directory site >/dev/null 2>&1 &
 fi
 SERVER_PID=$!
 
@@ -140,6 +160,7 @@ cleanup() {
   echo ""
   echo "Stopping server (PID $SERVER_PID)"
   kill "$SERVER_PID" 2>/dev/null || true
+  free_port   # backstop, in case the server spawned a child of its own
 }
 # EXIT covers all paths (Ctrl+C, set -e bail-out, normal exit).
 trap cleanup EXIT
