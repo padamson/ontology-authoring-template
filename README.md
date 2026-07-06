@@ -80,6 +80,7 @@ in-browser auto-reload).
 | **mdbook-admonish** *(fork)* | the `admonish` blocks used for N&M quotes and jargon notes | a fork branch — upstream isn't yet compatible with mdbook 0.5; the `feat/mdbook-0.5-compat` branch adds that compat, pending an upstream release |
 | **mdbook-listings** | the frozen-listing preprocessor at the heart of this template: `freeze` a schema snapshot, embed it with `{{#include}}`, annotate with `{{#callout}}`, diff versions with `{{#diff}}` | from Git (not yet on crates.io) |
 | **panschema** | generates the versioned schema HTML docs, an interactive class-graph viz, and RDF from the LinkML schema; needs `wasm-pack` to build its embedded viz | from Git |
+| **mdbook-panschema** | installs the book→schema toolbar link (`schema-link.js`/`.css`), configured by `[book_link]` in `panschema-publish.toml` | from Git (panschema workspace) |
 | **watchexec** *(required)* | the file watcher that drives the `scripts/dev.sh` rebuild-on-save loop | crates.io |
 | **live-server** *(optional)* | browser auto-reload for the combined `site/`; without it `dev.sh` falls back to `python3 -m http.server` (manual refresh). The merged book + schema-docs site is plain static files, so it needs a generic server, not `mdbook serve` | npm |
 
@@ -94,9 +95,11 @@ cargo install --git https://github.com/padamson/mdbook-admonish \
 # the frozen-listings preprocessor (central to this template)
 cargo install --git https://github.com/padamson/mdbook-listings --locked mdbook-listings
 
-# panschema (schema docs + graph + RDF); wasm-pack builds its embedded viz
+# panschema (schema docs + graph + RDF); wasm-pack builds its embedded viz.
+# mdbook-panschema (same workspace) installs the book→schema toolbar link.
 cargo install wasm-pack --locked
 cargo install --git https://github.com/padamson/panschema --locked panschema
+cargo install --git https://github.com/padamson/panschema --locked mdbook-panschema
 
 # the dev-loop file watcher
 cargo install watchexec-cli --locked
@@ -105,8 +108,9 @@ cargo install watchexec-cli --locked
 npm install -g live-server
 ```
 
-Confirm the five required tools are on `PATH`: `mdbook`, `mdbook-admonish`,
-`mdbook-listings`, `panschema`, `watchexec` (`live-server` is optional).
+Confirm the six required tools are on `PATH`: `mdbook`, `mdbook-admonish`,
+`mdbook-listings`, `panschema`, `mdbook-panschema`, `watchexec`
+(`live-server` is optional).
 
 > The exact pinned revisions CI installs are in
 > [`.github/workflows/docs.yml`](.github/workflows/docs.yml); the commands above
@@ -183,9 +187,9 @@ cd book && mdbook build   # output to book/build/
 
 First time? Install the toolchain — see **[Toolchain → Install](#install)** above.
 
-> **Fresh clone:** the admonish/listings CSS+JS are generated assets,
-> intentionally gitignored (see [`.gitignore`](.gitignore)), so a bare
-> `mdbook build` fails with *"Unable to copy across static files …
+> **Fresh clone:** the admonish/listings/schema-link CSS+JS are generated
+> assets, intentionally gitignored (see [`.gitignore`](.gitignore)), so a
+> bare `mdbook build` fails with *"Unable to copy across static files …
 > mdbook-admonish.css"* until you generate them once:
 >
 > ```bash

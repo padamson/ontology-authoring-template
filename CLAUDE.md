@@ -94,8 +94,11 @@ cd book && mdbook build   # output to book/build/
 ```
 
 Preprocessors must be on `PATH`: `mdbook-listings`, and the
-`mdbook-admonish` fork (`feat/mdbook-0.5-compat`). The published docs
-site (schema HTML + the book) is built and deployed by
+`mdbook-admonish` fork (`feat/mdbook-0.5-compat`); `mdbook-panschema`
+(from the panschema workspace) must be there too — it generates the
+gitignored book→schema toolbar-link assets that `book.toml` references
+(`scripts/install-assets.sh` runs all three installers). The published
+docs site (schema HTML + the book) is built and deployed by
 `.github/workflows/docs.yml` via the panschema toolchain on push to
 `main` and on `v*` tags.
 

@@ -76,12 +76,14 @@ echo "==> [$(ts)] Rebuild the combined site:"
 # 1. Book — outputs to book/build/
 (
   cd book
-  # Admonish CSS/JS is gitignored (a produced asset). Generate it once if
-  # missing so a fresh-clone dev loop is green — guarded, not every cycle,
-  # because `mdbook-admonish install` can rewrite book.toml (watched by
-  # dev.sh) and would otherwise risk a rebuild loop. Listings install stays
-  # unconditional: it refreshes callout CSS/JS for producer dogfooding.
+  # Admonish and schema-link CSS/JS are gitignored (produced assets).
+  # Generate each once if missing so a fresh-clone dev loop is green —
+  # guarded, not every cycle, because both installers can rewrite book.toml
+  # (watched by dev.sh) and would otherwise risk a rebuild loop. Listings
+  # install stays unconditional: it refreshes callout CSS/JS for producer
+  # dogfooding.
   [ -f mdbook-admonish.css ] || mdbook-admonish install . >/dev/null 2>&1
+  { [ -f schema-link.css ] && [ -f schema-link.js ]; } || mdbook-panschema install >/dev/null 2>&1
   mdbook-listings install >/dev/null 2>&1
   mdbook build
 )

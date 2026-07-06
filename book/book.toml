@@ -22,5 +22,5 @@ number-listings = true
 [output]
 
 [output.html]
-additional-css = ["./mdbook-admonish.css", "./mdbook-listings.css"]
-additional-js = ["./mdbook-listings.js"]
+additional-css = ["./mdbook-admonish.css", "./mdbook-listings.css", "./schema-link.css"]
+additional-js = ["./mdbook-listings.js", "./schema-link.js"]

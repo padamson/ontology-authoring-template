@@ -16,6 +16,11 @@
 # each rebuild. Otherwise falls back to `python3 -m http.server`, where
 # you refresh manually.
 #
+# NOT watched: the generated book assets (book/*.js, book/*.css from the
+# admonish/listings/schema-link installers) — rebuild.sh regenerates them,
+# so watching them would loop the watcher. If you hand-edit one to test,
+# nudge a rebuild with `touch book/book.toml`.
+#
 # Usage:
 #   ./scripts/dev.sh                 # PORT=8000 (default)
 #   PORT=8080 ./scripts/dev.sh
