@@ -31,6 +31,13 @@ CARRIED-IN DEFERRALS -> this step:
       grape, region, winery, vintage — into classes and an is_a hierarchy;
       decide how to model the wine characteristics (color, body, sugar,
       flavor) and the wine-food pairing relation
+  [ ] (from Ch.2) apply the reuse-table groundings as class_uri/slot_uri:
+      wine->cco:ont00001084, food->cco:ont00000307,
+      region->cco:ont00000472, winery->cco:ont00001180,
+      grape->obo:BFO_0000030, color/body/sugar/flavor->obo:BFO_0000019,
+      vintage-year->obo:BFO_0000038; verify each IRI + category at build.
+      Pairing grounds to an ICE (a recommendation) — revisit whether it
+      spins into a companion ontology rather than living here.
 
 AUTHORING CHECKLIST:
   [ ] freeze a new wine-yaml-vN listing tag in the same change

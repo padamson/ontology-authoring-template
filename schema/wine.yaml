@@ -5,10 +5,10 @@ description: |-
   A worked-example ontology of food and wine, built following Ontology
   Development 101 (Noy & McGuinness, 2001) adapted to LinkML and grounded
   in BFO 2020 (ISO/IEC 21838-2:2020) and the Common Core Ontologies (CCO).
-  Following N&M's own running example, it represents wines, foods, and the
-  characteristics that make a wine appropriate for a dish — for
-  applications that suggest good wine-and-food combinations. See the book
-  for the chapter-by-chapter build.
+  Following N&M's own running example, it represents wines, foods, and
+  the characteristics that make a wine appropriate for a dish. It is
+  built for applications that suggest good wine-and-food combinations.
+  See the book for the chapter-by-chapter build.
 license: https://creativecommons.org/licenses/by/4.0/
 version: 0.1.0-dev
 
@@ -30,7 +30,7 @@ default_range: string
 imports:
   - linkml:types
 
-# CALLOUT: empty The build starts empty — classes arrive in Step 4, slots in Step 5.
+# CALLOUT: empty The build starts empty: classes arrive in Step 4, slots in Step 5.
 classes:
   # Step 4+ populate these.
 

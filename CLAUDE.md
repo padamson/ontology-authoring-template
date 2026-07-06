@@ -129,6 +129,14 @@ enabled it becomes a required preprocessor, so also add it to CI.
   promised is dropped. The HTML comments never render.
   (Within-chapter "next increment" work — not yet deferred to a
   *later* chapter — stays in the buildout plan, not these blocks.)
+- **Strip a chapter's scaffold once finalized.** When a chapter is
+  authored, delete its whole HTML-comment scaffold block
+  (`CHARTER`/`SECTION OUTLINE`/`AUTHORING CHECKLIST`, and its own
+  now-discharged `CARRIED-IN DEFERRALS`). Only *unwritten* chapters keep
+  scaffolds — their `CARRIED-IN DEFERRALS` blocks still hold live TODOs
+  that earlier chapters wrote forward. A finished chapter's own forward
+  deferrals live in the *later* chapters' scaffolds, not its own, so
+  deleting its scaffold loses nothing.
 
 ## Lessons
 

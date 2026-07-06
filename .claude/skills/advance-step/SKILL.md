@@ -114,9 +114,16 @@ has `callout-badge` elements before debugging deeper (CLAUDE.md).
 - Optional sanity check: build the panschema class graph and treat
   island (disconnected) nodes as bugs to explain or remove (LESSON).
 
-## Step 6 — keep the change chapter-scoped
+## Step 6 — strip the scaffold, keep the change chapter-scoped
 
-The schema edit, the new freeze tag, and the chapter prose are **one
+Now that the chapter is authored, delete its HTML-comment scaffold block
+(CHARTER/OUTLINE/CHECKLIST and its own discharged CARRIED-IN DEFERRALS) —
+only unwritten chapters keep scaffolds, since their CARRIED-IN blocks still
+hold live forward-TODOs (CLAUDE.md: "Strip a chapter's scaffold once
+finalized"). The forward deferrals this chapter wrote live in *later*
+chapters' scaffolds, so nothing is lost.
+
+The schema edit, any new freeze tag, and the chapter prose are **one
 change** (CLAUDE.md: schema edits are chapter-scoped; trunk-based on
 `main`). Don't propose a feature branch. Commit only if the user asks.
 
