@@ -29,7 +29,14 @@ SECTION OUTLINE:
   - Cardinality derived from the competency questions.
 
 CARRIED-IN DEFERRALS -> this step:
-  (land deferrals from earlier chapters here)
+  [ ] (from Ch.3) the characteristic-like terms (color, body, sugar
+      content/sweetness, flavor/bouquet) become slots; settle the
+      competing names (sugar content vs sweetness, flavor vs bouquet)
+      when defining them.
+  [ ] (from Ch.3) the relational terms become slots too (pairing's
+      "goes well with"; wine->grape, wine->winery, wine->region); and
+      if Ch.4 read red/white/rosé as color values, give the color slot
+      an enum range with those values.
 
 AUTHORING CHECKLIST:
   [ ] freeze a new wine-yaml-vN listing tag in the same change

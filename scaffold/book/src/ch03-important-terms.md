@@ -28,8 +28,11 @@ CARRIED-IN DEFERRALS -> this step:
   (land deferrals from earlier chapters here)
 
 AUTHORING CHECKLIST:
-  [ ] freeze a new myschema-yaml-vN listing tag in the same change
-  [ ] {{#diff}} from the prior tag, context sized to show what changed
+  [ ] IF this step changed the schema, freeze a new myschema-yaml-vN tag
+      and {{#diff}} from the prior tag. Step 3 is usually a term LIST in
+      the prose — the terms become classes and slots in Steps 4-5 — so if
+      no bytes changed, don't force a freeze (a chapter with no embedded
+      listing is fine).
   [ ] jargon blocks at first use; every # CALLOUT gets a {{#callout}}
   [ ] LESSON (Step 3): enumerate from the CQs / worked example, not
       speculatively.

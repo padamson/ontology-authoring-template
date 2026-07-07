@@ -24,7 +24,10 @@ SECTION OUTLINE:
     finished hierarchy.
 
 CARRIED-IN DEFERRALS -> this step:
-  (land deferrals from earlier chapters here)
+  [ ] (from Ch.3) the named individuals from the term list become
+      instances that answer their CQs: Bordeaux the wine (CQ 2),
+      Cabernet Sauvignon + a seafood dish (CQ 3), a grilled-meat dish
+      (CQ 4), Napa Zinfandel + vintages (CQs 6-7).
 
 AUTHORING CHECKLIST:
   [ ] freeze a new wine-yaml-vN listing tag in the same change

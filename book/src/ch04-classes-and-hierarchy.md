@@ -38,6 +38,10 @@ CARRIED-IN DEFERRALS -> this step:
       vintage-year->obo:BFO_0000038; verify each IRI + category at build.
       Pairing grounds to an ICE (a recommendation) — revisit whether it
       spins into a companion ontology rather than living here.
+  [ ] (from Ch.3) resolve the term-list overlaps when promoting:
+      location vs wine region; winery vs producer vs organization;
+      white wine as subtype vs color value; "Bordeaux" as region vs
+      wine (metonymy); pairing vs recommendation.
 
 AUTHORING CHECKLIST:
   [ ] freeze a new wine-yaml-vN listing tag in the same change
