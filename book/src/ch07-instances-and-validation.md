@@ -27,7 +27,16 @@ CARRIED-IN DEFERRALS -> this step:
   [ ] (from Ch.3) the named individuals from the term list become
       instances that answer their CQs: Bordeaux the wine (CQ 2),
       Cabernet Sauvignon + a seafood dish (CQ 3), a grilled-meat dish
-      (CQ 4), Napa Zinfandel + vintages (CQs 6-7).
+      (CQ 4), Napa Zinfandel + vintages (CQs 6-7). Note Ch.4: instances
+      of Wine/Grape are named KINDS (Bordeaux the wine, Zinfandel the
+      grape), and "Bordeaux" is two individuals (a WineRegion and a
+      Wine) sharing a name.
+  [ ] (from Ch.2/Ch.4) settle whether a cultivar (grape variety) is
+      better treated as a recorded designation (GDC) than as an
+      instance of Grape, when the variety instances actually appear.
+  [ ] (from Ch.2/Ch.4) revisit whether PairingRecommendation and its
+      slots belong in a companion ontology rather than this schema,
+      once validation shows the class's worked shape.
 
 AUTHORING CHECKLIST:
   [ ] freeze a new wine-yaml-vN listing tag in the same change

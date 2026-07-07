@@ -34,9 +34,13 @@ CARRIED-IN DEFERRALS -> this step:
       competing names (sugar content vs sweetness, flavor vs bouquet)
       when defining them.
   [ ] (from Ch.3) the relational terms become slots too (pairing's
-      "goes well with"; wine->grape, wine->winery, wine->region); and
-      if Ch.4 read red/white/rosé as color values, give the color slot
-      an enum range with those values.
+      "goes well with"; wine->grape, wine->winery, wine->region).
+  [ ] (from Ch.4) Ch.4 decided red/white/rosé are color VALUES (no
+      Red/White/Rosé classes): give the color slot an enum range with
+      those values.
+  [ ] (from Ch.4) re-run the class-graph island check once slots wire
+      the classes together — at Step 4 the graph was honestly empty of
+      edges; after Step 5 a disconnected class is a bug to explain.
 
 AUTHORING CHECKLIST:
   [ ] freeze a new wine-yaml-vN listing tag in the same change
