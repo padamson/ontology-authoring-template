@@ -30,7 +30,9 @@ CARRIED-IN DEFERRALS -> this step:
 
 AUTHORING CHECKLIST:
   [ ] freeze a new myschema-yaml-vN listing tag in the same change
-  [ ] {{#diff}} from the prior tag, context sized to show what changed
+  [ ] {{#diff}} from the prior tag, with context=N sized so each hunk
+      shows its enclosing class/section header (note: stripped # CALLOUT
+      lines consume context, so add a couple extra)
   [ ] jargon blocks at first use; every # CALLOUT gets a {{#callout}}
   [ ] LESSON (Step 6): a facet only restricts, never widens; OWL-DL
       "simple property" rule (a transitive property cannot also be

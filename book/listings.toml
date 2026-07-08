@@ -11,3 +11,9 @@ tag = "wine-yaml-v2"
 source = "../schema/wine.yaml"
 frozen = "src/listings/wine-yaml-v2.yaml"
 sha256 = "24c44aeb278330a79036b7dcf7077125bc597a163f72a248439cc3498daebf12"
+
+[[listing]]
+tag = "wine-yaml-v3"
+source = "../schema/wine.yaml"
+frozen = "src/listings/wine-yaml-v3.yaml"
+sha256 = "4cf3d6c6b0d0124a582f6dc39ba781339092a6dce901c765d43c3dee8853e0e3"

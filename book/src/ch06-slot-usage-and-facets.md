@@ -26,7 +26,14 @@ SECTION OUTLINE:
   - Property characteristics (symmetric, transitive, ...).
 
 CARRIED-IN DEFERRALS -> this step:
-  (land deferrals from earlier chapters here)
+  [ ] (from Ch.5) enumerate the body/flavor/sugar value sets — N&M put
+      them in their Step 6: body light/medium/full, flavor
+      delicate/moderate/strong, sugar sweet/dry/off-dry — turning the
+      Ch.5 string ranges into enums.
+  [ ] (from Ch.5) tighten cardinality where the CQs demand: Ch.5 left
+      everything optional (lenient stance); decide what a valid
+      PairingRecommendation must carry (wine? food?), and bound
+      confidence to [0,1] (minimum/maximum_value).
 
 AUTHORING CHECKLIST:
   [ ] freeze a new wine-yaml-vN listing tag in the same change

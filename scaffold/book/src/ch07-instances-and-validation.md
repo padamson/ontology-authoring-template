@@ -28,7 +28,9 @@ CARRIED-IN DEFERRALS -> this step:
 
 AUTHORING CHECKLIST:
   [ ] freeze a new myschema-yaml-vN listing tag in the same change
-  [ ] {{#diff}} from the prior tag, context sized to show what changed
+  [ ] {{#diff}} from the prior tag, with context=N sized so each hunk
+      shows its enclosing class/section header (note: stripped # CALLOUT
+      lines consume context, so add a couple extra)
   [ ] jargon blocks at first use; every # CALLOUT gets a {{#callout}}
   [ ] LESSON (Step 7): the worked example should have driven the build
       FROM Step 1 — if it only validates here, that is a smell.

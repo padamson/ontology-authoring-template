@@ -33,7 +33,9 @@ CARRIED-IN DEFERRALS -> this step:
 
 AUTHORING CHECKLIST:
   [ ] freeze a new myschema-yaml-vN listing tag in the same change
-  [ ] {{#diff}} from the prior tag, context sized to show what changed
+  [ ] {{#diff}} from the prior tag, with context=N sized so each hunk
+      shows its enclosing class/section header (note: stripped # CALLOUT
+      lines consume context, so add a couple extra)
   [ ] jargon blocks at first use; every # CALLOUT gets a {{#callout}}
   [ ] LESSON (Step 5): derive cardinality/required from the CQs;
       lenient by default (PROV-O stance).
