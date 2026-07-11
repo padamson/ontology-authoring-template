@@ -119,9 +119,15 @@ enabled it becomes a required preprocessor, so also add it to CI.
   should drive the build from Step 1 — if a class or slot only earns
   its keep at validation (Step 7), that is a smell.
 - **External grounding is by URI, not import.** BFO/CCO/etc. are
-  referenced via `class_uri`/`slot_uri` + prefixes (and mapping
+  referenced via `subclass_of`/`slot_uri` + prefixes (and mapping
   annotations), *not* LinkML `imports:` (which is for other LinkML
   schemas — only `linkml:types` is imported).
+- **Schema descriptions are self-contained.** `description:` fields ship
+  with the artifact (generated docs, RDF, downstream graphs) and never
+  reference the book's structure — no chapter/step numbers, no "N&M",
+  no CQ numbers, no "a later chapter will…". Book-facing context goes
+  in `#` comments or `# CALLOUT:` markers (which stay out of the
+  artifact's data), not in permanent metadata.
 - **Deferrals are tracked in the target chapter's scaffold.** When
   prose defers work to a later chapter or N&M step ("deferred to
   Chapter 6", "Step 5 work", "Chapter 7 will revisit"), add a
