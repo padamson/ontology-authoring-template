@@ -11,15 +11,19 @@ choosing a class, (2) creating an individual instance of that class, and
 ```
 
 <!--
-CHARTER: Instantiate the worked example against the schema, validate
-with linkml-validate, and run each Step-1 competency question as the
-litmus test. Refine the schema where instantiation surfaces gaps —
-validation and refinement are one interleaved activity.
+CHARTER: Instantiate the worked example against the schema (OWL
+NamedIndividuals in TTL under data/ — panschema's LinkML reader has no
+individual path), validate panschema-natively (SHACL shapes from
+`panschema generate --format shacl`, or typed-load through generated
+code — never Python linkml-validate), and run each Step-1 competency
+question as the litmus test. Refine the schema where instantiation
+surfaces gaps — validation and refinement are one interleaved activity.
 
 SECTION OUTLINE:
   - Worked-example instantiation (Appendix A, instance by instance).
-  - linkml-validate against the schema.
-  - Competency-question litmus, each expressed as SPARQL.
+  - Panschema-native validation against the schema.
+  - Competency-question litmus, each expressed as SPARQL and run
+    (embedded oxigraph over the published schema RDF + data/ TTL).
   - Refinement: cull classes that no instance needed; reflect on the
     finished hierarchy.
 
