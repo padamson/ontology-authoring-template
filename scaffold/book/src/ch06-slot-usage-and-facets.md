@@ -34,8 +34,18 @@ AUTHORING CHECKLIST:
       shows its enclosing class/section header (note: stripped # CALLOUT
       lines consume context, so add a couple extra)
   [ ] jargon blocks at first use; every # CALLOUT gets a {{#callout}}
-  [ ] LESSON (Step 6): a facet only restricts, never widens; OWL-DL
-      "simple property" rule (a transitive property cannot also be
-      irreflexive/asymmetric or carry cardinality).
+  [ ] sweep for constraints a per-slot facet CANNOT express: slots that
+      must travel together (amount + unit; an all-or-none group) or that
+      hang on a state value (a decided verdict requires its reviewer) are
+      RULES, not facets — LinkML class `rules` with preconditions /
+      postconditions and `value_presence`. A constraint spanning several
+      NODES (uniqueness across records) is an INVARIANT — it belongs to
+      validation (SHACL) at Step 7.
+  [ ] LESSON (Step 6): know which rung a constraint lives on. FACET —
+      one slot, one node (N&M's Step 6; a facet only restricts, never
+      widens; OWL-DL "simple property" rule: a transitive property cannot
+      also be irreflexive/asymmetric or carry cardinality). RULE —
+      several slots, one node, via LinkML `rules`. INVARIANT — several
+      nodes; SHACL validation at Step 7.
   [ ] demand check: what does the worked example need at this step?
 -->

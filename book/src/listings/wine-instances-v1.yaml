@@ -1,0 +1,153 @@
+# The worked example: a wine catalog rich enough to answer all seven of
+# the competency questions. Chateau Morgon Beaujolais is Noy &
+# McGuinness's own Step 7 instance, reproduced faithfully.
+grapes:
+  - id: gamay
+    name: Gamay
+  - id: cabernet-sauvignon-grape
+    name: Cabernet Sauvignon
+  - id: zinfandel
+    name: Zinfandel
+  - id: merlot
+    name: Merlot
+  - id: chardonnay
+    name: Chardonnay
+
+regions:
+  - id: beaujolais
+    name: Beaujolais
+  - id: bordeaux-region
+    name: Bordeaux
+  - id: napa
+    name: Napa Valley
+
+wineries:
+  - id: chateau-morgon
+    name: Chateau Morgon
+  - id: sterling-vineyards
+    name: Sterling Vineyards
+  - id: napa-cellars
+    name: Napa Cellars
+
+vintage_years:
+  - id: vy-2017
+    name: "2017"
+  - id: vy-2018
+    name: "2018"
+
+wines:
+  - id: chateau-morgon-beaujolais
+    name: Chateau Morgon Beaujolais
+    color: red
+    body: light
+    flavor: delicate
+    sugar: dry
+    made_from_grape: [gamay]
+    maker: chateau-morgon
+    region: beaujolais
+  - id: bordeaux-wine
+    name: Bordeaux
+    color: red
+    body: full
+    flavor: strong
+    sugar: dry
+    made_from_grape: [cabernet-sauvignon-grape, merlot]
+    region: bordeaux-region
+  - id: cabernet-sauvignon
+    name: Cabernet Sauvignon
+    color: red
+    body: full
+    flavor: strong
+    sugar: dry
+    made_from_grape: [cabernet-sauvignon-grape]
+  - id: sterling-merlot
+    name: Sterling Vineyards Merlot
+    color: red
+    body: medium
+    flavor: moderate
+    sugar: dry
+    made_from_grape: [merlot]
+    maker: sterling-vineyards
+    region: napa
+  - id: napa-chardonnay
+    name: Napa Chardonnay
+    color: white
+    body: full
+    flavor: moderate
+    sugar: dry
+    made_from_grape: [chardonnay]
+    maker: napa-cellars
+    region: napa
+  - id: napa-zinfandel-2017
+    name: Napa Zinfandel 2017
+    color: red
+    body: medium
+    flavor: moderate
+    sugar: dry
+    made_from_grape: [zinfandel]
+    maker: napa-cellars
+    region: napa
+    vintage: vy-2017
+  - id: napa-zinfandel-2018
+    name: Napa Zinfandel 2018
+    color: red
+    body: full
+    flavor: strong
+    sugar: dry
+    made_from_grape: [zinfandel]
+    maker: napa-cellars
+    region: napa
+    vintage: vy-2018
+
+foods:
+  - id: seafood-dish
+    name: Seafood dish
+  - id: grilled-meat
+    name: Grilled meat
+  - id: roast-chicken
+    name: Roast chicken
+
+pairing_recommendations:
+  - id: pr-cabsauv-grilledmeat
+    name: Cabernet Sauvignon with grilled meat
+    wine: cabernet-sauvignon
+    food: grilled-meat
+    rationale: >-
+      The tannins in a full-bodied Cabernet Sauvignon bind the fats and
+      proteins of grilled red meat, softening the wine and cleansing the
+      palate between bites.
+    source: House sommelier
+    confidence: 0.9
+  - id: pr-chardonnay-seafood
+    name: Napa Chardonnay with a seafood dish
+    wine: napa-chardonnay
+    food: seafood-dish
+    rationale: >-
+      A crisp white with bright acidity lifts delicate seafood without
+      overwhelming it; the wine's weight matches the dish's.
+    source: House sommelier
+    confidence: 0.85
+  - id: pr-beaujolais-chicken
+    name: Beaujolais with roast chicken
+    wine: chateau-morgon-beaujolais
+    food: roast-chicken
+    rationale: >-
+      A light-bodied, low-tannin red is versatile enough for white meat;
+      its delicate flavor complements roast chicken rather than masking
+      it.
+    source: Pairing guide
+    confidence: 0.7
+
+vintage_assessments:
+  - id: va-napa-zin-2018
+    name: Napa Zinfandel 2018 assessment
+    wine: napa-zinfandel-2018
+    verdict: good
+    source: Regional vintage chart
+    confidence: 0.8
+  - id: va-napa-zin-2017
+    name: Napa Zinfandel 2017 assessment
+    wine: napa-zinfandel-2017
+    verdict: average
+    source: Regional vintage chart
+    confidence: 0.75

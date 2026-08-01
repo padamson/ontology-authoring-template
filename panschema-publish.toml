@@ -22,6 +22,20 @@ format = "html"
 # standalone schema-only deploy and is wrong for this book-nested layout.
 site_root_url = "../../"
 
+# Curated instance graphs published behind the schema page's in-page
+# selector (panschema feature 37). `name` labels each tab; `data` is
+# repo-relative. Declaration order drives the selector order (preview
+# first, as the teaching lead-in); `exemplar = true` marks the tab the
+# page opens on (the full worked example). Both render switchably.
+[[instances]]
+name = "preview"
+data = "data/wine-preview.yaml"
+
+[[instances]]
+name = "worked-example"
+data = "data/wine-instances.yaml"
+exemplar = true
+
 # Book→schema toolbar link (the reverse of site_root_url above): a button
 # in the book's toolbar pointing at the published schema docs. Assets are
 # installed by `mdbook-panschema install book` (see scripts/install-assets.sh)

@@ -1,0 +1,27 @@
+# A minimal preview: just enough individuals to see what an instance
+# graph is — a few nodes and the edges between them. This is NOT the
+# worked example. The full catalog that answers all seven competency
+# questions is a separate, larger data file (data/wine-instances.yaml,
+# reproduced in Appendix A); this file exists only to introduce the idea.
+#
+# Four individuals, three edges: the Chateau Morgon Beaujolais wine is
+# made from Gamay, made by Chateau Morgon, and comes from Beaujolais.
+grapes:
+  - id: gamay
+    name: Gamay
+
+regions:
+  - id: beaujolais
+    name: Beaujolais
+
+wineries:
+  - id: chateau-morgon
+    name: Chateau Morgon
+
+wines:
+  - id: chateau-morgon-beaujolais
+    name: Chateau Morgon Beaujolais
+    color: red
+    made_from_grape: [gamay]
+    maker: chateau-morgon
+    region: beaujolais

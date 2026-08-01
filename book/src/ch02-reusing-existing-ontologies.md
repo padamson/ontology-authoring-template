@@ -80,7 +80,7 @@ and where it grounds:
 | Wine-food pairing | a CCO information content entity (a recommendation) | invent |
 
 Three of these took a real decision, and they are where verifying the
-*category*, not just that the IRI resolves, earns its keep.
+*category*, not just that the IRI resolves, matters.
 
 **Wine grounds to a processed material, which makes it an artifact.** CCO
 offers no generic "portion of liquid," and its food and material classes all

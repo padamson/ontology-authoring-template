@@ -1,10 +1,14 @@
 id: https://w3id.org/myschema/
 name: myschema
+# The description ships with the artifact, so it states only what the
+# ontology is about and what it is for — domain and purpose. The method
+# (grounded in BFO 2020 / CCO, authored following Ontology Development
+# 101 adapted to LinkML) is self-documenting in the structure below and
+# is the book's story, not the artifact's metadata. Fill in Step 1.
 description: |-
-  A LinkML ontology grounded in BFO 2020 (ISO/IEC 21838-2:2020) and the
-  Common Core Ontologies (CCO), authored following Ontology Development
-  101 (Noy & McGuinness, 2001) adapted to LinkML. See the book for the
-  chapter-by-chapter journey.
+  TODO (Step 1): one or two sentences stating this ontology's domain
+  (what it is about) and purpose (what it is for). Domain and purpose
+  only — no methodology, no grounding claims, no book references.
 license: https://creativecommons.org/licenses/by/4.0/
 version: 0.1.0-dev
 

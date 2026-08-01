@@ -23,3 +23,21 @@ tag = "wine-yaml-v4"
 source = "../schema/wine.yaml"
 frozen = "src/listings/wine-yaml-v4.yaml"
 sha256 = "d29ea55ed544055d44c0bc8bd0bf6c6abbacf2db2771df156df6a3ccf6761534"
+
+[[listing]]
+tag = "wine-yaml-v5"
+source = "../schema/wine.yaml"
+frozen = "src/listings/wine-yaml-v5.yaml"
+sha256 = "fef9eacbe42608f88fe699eec15f601c5d0e1fa35e818f7ba20594e2eddb3cc5"
+
+[[listing]]
+tag = "wine-preview-v1"
+source = "../data/wine-preview.yaml"
+frozen = "src/listings/wine-preview-v1.yaml"
+sha256 = "e846896b0697d71ff9a3455ec29994391db4e6823d9f466fe783e0a678227ece"
+
+[[listing]]
+tag = "wine-instances-v1"
+source = "../data/wine-instances.yaml"
+frozen = "src/listings/wine-instances-v1.yaml"
+sha256 = "105d835906c4be078e976646a48602635ae0c27fd19c549c8609fe91b89e1a61"

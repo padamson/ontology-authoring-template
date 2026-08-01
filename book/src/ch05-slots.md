@@ -93,10 +93,9 @@ it.
 `PairingRecommendation` gets the slots Chapter 2 promised when it argued
 the pairing should be an information content entity: `wine` and `food`
 (what the recommendation is about), and `rationale`, `source`, and
-`confidence` (why, who says so, and how strongly). This is the payload a
-bare wine-to-food edge could not carry, and it is what a graphRAG
-workflow retrieves when it explains a pairing instead of merely
-asserting one.
+`confidence` (why, who says so, and how strongly). A bare wine-to-food
+edge could not carry that payload; a graphRAG workflow retrieves it to
+explain a pairing, not just assert one.
 
 ## The graph closes
 

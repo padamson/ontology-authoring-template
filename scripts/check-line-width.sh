@@ -18,7 +18,7 @@
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
-files=("${@:-schema/myschema.yaml}")
+files=("${@:-schema/wine.yaml}")
 
 awk '
   /# CALLOUT:/ { next }

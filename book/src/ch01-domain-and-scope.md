@@ -27,7 +27,7 @@ domain of the ontology." Concretely, that means **wines** (their grape,
 region, winery, color, body, and sugar), **foods** and dishes, and the
 **pairing** between them: which wine suits which dish. A Cabernet Sauvignon
 and a Riesling differ in ways that make one suit grilled meat and the other
-suit seafood.  This ontology captures enough to make that distinction.
+suit seafood. This ontology captures enough to make that distinction.
 
 ## What it is for
 

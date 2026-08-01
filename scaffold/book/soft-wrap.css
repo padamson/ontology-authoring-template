@@ -1,0 +1,10 @@
+/* Long lines in frozen listings soft-wrap instead of forcing horizontal
+   scroll (worst on mobile / narrow viewports). Safe with callout badges
+   since mdbook-listings >= v0.1.1 anchors each badge to its line's measured
+   box rather than an average row height, so a wrapped line keeps its badge
+   aligned. The <=72-col line-width gate still keeps most lines short; this
+   catches the few frozen-listing lines that predate the gate. */
+pre,
+pre code {
+    white-space: pre-wrap;
+}

@@ -16,8 +16,10 @@ classes or slots.
 
 <!--
 CHARTER: Enumerate a comprehensive, overlap-tolerant list of the terms
-the ontology will talk about — drawn from the competency questions and
-the worked example, not invented speculatively.
+the ontology will talk about. Sources propose (worked example, competency
+questions, the domain); only a competency question promotes a term onto
+the list — a term promoted without one means the CQ list was incomplete,
+so add the question and loop back to Step 1, on the record.
 
 SECTION OUTLINE:
   - Enumerate terms from the competency questions.
@@ -34,7 +36,12 @@ AUTHORING CHECKLIST:
       no bytes changed, don't force a freeze (a chapter with no embedded
       listing is fine).
   [ ] jargon blocks at first use; every # CALLOUT gets a {{#callout}}
-  [ ] LESSON (Step 3): enumerate from the CQs / worked example, not
-      speculatively.
+  [ ] LESSON (Step 3): sources propose, competency questions dispose —
+      any source (worked example, the app's data model, everyday usage)
+      can put a term on the list, but only a competency question promotes
+      one. A term that earns a place with no question means a question
+      was missing: add it and loop back to Step 1, on the record. (N&M
+      call the CQ list "just a sketch"; the brainstorm catches what the
+      sketch missed.)
   [ ] demand check: what does the worked example need at this step?
 -->

@@ -60,9 +60,13 @@ conventions on top of the plugin:
 - **Callouts on files we author here** (e.g. `schema/myschema.yaml`)
   go *inline* as `# CALLOUT:` markers — never sidecar TOML, which is
   reserved for generated/third-party/no-comment-syntax listings.
-- **Integrity check:** `mdbook build` exiting 0 already fails on a
-  missing `{{#callout}}` label or a broken `{{#include}}`
-  (`mdbook-listings verify` is still a stub).
+- **Integrity check:** two gates run. `mdbook-listings verify
+  --book-root book` fails on a frozen snapshot whose bytes no longer
+  match `listings.toml` (edited but not re-frozen) or a broken
+  `{{#include}}` / `{{#callout}}`; it is wired into both the
+  `.pre-commit-config.yaml` hook and the `docs.yml` CI (before the
+  build). `mdbook build` exiting 0 additionally fails on a missing
+  `{{#callout}}` label or a broken `{{#include}}`.
 
 ### Dev loop (`scripts/dev.sh`) and the freeze foot-gun
 
@@ -122,12 +126,19 @@ enabled it becomes a required preprocessor, so also add it to CI.
   referenced via `subclass_of`/`slot_uri` + prefixes (and mapping
   annotations), *not* LinkML `imports:` (which is for other LinkML
   schemas — only `linkml:types` is imported).
-- **Schema descriptions are self-contained.** `description:` fields ship
-  with the artifact (generated docs, RDF, downstream graphs) and never
-  reference the book's structure — no chapter/step numbers, no "N&M",
-  no CQ numbers, no "a later chapter will…". Book-facing context goes
-  in `#` comments or `# CALLOUT:` markers (which stay out of the
-  artifact's data), not in permanent metadata.
+- **Schema descriptions state domain and purpose, nothing else.**
+  `description:` fields ship with the artifact (generated docs, RDF,
+  downstream graphs), so they carry only what a consumer of the *artifact*
+  needs: what the ontology is about and what it is for. They never
+  reference the book's structure (no chapter/step numbers, no "N&M", no
+  CQ numbers, no "a later chapter will…") — and, just as important, they
+  never carry the *method* story: no "built following Ontology
+  Development 101", no "grounded in BFO/CCO", no "adapted to LinkML". The
+  grounding is self-documenting in the schema structure (prefixes,
+  `subclass_of`, `class_uri`); the methodology belongs to the book.
+  Book-facing and method-facing context goes in `#` comments or
+  `# CALLOUT:` markers (which stay out of the artifact's data), not in
+  permanent metadata.
 - **Deferrals are tracked in the target chapter's scaffold.** When
   prose defers work to a later chapter or N&M step ("deferred to
   Chapter 6", "Step 5 work", "Chapter 7 will revisit"), add a

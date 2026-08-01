@@ -7,7 +7,8 @@
 # All hooks are `local` (language: system): they invoke binaries already on
 # PATH, matching the dogfood setup (see README "Dogfooding the tooling"), so
 # no remote hook repos are pulled. Required on PATH:
-#   - mdbook-listings (crates.io release)
+#   - mdbook-listings (main HEAD — dogfood; see the dogfood-loop notes)
+#   - panschema (main HEAD — validates the curated instance data)
 #   - awk + git (for the line-width gate; both standard)
 repos:
   - repo: local
@@ -21,7 +22,7 @@ repos:
         entry: mdbook-listings verify --book-root book
         language: system
         pass_filenames: false
-        files: ^(schema/myschema\.yaml|book/(src/.*\.md|listings/.*|listings\.toml))$
+        files: ^(schema/wine\.yaml|book/(src/.*\.md|src/listings/.*|listings\.toml))$
 
       - id: schema-line-width
         name: schema content line width (<=72, excl. CALLOUT markers)
@@ -31,4 +32,19 @@ repos:
         entry: scripts/check-line-width.sh
         language: system
         pass_filenames: false
-        files: ^schema/myschema\.yaml$
+        files: ^schema/wine\.yaml$
+
+      - id: panschema-validate
+        name: panschema validate (curated instance data conforms)
+        # A curated A-box that feature 37 publishes to the docs site is a
+        # conformance claim; publish only warns, so gate it here. Validates
+        # every data/*.yaml against the schema; non-zero on any violation.
+        entry: >-
+          bash -c 'shopt -s nullglob;
+          for f in data/*.yaml; do
+          echo "validate $f";
+          panschema validate --schema schema/wine.yaml --data "$f" || exit 1;
+          done'
+        language: system
+        pass_filenames: false
+        files: ^(schema/wine\.yaml|data/.*\.yaml)$
