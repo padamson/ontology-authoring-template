@@ -2,7 +2,7 @@
 # scripts/dev.sh
 #
 # Simulate GitHub Pages locally with hot reload across:
-#   - the schema source (`schema/myschema.yaml`)
+#   - the schema source (`schema/`)
 #   - the book source (`book/src/`, `book/*.toml`)
 #   - PRODUCER source code (panschema, mdbook-listings, mdbook-admonish)
 #
@@ -31,7 +31,7 @@
 #       don't want its slow `cargo build` (linking a ~35 MB debug binary) on
 #       every schema change. After rebuilding the producer yourself,
 #       trigger a site refresh by touching a watched file
-#       (e.g. `touch schema/myschema.yaml`).
+#       (e.g. `touch` the schema file).
 #
 # Stop with Ctrl+C.
 #

@@ -1,24 +1,26 @@
-# wine
+# myschema
 
-> **This repo is the worked showcase for the ontology-authoring-template.**
-> It builds a small wine ontology from scratch to demonstrate the method.
-> A consumer who wants their own ontology runs the **erect-scaffold** skill,
-> which discards this showcase and restores the blank template baseline
-> (then **setup-ontology** renames it). See README "Start your own".
+> **This is a template.** Rename `myschema` to your schema's name with the
+> **setup-ontology** skill (say "set up the template"), then fill in the
+> domain purpose below.
 
 A [LinkML](https://linkml.io) ontology grounded in BFO 2020 (ISO/IEC
 21838-2:2020) and the Common Core Ontologies (CCO), authored following
 *Ontology Development 101* (Noy & McGuinness, 2001 — "N&M") adapted to
-LinkML. It models wines, the grapes and regions behind them, and the
-pairing and vintage-quality judgments made about them.
+LinkML.
 
 The repo is two things at once:
 
-- **`schema/wine.yaml`** — the schema artifact itself.
-- **`book/`** — *Building wine*, an mdbook that is the public log of
+- **`schema/myschema.yaml`** — the schema artifact itself.
+- **`book/`** — *Building myschema*, an mdbook that is the public log of
   building the schema from scratch, following N&M adapted to LinkML.
   Each N&M step gets a chapter; the schema grows incrementally with
   **frozen listings** embedded at each stage.
+
+<!-- TEMPLATE: replace with this ontology's specific domain/purpose, and
+     record the version history once releases exist. The schema starts at
+     `version: 0.1.0-dev`. Prior releases (once cut) are reachable via
+     their git tags. -->
 
 ## Chapter ↔ N&M step
 
@@ -46,16 +48,16 @@ TOML, and the tag/SHA-256 identity model. **Consult that skill
 (`references/cli.md`, `references/directives.md`) for how the tool
 works** — this section records only what's specific to *this* repo.
 
-The book embeds **frozen snapshots** of `schema/wine.yaml` so a
+The book embeds **frozen snapshots** of `schema/myschema.yaml` so a
 later edit can't silently change what a chapter renders. Repo
 conventions on top of the plugin:
 
-- **Freeze from `book/`**, source `../schema/wine.yaml`, tag
-  `wine-yaml-v<N>`. Each chapter that advances the schema bumps
+- **Freeze from `book/`**, source `../schema/myschema.yaml`, tag
+  `myschema-yaml-v<N>`. Each chapter that advances the schema bumps
   the tag so earlier chapters keep pointing at the snapshot they
   froze:
-  `cd book && mdbook-listings freeze ../schema/wine.yaml --tag wine-yaml-v2 --force`
-- **Callouts on files we author here** (e.g. `schema/wine.yaml`)
+  `cd book && mdbook-listings freeze ../schema/myschema.yaml --tag myschema-yaml-v2 --force`
+- **Callouts on files we author here** (e.g. `schema/myschema.yaml`)
   go *inline* as `# CALLOUT:` markers — never sidecar TOML, which is
   reserved for generated/third-party/no-comment-syntax listings.
 - **Integrity check:** two gates run. `mdbook-listings verify
@@ -71,13 +73,13 @@ conventions on top of the plugin:
 `scripts/dev.sh` watches `schema/`, `book/src/`, and `book/*.toml`
 and rebuilds the combined `site/` on change (via `scripts/rebuild.sh`,
 which also runs `mdbook-listings install` to refresh callout CSS/JS).
-But **editing `schema/wine.yaml` does not re-freeze the listing**
+But **editing `schema/myschema.yaml` does not re-freeze the listing**
 — a frozen listing is a point-in-time snapshot by design. The watcher
 will rebuild from the *old* frozen bytes, so callout/listing changes
 won't appear until you re-freeze. The loop:
 
-1. Edit `schema/wine.yaml` (markers and all).
-2. `cd book && mdbook-listings freeze ../schema/wine.yaml --tag <tag> --force`
+1. Edit `schema/myschema.yaml` (markers and all).
+2. `cd book && mdbook-listings freeze ../schema/myschema.yaml --tag <tag> --force`
    (writing `book/src/listings/<tag>.yaml` — itself watched — triggers the rebuild).
 3. Hard-refresh the browser (Cmd+Shift+R) to bust cached CSS/JS/HTML.
 

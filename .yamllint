@@ -1,6 +1,6 @@
 # yamllint config for this ontology-authoring repo.
 #
-# Purpose: keep content lines in schema/myschema.yaml within a readable
+# Purpose: keep content lines in the schema file (`schema/*.yaml`) within a readable
 # column budget so the frozen mdbook-listings snapshots don't force
 # horizontal scroll in the book. Long `description:` values should be
 # folded with a `>-` block scalar (which yields the identical string to

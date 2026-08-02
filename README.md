@@ -10,48 +10,53 @@ documents building it is a byproduct — but a load-bearing one: each N&M
 step is a chapter, and each chapter embeds a **frozen snapshot** of the
 schema as it stood at that step.
 
-> The placeholder schema name throughout is **`myschema`**. Rename it to
-> your schema's name after cloning (see SETUP below).
+**This repo ships as a worked showcase:** the N&M *wine* ontology, built
+chapter by chapter — read it as *Building wine*. The wine build is the
+demonstration, not your starting point. To author your own ontology, you
+discard the showcase first.
 
-## Use this template / SETUP
+## Start your own
 
-> **Claude Code users:** the bundled **`setup-ontology`** skill does
-> steps 2–3 below (the `myschema` rename + namespace) for you — just say
-> "set up the template". The **`advance-step`** skill drives step 4 (one
-> N&M step at a time). Both live in `.claude/skills/`.
+Two one-time bootstrap steps turn the wine showcase into your own blank
+ontology. **Claude Code** runs both as skills (in `.claude/skills/`; not
+using Claude Code? each skill's `SKILL.md` is the by-hand spec):
 
-1. **Create a repo from this template** (GitHub "Use this template"), or
-   clone it and re-init git.
-2. **Rename `myschema`** to your schema's name everywhere:
-   - `schema/myschema.yaml` → `schema/<name>.yaml` (and the `id:`,
-     `name:`, `default_prefix:`, and the `myschema:` prefix inside it)
-   - `panschema-publish.toml` — `[schema].name`, `[files].main`
-   - `book/book.toml` — `title`, `description`
-   - `.pre-commit-config.yaml`, `scripts/*.sh`, `CLAUDE.md` — the
-     comment/path references to `myschema.yaml`
-   - the freeze tag convention `myschema-yaml-vN` → `<name>-yaml-vN`
-3. **Set the schema `id:` and prefixes** in `schema/<name>.yaml` to your
-   own `https://w3id.org/<name>/` namespace; add any domain reuse
-   vocabularies as prefixes (grounding is by URI, never `imports:`).
-4. **Write `introduction.md`** (the unnumbered prefix chapter), then work
-   **Steps 1–7** in `book/src/ch01`…`ch07` — so the rendered Chapter N is
-   N&M Step N. Each step stub ships pre-seeded with the
-   verbatim N&M quote(s), a CHARTER, a section outline, a deferrals
-   block, and an authoring checklist (including the step's lesson).
-5. **Freeze a listing per chapter** that advances the schema (see
-   "Dogfooding the tooling" and `CLAUDE.md`).
+1. **Erect the scaffold** — say *"erect the scaffold"* (the
+   **`erect-scaffold`** skill). It discards the wine showcase — schema,
+   data, chapters, frozen listings — and raises the blank `scaffold/`
+   baseline in its place. The infrastructure (CI, hooks, scripts) reads
+   the schema path from `panschema-publish.toml`, so none of it needs
+   editing.
+2. **Name it** — say *"set up the template"* (the **`setup-ontology`**
+   skill). It renames the `myschema` placeholder to your schema's name
+   everywhere, sets your `https://w3id.org/<name>/` namespace, and fills
+   in the domain purpose. Grounding is by URI: reference reuse
+   vocabularies as prefixes, never LinkML `imports:`.
+
+Then author the ontology one N&M step at a time with the **`advance-step`**
+skill (*"do Step 1"*): write `introduction.md`, then work
+`book/src/ch01`…`ch07` so the rendered Chapter N is N&M Step N. Each step
+stub ships pre-seeded with the verbatim N&M quote(s), a charter, a section
+outline, a deferrals block, and an authoring checklist. Freeze a listing
+per chapter that advances the schema (see "Dogfooding the tooling" and
+`CLAUDE.md`).
 
 ## Layout
 
 ```
 schema/
-  myschema.yaml           # source of truth (LinkML); rename to <name>.yaml
-book/                     # mdbook documenting the N&M build
+  wine.yaml               # source of truth (LinkML)
+data/                     # A-box instance data (validated in CI)
+book/                     # mdbook documenting the N&M build (Building wine)
+scaffold/                 # blank baseline erect-scaffold restores (Start your own)
 scripts/
   dev.sh                  # local hot-reload preview (book + versioned schema docs)
   rebuild.sh              # one-shot rebuild (mirrors CI)
   check-line-width.sh     # schema content line-width gate (<=72 cols)
+  schema-path.sh          # resolves the schema path from panschema-publish.toml
+panschema.toml            # panschema generate manifest (ttl/shacl/json-schema/...)
 panschema-publish.toml    # panschema's release + publish manifest
+.claude/skills/           # erect-scaffold, setup-ontology, advance-step
 .github/workflows/
   docs.yml                # builds book + versioned schema docs; deploys to Pages
 ```
@@ -203,8 +208,11 @@ First time? Install the toolchain — see **[Toolchain → Install](#install)** 
 
 ### Other formats
 
-panschema can also emit `ttl`, `jsonld`, `rdfxml`, `ntriples` via
-`--format <fmt>`. See `panschema generate --help`.
+The book's HTML is one of several outputs. `panschema.toml` drives
+`panschema generate` (run in CI), which emits SHACL shapes, JSON Schema,
+TTL (schema + the A-box knowledge graph), and the instance-graph JSON into
+`site/artifacts/`, deployed with the docs site. panschema can also emit
+`jsonld`, `rdfxml`, `ntriples`, and more — see `panschema generate --help`.
 
 ## Dogfooding the tooling
 
@@ -258,7 +266,7 @@ step put on `PATH`.
   ```
 
   dev.sh stops watching and building producers; you drive the producer's
-  build in its own repo, then `touch schema/myschema.yaml` to regenerate
+  build in its own repo, then `touch schema/wine.yaml` to regenerate
   the site with the new binary.
 
 > **panschema wasm note:** editing `panschema-viz/src` (the graph viz) does

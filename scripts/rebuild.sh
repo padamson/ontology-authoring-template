@@ -91,7 +91,7 @@ echo "==> [$(ts)] Rebuild the combined site:"
 # 2. Versioned schema docs — site/schema/{main,current}/ (plus any
 # release tags once they exist).
 # --edge-from-worktree: render /schema/main/ from the working tree
-# rather than `git show main:schema/myschema.yaml`, so local edits
+# rather than `git show main:schema/<name>.yaml`, so local edits
 # appear immediately. CI (.github/workflows/docs.yml) deliberately
 # omits this flag so deployed docs always reflect committed state.
 panschema publish --edge-from-worktree

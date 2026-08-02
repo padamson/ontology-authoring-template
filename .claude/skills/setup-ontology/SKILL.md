@@ -6,9 +6,11 @@ description: Bootstrap a freshly-cloned copy of the ontology-authoring-template 
 # Setup a new ontology from the template
 
 One-time bootstrap that turns the `myschema` placeholder into a real
-schema. Run it once, right after the template is cloned. The README's
-"Use this template / SETUP" section is the spec; this skill executes it
-with the judgment a blind find-replace can't.
+schema. Run it once, right after **erect-scaffold** has raised the blank
+baseline (a consumer starting their own ontology ejects the wine showcase
+first; on a repo that is already blank `myschema`, run this directly).
+README "Start your own" frames the whole flow; this skill executes the
+rename with the judgment a blind find-replace can't.
 
 ## When NOT to run
 
@@ -62,13 +64,19 @@ mechanical files (do a straight replace):
 - `schema/<name>.yaml` — `id:`, `name:`, the `<name>:` prefix line,
   `default_prefix:` (set `id:` to the confirmed namespace)
 - `panschema-publish.toml` — `[schema].name`, `[files].main`
+- `panschema.toml` — the `[schemas.<name>]` / `[generate.<name>]` table
+  names and the `site/artifacts/<name>-*` output paths
 - `book/book.toml` — `title` ("Building <name>") and `description`. The
   stock description carries a `myschema` token so the blind replace
   catches it, but it's otherwise generic — offer to refine it into a
   schema-specific sentence (it's a judgment item, not just a rename).
 - `book/listings.toml` — the example freeze command + tag
-- `.pre-commit-config.yaml`, `.yamllint`, `scripts/dev.sh`,
-  `scripts/rebuild.sh`, `scripts/check-line-width.sh` — path/comment refs
+
+The **infrastructure needs no rename**: CI, the pre-commit hooks,
+`scripts/`, and `.yamllint` read the schema path from
+`panschema-publish.toml` (`[files].main`, via `scripts/schema-path.sh`) and
+match the schema file with a name-agnostic `schema/*.yaml` glob, so the
+`[files].main` rename above carries them.
 
 A repo-wide `myschema` → `<name>` replace handles these correctly. **But
 do not blindly run it everywhere** — Steps 4 and 5 cover the files where

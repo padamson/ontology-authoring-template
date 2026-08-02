@@ -22,7 +22,7 @@ repos:
         entry: mdbook-listings verify --book-root book
         language: system
         pass_filenames: false
-        files: ^(schema/wine\.yaml|book/(src/.*\.md|src/listings/.*|listings\.toml))$
+        files: ^(schema/[^/]+\.yaml|book/(src/.*\.md|src/listings/.*|listings\.toml))$
 
       - id: schema-line-width
         name: schema content line width (<=72, excl. CALLOUT markers)
@@ -32,7 +32,7 @@ repos:
         entry: scripts/check-line-width.sh
         language: system
         pass_filenames: false
-        files: ^schema/wine\.yaml$
+        files: ^schema/[^/]+\.yaml$
 
       - id: panschema-validate
         name: panschema validate (curated instance data conforms)
@@ -48,4 +48,4 @@ repos:
           done'
         language: system
         pass_filenames: false
-        files: ^(schema/wine\.yaml|data/.*\.yaml)$
+        files: ^(schema/[^/]+\.yaml|data/.*\.yaml)$
