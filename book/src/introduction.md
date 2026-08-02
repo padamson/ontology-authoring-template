@@ -9,9 +9,9 @@ per N&M step. The schema grows incrementally, and each chapter embeds a
 schema later can't silently change what an earlier chapter shows.
 
 The ontology is grounded in BFO 2020 (ISO/IEC 21838-2:2020) and the Common
-Core Ontologies (CCO). Grounding is by URI: BFO and CCO terms are
-referenced through `subclass_of`/`slot_uri` and prefixes, not pulled in with
-LinkML `imports:` (which is reserved for other LinkML schemas).
+Core Ontologies (CCO). Grounding is by URI: each class is referenced through
+`subclass_of` and the prefixes, not pulled in with LinkML `imports:` (which
+is reserved for other LinkML schemas).
 
 <a id="jargon-bfo-and-cco"></a>
 

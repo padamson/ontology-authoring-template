@@ -1,0 +1,8 @@
+# Deliberately INVALID. `made_from_grape` names `nebbiolo`, which no record in
+# the catalog defines — a broken cross-record reference. Used to prove
+# `panschema validate` catches dangling references — see ch07. Excluded from
+# the normal validate loop and asserted to FAIL in its own step.
+wines:
+  - id: mystery-red
+    name: Mystery Red
+    made_from_grape: [nebbiolo]

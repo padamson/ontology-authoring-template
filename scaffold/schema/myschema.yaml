@@ -25,8 +25,8 @@ default_prefix: myschema
 default_range: string
 
 # Only linkml:types is imported. External OWL ontologies (BFO, CCO, ...)
-# are reused by URI via class_uri/slot_uri plus the prefixes above —
-# never via imports:, which is reserved for other LinkML schemas.
+# are reused by URI via subclass_of plus the prefixes above — never via
+# imports:, which is reserved for other LinkML schemas.
 imports:
   - linkml:types
 

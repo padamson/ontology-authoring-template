@@ -123,9 +123,11 @@ enabled it becomes a required preprocessor, so also add it to CI.
   should drive the build from Step 1 — if a class or slot only earns
   its keep at validation (Step 7), that is a smell.
 - **External grounding is by URI, not import.** BFO/CCO/etc. are
-  referenced via `subclass_of`/`slot_uri` + prefixes (and mapping
-  annotations), *not* LinkML `imports:` (which is for other LinkML
-  schemas — only `linkml:types` is imported).
+  referenced via `subclass_of` + prefixes, *not* LinkML `imports:`
+  (which is for other LinkML schemas — only `linkml:types` is
+  imported). (`class_uri` asserts identity, which ch04 rejects as too
+  strong; a slot that needs external grounding would use `slot_uri`,
+  but none do yet.)
 - **Schema descriptions state domain and purpose, nothing else.**
   `description:` fields ship with the artifact (generated docs, RDF,
   downstream graphs), so they carry only what a consumer of the *artifact*
@@ -135,7 +137,7 @@ enabled it becomes a required preprocessor, so also add it to CI.
   never carry the *method* story: no "built following Ontology
   Development 101", no "grounded in BFO/CCO", no "adapted to LinkML". The
   grounding is self-documenting in the schema structure (prefixes,
-  `subclass_of`, `class_uri`); the methodology belongs to the book.
+  `subclass_of`); the methodology belongs to the book.
   Book-facing and method-facing context goes in `#` comments or
   `# CALLOUT:` markers (which stay out of the artifact's data), not in
   permanent metadata.

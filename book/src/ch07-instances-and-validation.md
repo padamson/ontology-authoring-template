@@ -146,9 +146,18 @@ and each judgment its required wine, that `confidence` sits in `[0, 1]`,
 that `color` is one of the three enumerated hues and `verdict` one of the
 four, that every `maker` and `region` reference resolves to a record that
 exists, and that no two records share an `id`. A mistyped `verdict: goob`
-or a `made_from_grape` pointing at a grape that was never defined fails
-the check with a diagnostic, not a silently broken graph. The constraints
-were worth declaring precisely because this step enforces them.
+fails with a named diagnostic, not a silently broken graph:
+
+```console
+$ panschema validate --schema schema/wine.yaml --data data/invalid/bad-verdict.yaml
+instance `va-2018`: slot `verdict` (class `VintageAssessment`) value `goob` is not a permissible value of enum `VerdictEnum`
+Error: 1 validation error(s) in data/invalid/bad-verdict.yaml
+```
+
+A `made_from_grape` pointing at a grape that was never defined is caught the
+same way. These broken fixtures live in `data/invalid/` and are asserted to
+*fail* in CI, so the rejection is a tested claim rather than a promise. The
+constraints were worth declaring precisely because this step enforces them.
 
 ## The litmus test
 

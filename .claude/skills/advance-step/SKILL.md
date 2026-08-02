@@ -39,8 +39,7 @@ repeated here.
 Edit `schema/<name>.yaml` **only as the Appendix A worked example
 requires** (demand-driven dogfood — CLAUDE.md). If a class or slot can't
 be justified by the worked example yet, it doesn't go in. Grounding is by
-URI (`class_uri`/`slot_uri` + prefixes + mapping annotations), never
-LinkML `imports:`.
+URI (`subclass_of` + prefixes), never LinkML `imports:`.
 
 Verify the upper-ontology **category**, not just that the IRI resolves
 (LESSON): don't ground a Quality as an Information Content Entity.

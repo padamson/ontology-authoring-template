@@ -1,0 +1,18 @@
+# Deliberately INVALID. `verdict: goob` is not a permitted VerdictEnum value
+# (exceptional / good / average / poor). Used to prove `panschema validate`
+# rejects bad data — see the "Validation" section of ch07. This file is
+# excluded from the normal validate loop and asserted to FAIL in its own step.
+grapes:
+  - id: zinfandel
+    name: Zinfandel
+wines:
+  - id: napa-zinfandel-2018
+    name: Napa Zinfandel 2018
+    made_from_grape: [zinfandel]
+vintage_assessments:
+  - id: va-2018
+    name: Napa Zinfandel 2018 assessment
+    wine: napa-zinfandel-2018
+    verdict: goob
+    source: regional vintage chart
+    confidence: 0.8

@@ -155,6 +155,29 @@ jobs:
             panschema validate --schema schema/wine.yaml --data "$f"
           done
 
+      - name: Assert invalid fixtures are rejected (panschema)
+        # The negative half of validation: every data/invalid/*.yaml MUST
+        # fail. If one conforms, the schema stopped catching that error and
+        # ch07's "a mistyped verdict fails the check" claim is now false. The
+        # top-level data/*.yaml loop above does not recurse, so these stay out
+        # of the positive loop.
+        run: |
+          shopt -s nullglob
+          for f in data/invalid/*.yaml; do
+            if panschema validate --schema schema/wine.yaml --data "$f" >/dev/null 2>&1; then
+              echo "FAIL: $f conformed but should have been rejected"; exit 1
+            fi
+            echo "ok, rejected: $f"
+          done
+
+      - name: Generate machine-readable artifacts (panschema)
+        # TTL (schema + A-box KG), SHACL shapes, JSON Schema, and the
+        # instance-graph JSON — the "Other formats" the book names but the
+        # publish path never emits. Lands in site/artifacts/, deployed with
+        # the site. (Postgres omitted: wine's multivalued attributes make
+        # that writer skip most classes.)
+        run: ./scripts/generate-artifacts.sh
+
       - name: Publish versioned schema docs (panschema)
         # Output layout: site/schema/main/, site/schema/current/ (alias
         # for the configured `current` version per panschema-publish.toml),
