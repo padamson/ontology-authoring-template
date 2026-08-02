@@ -1,0 +1,20 @@
+# panschema consumer manifest. `panschema generate` reads this to emit the
+# machine-readable formats to site/artifacts/ (deployed with the docs site).
+# HTML documentation comes from `panschema publish` + panschema-publish.toml,
+# not here.
+#
+# `path = "."` references THIS repo's own package (the panschema-publish.toml
+# at the root) — the local-package field, distinct from `source`, which is for
+# remote `github:` dependencies. Format keys are deny_unknown_fields, so a typo
+# is a hard parse error, not a skip: note `json_schema` (underscore) but
+# `instance-graph-json` (hyphens). Postgres is deliberately omitted: wine's
+# multivalued attributes make that writer skip most classes.
+[schemas.wine]
+path = "."
+
+[generate.wine]
+shacl = "site/artifacts/wine-shapes.ttl"
+json_schema = "site/artifacts/wine.schema.json"
+ttl = "site/artifacts/wine.ttl"
+instance-graph-json = "site/artifacts/wine-instances.graph.json"
+instances = ["data/wine-instances.yaml"]

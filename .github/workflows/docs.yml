@@ -150,9 +150,10 @@ jobs:
         # data files land (Step 7), so it is safe to ship ahead of them.
         run: |
           shopt -s nullglob
+          schema="$(scripts/schema-path.sh)"
           for f in data/*.yaml; do
             echo "validate $f"
-            panschema validate --schema schema/wine.yaml --data "$f"
+            panschema validate --schema "$schema" --data "$f"
           done
 
       - name: Assert invalid fixtures are rejected (panschema)
@@ -163,8 +164,9 @@ jobs:
         # of the positive loop.
         run: |
           shopt -s nullglob
+          schema="$(scripts/schema-path.sh)"
           for f in data/invalid/*.yaml; do
-            if panschema validate --schema schema/wine.yaml --data "$f" >/dev/null 2>&1; then
+            if panschema validate --schema "$schema" --data "$f" >/dev/null 2>&1; then
               echo "FAIL: $f conformed but should have been rejected"; exit 1
             fi
             echo "ok, rejected: $f"
@@ -173,10 +175,12 @@ jobs:
       - name: Generate machine-readable artifacts (panschema)
         # TTL (schema + A-box KG), SHACL shapes, JSON Schema, and the
         # instance-graph JSON — the "Other formats" the book names but the
-        # publish path never emits. Lands in site/artifacts/, deployed with
-        # the site. (Postgres omitted: wine's multivalued attributes make
-        # that writer skip most classes.)
-        run: ./scripts/generate-artifacts.sh
+        # publish path never emits. Reads panschema.toml and lands in
+        # site/artifacts/, deployed with the site. --strict fails on hard
+        # errors (unmodeled constructs, dangling refs, instance-data
+        # violations); it is narrower than its name — NOT the
+        # unprojected-construct / Postgres-skip / SHACL-skip warnings.
+        run: panschema generate --strict
 
       - name: Publish versioned schema docs (panschema)
         # Output layout: site/schema/main/, site/schema/current/ (alias

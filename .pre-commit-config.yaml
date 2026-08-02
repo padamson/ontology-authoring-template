@@ -41,9 +41,10 @@ repos:
         # every data/*.yaml against the schema; non-zero on any violation.
         entry: >-
           bash -c 'shopt -s nullglob;
+          schema="$(scripts/schema-path.sh)";
           for f in data/*.yaml; do
           echo "validate $f";
-          panschema validate --schema schema/wine.yaml --data "$f" || exit 1;
+          panschema validate --schema "$schema" --data "$f" || exit 1;
           done'
         language: system
         pass_filenames: false

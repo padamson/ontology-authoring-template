@@ -1,0 +1,19 @@
+# panschema consumer manifest — `panschema generate` emits the machine-readable
+# formats to site/artifacts/ (deployed with the docs site). HTML comes from
+# `panschema publish` + panschema-publish.toml, not here.
+#
+# This blank-slate version lists only the schema-level (T-box) formats, since a
+# fresh ontology has no instance data yet. Once you have an A-box
+# (data/<name>-instances.yaml), add an `instances = ["data/<name>-instances.yaml"]`
+# line and an `instance-graph-json = "site/artifacts/<name>-instances.graph.json"`
+# key to also emit the knowledge graph.
+#
+# `path = "."` references this repo's own package. Keys are deny_unknown_fields,
+# so a typo is a hard error: note `json_schema` (underscore).
+[schemas.myschema]
+path = "."
+
+[generate.myschema]
+shacl = "site/artifacts/myschema-shapes.ttl"
+json_schema = "site/artifacts/myschema.schema.json"
+ttl = "site/artifacts/myschema.ttl"

@@ -18,7 +18,9 @@
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
-files=("${@:-schema/wine.yaml}")
+# Default target: the schema named as [files].main in the publish manifest,
+# so this survives the eject and rename without a hardcoded path going stale.
+files=("${@:-$(scripts/schema-path.sh)}")
 
 awk '
   /# CALLOUT:/ { next }
