@@ -7,13 +7,12 @@ linkml = "1.7.0"
 main = "schema/wine.yaml"
 
 [publishing]
-versions = []
+versions = ["v0.1.0"]
 edge = "main"
-# Release reminder: when releasing the first version, flip `current`
-# from "main" to the new tag (e.g., "main" -> "v0.1.0" in the v0.1.0
-# release commit) so `/schema/current/` aliases to the new release.
-# Also: append the new tag to `versions` above.
-current = "main"
+# On each release: append the new tag to `versions` above and set
+# `current` to it, so `/schema/current/` aliases to the latest release
+# while `/schema/main/` stays the bleeding edge.
+current = "v0.1.0"
 output_dir = "site/schema"
 format = "html"
 # Header brand/home link target. Our publish dir is site/schema/<version>/,

@@ -183,12 +183,9 @@ jobs:
         run: panschema generate --strict
 
       - name: Publish versioned schema docs (panschema)
-        # Output layout: site/schema/main/, site/schema/current/ (alias
-        # for the configured `current` version per panschema-publish.toml),
-        # plus site/schema/<tag>/ for each release tag once they exist.
-        # Release reminder: when cutting a new tag, flip
-        # `[publishing].current` in panschema-publish.toml to the
-        # new version so /schema/current/ aliases to it post-deploy.
+        # Output layout: site/schema/main/ (edge), site/schema/current/
+        # (alias for the configured `current` version), plus
+        # site/schema/<tag>/ for each release tag in panschema-publish.toml.
         run: panschema publish
 
       - name: Generate book assets (admonish + listings)
