@@ -9,6 +9,7 @@
 - [Slots](ch05-slots.md)
 - [Slot Usage and Facets](ch06-slot-usage-and-facets.md)
 - [Instances and Validation](ch07-instances-and-validation.md)
+- [Refinements](ch08-refinements.md)
 
 [Appendix A: The Worked Example](appendix-a-worked-example.md)
 [List of Listings](list-of-listings.md)
