@@ -1,0 +1,17 @@
+# Deliberately invalid: an `exceptional` verdict with no `rationale`, which
+# the VintageAssessment rule forbids. Kept out of the conforming data and
+# asserted to fail in CI.
+grapes:
+  - id: zinfandel
+    name: Zinfandel
+wines:
+  - id: napa-zinfandel-2018
+    name: Napa Zinfandel 2018
+    made_from_grape: [zinfandel]
+vintage_assessments:
+  - id: va-2018
+    name: Napa Zinfandel 2018 assessment
+    wine: napa-zinfandel-2018
+    verdict: exceptional
+    source: regional vintage chart
+    confidence: 0.9

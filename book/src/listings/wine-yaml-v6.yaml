@@ -7,7 +7,7 @@ description: |-
   dish. It is built for applications that recommend good wine-and-food
   pairings.
 license: https://creativecommons.org/licenses/by/4.0/
-version: 0.2.0
+version: 0.2.0-dev
 
 prefixes:
   # The LinkML metamodel and this schema's own namespace

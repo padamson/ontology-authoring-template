@@ -115,7 +115,11 @@ N&M's own Sterling Vineyards, whose Merlot was their example of a wine
 kind as an instance), the 2017 and 2018 Napa Zinfandel as two
 vintage-specific kinds differing in body, three foods, three pairing
 recommendations with their rationales, and two vintage assessments. The
-complete catalog is [Appendix A](appendix-a-worked-example.md).
+complete catalog is [Appendix A](appendix-a-worked-example.md). Those counts
+describe the catalog as this step built it; a later chapter (past the first
+tagged release) grows the worked example to exercise schema constructs and
+checks the seven questions never demanded, so the Appendix A you can browse
+is richer than the tally here.
 
 This catalog is *an* instance graph conforming to the schema, not the
 only one. The schema is the reusable model; an instance graph is one

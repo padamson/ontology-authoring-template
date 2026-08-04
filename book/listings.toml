@@ -40,4 +40,22 @@ sha256 = "e846896b0697d71ff9a3455ec29994391db4e6823d9f466fe783e0a678227ece"
 tag = "wine-instances-v1"
 source = "../data/wine-instances.yaml"
 frozen = "src/listings/wine-instances-v1.yaml"
-sha256 = "105d835906c4be078e976646a48602635ae0c27fd19c549c8609fe91b89e1a61"
+sha256 = "988aa159d4a56c604e647edcc5ca8f54e66edfc244d3a20cc49a0ea3ea2f3068"
+
+[[listing]]
+tag = "wine-yaml-v6"
+source = "../schema/wine.yaml"
+frozen = "src/listings/wine-yaml-v6.yaml"
+sha256 = "e7c294dfdf088e5d05d596432ed8a95a7c1f80ea1fa5f58d90019dae550d6f1d"
+
+[[listing]]
+tag = "unjustified-verdict-v1"
+source = "../data/invalid/unjustified-verdict.yaml"
+frozen = "src/listings/unjustified-verdict-v1.yaml"
+sha256 = "778f8579469fcbfe9a15285591a5e82092b88de58841aab97601475886ba7f24"
+
+[[listing]]
+tag = "bad-id-v1"
+source = "../data/invalid/bad-id.yaml"
+frozen = "src/listings/bad-id-v1.yaml"
+sha256 = "3a6c2f86a977d0f512da64c3e3a4ea951f251a60d9ecd2042452e8e27af1ff4b"

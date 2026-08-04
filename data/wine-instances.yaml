@@ -12,6 +12,10 @@ grapes:
     name: Merlot
   - id: chardonnay
     name: Chardonnay
+  - id: grenache
+    name: Grenache
+  - id: riesling
+    name: Riesling
 
 regions:
   - id: beaujolais
@@ -20,6 +24,10 @@ regions:
     name: Bordeaux
   - id: napa
     name: Napa Valley
+  - id: provence
+    name: Provence
+  - id: mosel
+    name: Mosel
 
 wineries:
   - id: chateau-morgon
@@ -98,6 +106,30 @@ wines:
     maker: napa-cellars
     region: napa
     vintage: vy-2018
+  - id: provence-rose
+    name: Provence Rosé
+    color: rosé
+    body: light
+    flavor: delicate
+    sugar: dry
+    made_from_grape: [grenache]
+    region: provence
+  - id: mosel-riesling
+    name: Mosel Riesling
+    color: white
+    body: light
+    flavor: moderate
+    sugar: off-dry
+    made_from_grape: [riesling]
+    region: mosel
+  - id: late-harvest-riesling
+    name: Late Harvest Riesling
+    color: white
+    body: full
+    flavor: strong
+    sugar: sweet
+    made_from_grape: [riesling]
+    region: mosel
 
 foods:
   - id: seafood-dish
@@ -151,3 +183,21 @@ vintage_assessments:
     verdict: average
     source: Regional vintage chart
     confidence: 0.75
+  - id: va-late-harvest-riesling
+    name: Late Harvest Riesling assessment
+    wine: late-harvest-riesling
+    verdict: exceptional
+    source: Regional vintage chart
+    confidence: 0.9
+    rationale: >-
+      A long, dry autumn let botrytis concentrate the sugars fully, giving
+      a depth and balance that lift the vintage well above its peers.
+  - id: va-provence-rose
+    name: Provence Rosé assessment
+    wine: provence-rose
+    verdict: poor
+    source: Regional vintage chart
+    confidence: 0.7
+    rationale: >-
+      A cool, wet growing season left the fruit underripe and the wine
+      thin and short, below the appellation's usual standard.

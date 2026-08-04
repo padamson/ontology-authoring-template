@@ -1,0 +1,6 @@
+# Deliberately invalid: an `id` with an uppercase letter and an underscore,
+# which the lowercase-kebab-case pattern forbids. Kept out of the conforming
+# data and asserted to fail in CI.
+grapes:
+  - id: Zinfandel_Grape
+    name: Zinfandel

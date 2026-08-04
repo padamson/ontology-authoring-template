@@ -1,18 +1,18 @@
 [schema]
 name = "wine"
-version = "0.1.0"
+version = "0.2.0"
 linkml = "1.7.0"
 
 [files]
 main = "schema/wine.yaml"
 
 [publishing]
-versions = ["v0.1.0"]
+versions = ["v0.1.0", "v0.2.0"]
 edge = "main"
 # On each release: append the new tag to `versions` above and set
 # `current` to it, so `/schema/current/` aliases to the latest release
 # while `/schema/main/` stays the bleeding edge.
-current = "v0.1.0"
+current = "v0.2.0"
 output_dir = "site/schema"
 format = "html"
 # Header brand/home link target. Our publish dir is site/schema/<version>/,
