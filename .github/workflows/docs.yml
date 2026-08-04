@@ -3,7 +3,6 @@ name: Build and publish docs
 on:
   push:
     branches: [main]
-    tags: ['v*']
   workflow_dispatch:
 
 permissions:
@@ -29,15 +28,6 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0    # panschema publish reads all version tags
-
-      - name: Ensure the edge branch resolves on tag builds
-        # A tag push checks out detached HEAD; `fetch-depth: 0` brings other
-        # branches only as remote-tracking refs, so there is no local `main`
-        # for `panschema publish` to resolve as `edge = "main"`. Create it.
-        # (Skipped on branch builds, where `main` is already the checkout and
-        # git refuses to fetch into the checked-out branch.)
-        if: startsWith(github.ref, 'refs/tags/')
-        run: git fetch --no-tags origin +refs/heads/main:refs/heads/main
 
       # --- Resolve producer main HEAD SHAs (dogfood-matrix conventions) ---
 
