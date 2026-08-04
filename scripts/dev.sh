@@ -46,7 +46,48 @@
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
-PORT="${PORT:-8000}"
+# --- Stop any prior dev loop for THIS repo ---
+
+# A previous run that wasn't fully torn down leaves a stale watcher racing
+# our rebuilds and a stale server serving the OLD site/ (the "callouts seem
+# missing" foot-gun, now invisible). The PID file scopes cleanup to this
+# repo: a pkill by command line would also kill other books' identical
+# watchexec/rebuild.sh loops running at the same time.
+PID_FILE=".dev.pid"
+if [ -f "$PID_FILE" ]; then
+  old_pid="$(cat "$PID_FILE" 2>/dev/null || true)"
+  if [ -n "$old_pid" ] && kill -0 "$old_pid" 2>/dev/null; then
+    echo "Stopping previous dev loop (PID $old_pid)"
+    pkill -TERM -P "$old_pid" 2>/dev/null || true
+    kill -TERM "$old_pid" 2>/dev/null || true
+    # Give it a moment to release its port before we scan.
+    for _ in 1 2 3 4 5 6 7 8 9 10; do
+      kill -0 "$old_pid" 2>/dev/null || break
+      sleep 0.2
+    done
+  fi
+  rm -f "$PID_FILE"
+fi
+echo $$ > "$PID_FILE"
+
+# --- Pick a port ---
+
+# First free TCP port at or above PORT (default 8000). Other servers on the
+# starting port (another book's dev loop, an unrelated project) are stepped
+# over, not killed — only this repo's own stale instance is cleaned up above.
+if ! command -v lsof >/dev/null 2>&1; then
+  echo "warning: lsof not found — can't check for busy ports; using PORT as-is." >&2
+fi
+free_port() {
+  local port="$1"
+  if command -v lsof >/dev/null 2>&1; then
+    while lsof -iTCP:"$port" -sTCP:LISTEN -t >/dev/null 2>&1; do
+      port=$((port + 1))
+    done
+  fi
+  echo "$port"
+}
+PORT="$(free_port "${PORT:-8000}")"
 export PORT
 
 # When set, skip building/watching the producers (panschema, mdbook-listings,
@@ -122,24 +163,11 @@ for producer in panschema mdbook-listings mdbook-admonish; do
   producer_dirs+=("$producer")
 done
 
-# --- Stop any prior dev loop for this repo ---
-
-# Re-running dev.sh, or a Ctrl-C that didn't fully tear down, otherwise
-# leaves an old watchexec and HTTP server behind: the stale watcher races
-# this run's rebuilds, and the stale server squats the port (so the new
-# server silently fails to bind and the browser keeps hitting the old one).
-# Kill any watcher bound to this repo's rebuild.sh and free the port first.
-free_port() {
-  command -v lsof >/dev/null 2>&1 || return 0
-  local pids
-  pids=$(lsof -ti "tcp:$PORT" 2>/dev/null || true)
-  [ -n "$pids" ] && kill $pids 2>/dev/null || true
-}
-pkill -f 'watchexec.*scripts/rebuild.sh' 2>/dev/null || true
-free_port
-
 # --- Initial build ---
 
+# The sole build on startup: watchexec runs with --postpone (below), so it
+# waits for the first change instead of also building on launch. Without it
+# the site builds twice and --clear wipes the "Starting server" messages.
 scripts/rebuild.sh
 
 # --- HTTP server ---
@@ -165,7 +193,7 @@ cleanup() {
   echo ""
   echo "Stopping server (PID $SERVER_PID)"
   kill "$SERVER_PID" 2>/dev/null || true
-  free_port   # backstop, in case the server spawned a child of its own
+  rm -f "$PID_FILE"
 }
 # EXIT covers all paths (Ctrl+C, set -e bail-out, normal exit).
 trap cleanup EXIT
@@ -186,6 +214,7 @@ echo ""
 watchexec \
   --debounce 500ms \
   --no-vcs-ignore \
+  --postpone \
   --clear \
   "${watch_args[@]}" \
   -- scripts/rebuild.sh
