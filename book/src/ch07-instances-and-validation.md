@@ -22,9 +22,7 @@ while an **edge** is a slot whose value is another individual. The
 following instance graph contains just four individuals and the edges
 between them, but it is enough to illustrate the concept:
 
-```yaml
 {{#include listings/wine-preview-v1.yaml}}
-```
 
 The Chateau Morgon Beaujolais wine is one node. Gamay, the Chateau Morgon
 winery, and the Beaujolais region are three more. The `made_from_grape`,

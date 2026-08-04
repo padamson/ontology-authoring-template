@@ -14,6 +14,4 @@ read together: the preview to learn the shape, this catalog to watch it
 carry the questions. The schema is one model; these are two instance
 graphs conforming to it, and a deployment's own catalog would be a third.
 
-```yaml
 {{#include listings/wine-instances-v1.yaml caption="The complete wine catalog"}}
-```

@@ -130,9 +130,7 @@ never pulled in with LinkML `imports:`, which is reserved for other LinkML
 schemas (only `linkml:types` is imported). The manifest the groundings rely
 on is already in place from Chapter 1:
 
-```yaml
 {{#include listings/wine-yaml-v1.yaml:15:31}}
-```
 
 Reuse only works if the targets are real, so each IRI in the table was
 checked against the current BFO 2020 and CCO ontology files: that it exists,

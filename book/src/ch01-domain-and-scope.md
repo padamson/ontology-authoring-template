@@ -128,9 +128,7 @@ rather than tidying them away.
 
 Step 1 touches the schema only enough to record the decisions above:
 
-```yaml
 {{#include listings/wine-yaml-v1.yaml}}
-```
 
 The domain and scope live in the schema's own `description` {{#callout domain}};
 the `classes`, `slots`, and `enums` sections {{#callout empty}} are present

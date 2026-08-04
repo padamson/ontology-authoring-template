@@ -32,9 +32,7 @@ defense, and the rule stays quiet. An exceptional or poor one fires it, and a
 missing rationale becomes an error rather than an oversight. Here is an
 assessment that trips it:
 
-```yaml
 {{#include listings/unjustified-verdict-v1.yaml}}
-```
 
 `validate` rejects it and names the rule that caught it:
 
@@ -79,9 +77,7 @@ followed but never stated. A pattern states it {{#callout pattern}}, and an `id`
 is minted into an IRI, so a stray space or a capital is not a style nit but a
 broken identifier. A record with a malformed `id`:
 
-```yaml
 {{#include listings/bad-id-v1.yaml}}
-```
 
 is caught before it can become one:
 

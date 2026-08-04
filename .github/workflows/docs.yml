@@ -115,7 +115,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cargo/bin/mdbook-listings
-          key: mdbook-listings-${{ runner.os }}-0.1.1
+          key: mdbook-listings-${{ runner.os }}-0.2.0
 
       - name: Install mdbook-listings from crates.io
         # Switched off git-main to the released crate (v0.1.1, 2026-08-01):
@@ -123,7 +123,7 @@ jobs:
         # captions, list-of-listings, the soft-wrap/font-load badge fixes —
         # is in the release, so there's no reason left to track git.
         if: steps.cache-mdbook-listings.outputs.cache-hit != 'true'
-        run: cargo install mdbook-listings --version 0.1.1 --locked
+        run: cargo install mdbook-listings --version 0.2.0 --locked
 
       - name: Cache mdbook-admonish binary
         id: cache-mdbook-admonish
