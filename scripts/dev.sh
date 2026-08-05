@@ -203,7 +203,11 @@ trap cleanup EXIT
 echo ""
 echo "Watching for changes in:"
 echo "  schema/, book/src/, book/*.toml, panschema-publish.toml"
-for p in "${producer_dirs[@]}"; do
+# `${arr[@]+"${arr[@]}"}` not `"${arr[@]}"`: under `set -u`, bash < 4.4 —
+# including the /bin/bash 3.2 that ships with macOS — errors "unbound
+# variable" on an empty array, and this array IS empty in the default case
+# (no PRODUCER_ROOT) and under SKIP_PRODUCER_BUILD.
+for p in ${producer_dirs[@]+"${producer_dirs[@]}"}; do
   echo "  $p source (producer dogfood)"
 done
 [ -n "${SKIP_PRODUCER_BUILD:-}" ] && echo "  (producers skipped — SKIP_PRODUCER_BUILD set; using binaries from PATH)"

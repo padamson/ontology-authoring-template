@@ -59,8 +59,13 @@ else
   for producer in panschema mdbook-listings mdbook-admonish; do
     repo="$PRODUCER_ROOT/$producer"
     if [ -d "$repo" ]; then
-      echo "  - $producer"
-      (cd "$repo" && cargo build 2>&1 | tail -3) || {
+      # Stream cargo's output unfiltered rather than piping to `tail`, which
+      # buffers until cargo exits: a "Blocking waiting for file lock on build
+      # directory" (another cargo run holds this producer's target lock) never
+      # reached the terminal, so a wait here looked like a hang. The happy path
+      # stays terse — an incremental no-op build prints one Finished line.
+      echo "  - $producer (a silent wait here = another cargo run holds its target lock)"
+      (cd "$repo" && cargo build 2>&1) || {
         echo "    ❌ $producer build failed — bailing this rebuild cycle."
         exit 1
       }

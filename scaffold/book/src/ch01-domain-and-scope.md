@@ -29,7 +29,7 @@ just a sketch and do not need to be exhaustive.
 ```
 
 ```admonish quote title="Noy & McGuinness 2001 — §3, three fundamental rules"
-1. There is no one correct way to model a domain— there are always
+1. There is no one correct way to model a domain — there are always
    viable alternatives. The best solution almost always depends on
    the application that you have in mind and the extensions that you
    anticipate.

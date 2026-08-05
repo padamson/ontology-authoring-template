@@ -221,6 +221,11 @@ jobs:
 
   deploy:
     needs: build
+    # GitHub Pages on a private repo requires a paid plan, so on a private
+    # instantiation `deploy-pages` 404s and reds the whole run even though
+    # `build` — the real verification — passed. Skip deploying while the repo
+    # is private; it resumes automatically if the repo goes public.
+    if: ${{ !github.event.repository.private }}
     runs-on: ubuntu-latest
     environment:
       name: github-pages
