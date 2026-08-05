@@ -86,8 +86,8 @@ $ panschema validate --schema schema/wine.yaml --data data/invalid/bad-id.yaml
 instance `Zinfandel_Grape`: slot `id` (class `Grape`) value `Zinfandel_Grape` does not match pattern `^[a-z0-9]+(-[a-z0-9]+)*$`
 ```
 
-It projects everywhere the schema does — a SHACL `sh:pattern`, a JSON Schema
-`pattern`, a Postgres `CHECK` — for the cost of one line.
+It projects wherever the schema goes — a SHACL `sh:pattern`, a JSON Schema
+`pattern`, and the check above — for the cost of one line.
 
 ## What was left out
 

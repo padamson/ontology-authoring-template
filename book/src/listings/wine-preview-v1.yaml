@@ -4,6 +4,10 @@
 # questions is a separate, larger data file (data/wine-instances.yaml,
 # reproduced in Appendix A); this file exists only to introduce the idea.
 #
+title: A small preview
+description: >-
+  The fewest records that show what an instance graph is: one wine and
+  the grape, winery, and region it points at.
 # Four individuals, three edges: the Chateau Morgon Beaujolais wine is
 # made from Gamay, made by Chateau Morgon, and comes from Beaujolais.
 grapes:

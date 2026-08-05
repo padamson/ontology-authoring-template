@@ -1,6 +1,10 @@
 # The worked example: a wine catalog rich enough to answer all seven of
 # the competency questions. Chateau Morgon Beaujolais is Noy &
 # McGuinness's own Step 7 instance, reproduced faithfully.
+title: The worked example
+description: >-
+  The full catalog: enough wines, grapes, regions, wineries, foods, and
+  recorded judgments to answer all seven competency questions.
 grapes:
   - id: gamay
     name: Gamay

@@ -34,13 +34,13 @@ sha256 = "fef9eacbe42608f88fe699eec15f601c5d0e1fa35e818f7ba20594e2eddb3cc5"
 tag = "wine-preview-v1"
 source = "../data/wine-preview.yaml"
 frozen = "src/listings/wine-preview-v1.yaml"
-sha256 = "e846896b0697d71ff9a3455ec29994391db4e6823d9f466fe783e0a678227ece"
+sha256 = "f65efe54a4e15b7cdfda8119931fbfb928e110987cd1845b2c4b43b240010926"
 
 [[listing]]
 tag = "wine-instances-v1"
 source = "../data/wine-instances.yaml"
 frozen = "src/listings/wine-instances-v1.yaml"
-sha256 = "988aa159d4a56c604e647edcc5ca8f54e66edfc244d3a20cc49a0ea3ea2f3068"
+sha256 = "01d098c9a4b6ce349f74bb5f05a14edb8fc37a5a3fce0947c7b282ede9af03f9"
 
 [[listing]]
 tag = "wine-yaml-v6"
