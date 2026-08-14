@@ -221,14 +221,62 @@ This template exercises [panschema](https://github.com/padamson/panschema),
 producer's source, `scripts/dev.sh` can rebuild it and regenerate the
 site from the fresh binary, so producer changes show up live.
 
+### Choosing where a producer comes from
+
+`scripts/dev.sh` and `scripts/rebuild.sh` resolve `mdbook-listings`,
+`panschema`, and `mdbook-admonish` per producer, so you can test the book
+against a local checkout, a GitHub ref, or a published crate without
+disturbing `~/.cargo/bin`. `TOOL_SOURCE` sets all three;
+`MDBOOK_LISTINGS_SOURCE`, `PANSCHEMA_SOURCE`, and `MDBOOK_ADMONISH_SOURCE`
+override it, so moving one and leaving the others alone is the normal case.
+
+| Value | Where it comes from |
+|---|---|
+| `path` (default) | whatever is already on `PATH` — the consumer story, and what CI does |
+| `sibling` | `../<producer>`, `cargo build`, used from `target/debug` |
+| `git` | `github.com/padamson/<producer>` at its useful default branch |
+| `git:<ref>` | ...at a branch, tag, or commit hash |
+| `crates` | the latest published version |
+| `crates:<version>` | ...at an exact version |
+
+```bash
+TOOL_SOURCE=sibling ./scripts/dev.sh                    # both local
+PANSCHEMA_SOURCE=git:21eb8fb ./scripts/dev.sh           # one pinned commit
+MDBOOK_LISTINGS_SOURCE=crates:0.2.0 PANSCHEMA_SOURCE=sibling ./scripts/dev.sh
+```
+
+`git` and `crates` installs land in `.dev-tools/<producer>/<key>/bin`
+(gitignored) and are reused, so flipping between sources costs nothing
+after the first build; delete that directory to force a reinstall. Every
+rebuild prints the source and reported version of each producer, which is
+what catches a `target/debug` binary built weeks ago from a checkout that
+has since moved on.
+
+Three wrinkles worth knowing:
+
+- **`mdbook-panschema` is not published**, so `PANSCHEMA_SOURCE=crates`
+  installs `panschema` from crates.io and takes `mdbook-panschema` from the
+  matching `v<version>` git tag, keeping both halves on the same code.
+- **`mdbook-admonish` has no `crates` source** — it is only ever the
+  `feat/mdbook-0.5-compat` fork, and `crates` on it is a clear error. A bare
+  `git` means that branch rather than the repo's default one. It is
+  selectable so that using a local build of it stays opt-in and shows up in
+  the version report, instead of being picked up silently.
+- **`git:<ref>` picks cargo's flag from the ref's shape** — a hex string
+  gets `--rev`, a leading `v` on a version gets `--tag`, anything else gets
+  `--branch`. cargo cannot resolve a bare remote branch through `--rev`, so
+  the distinction matters.
+
+`SIBLING_ROOT` says where sibling checkouts live (default `..`).
+`PRODUCER_ROOT` is the older name for the same thing and still works.
+
 ### The alias pattern
 
 `scripts/rebuild.sh` invokes producers by name (`panschema`,
-`mdbook-listings`, `mdbook-admonish`). To make both the scripts and your
-interactive shell use your **local debug builds** instead of the
-`cargo install`-ed releases, clone the producers wherever you like, point
-`PRODUCER_ROOT` at that directory, and alias each producer to its
-`target/debug` binary:
+`mdbook-listings`, `mdbook-admonish`). To make your **interactive shell**
+use the same local debug builds a `sibling` source uses, clone the
+producers wherever you like, point `PRODUCER_ROOT` at that directory, and
+alias each producer to its `target/debug` binary:
 
 ```zsh
 # ~/.zshrc
@@ -238,12 +286,11 @@ alias mdbook-listings="$PRODUCER_ROOT/mdbook-listings/target/debug/mdbook-listin
 alias mdbook-admonish="$PRODUCER_ROOT/mdbook-admonish/target/debug/mdbook-admonish"
 ```
 
-`scripts/dev.sh` and `scripts/rebuild.sh` read `PRODUCER_ROOT` to find,
-build, and watch the producer source (and to prepend each `target/debug`
-to `$PATH`, since aliases don't load in the non-interactive shells the
-scripts run in). **Producer dogfooding is opt-in**: leave `PRODUCER_ROOT`
-unset and the scripts don't touch the producers at all — they just use the
-binaries on `PATH` (the normal author-only case). `install-assets.sh`
+The scripts prepend the resolved directory to `$PATH` themselves, since
+aliases don't load in the non-interactive shells they run in — the aliases
+above are only for your own typing. **Producer dogfooding stays opt-in**:
+with no source set, the scripts don't touch the producers at all and just
+use the binaries on `PATH` (the normal author-only case). `install-assets.sh`
 ignores `PRODUCER_ROOT` entirely — it's a fresh-clone/consumer helper that
 relies on whatever `mdbook-admonish`/`mdbook-listings` the README "Install"
 step put on `PATH`.
@@ -251,23 +298,24 @@ step put on `PATH`.
 ### Three modes
 
 - **Authoring only** — not touching the producers, just writing the schema
-  and book against the released binaries. `./scripts/dev.sh`; producers you
-  haven't cloned are skipped.
+  and book against whatever is on `PATH`. `./scripts/dev.sh`, no source set.
 - **Light producer dogfooding** — an occasional producer tweak where you
-  want edit-producer → site auto-rebuilds. `./scripts/dev.sh` (the default:
-  it watches and `cargo build`s the producers). Fine when their builds are
-  fast or infrequent.
+  want edit-producer → site auto-rebuilds. `TOOL_SOURCE=sibling
+  ./scripts/dev.sh` watches and `cargo build`s the producers set to
+  `sibling`. Fine when their builds are fast or infrequent.
 - **Heavy producer development** — you're building out a producer (e.g.
   panschema features) and its per-change `cargo build` (linking panschema's
   ~35 MB debug binary) is too slow on every edit:
 
   ```bash
-  SKIP_PRODUCER_BUILD=1 ./scripts/dev.sh
+  TOOL_SOURCE=sibling SKIP_PRODUCER_BUILD=1 ./scripts/dev.sh
   ```
 
-  dev.sh stops watching and building producers; you drive the producer's
-  build in its own repo, then `touch schema/wine.yaml` to regenerate
-  the site with the new binary.
+  dev.sh stops watching and building the `sibling` producers and uses
+  whatever their `target/debug` last held; you drive the producer's build in
+  its own repo, then `touch schema/wine.yaml` to regenerate the site with the
+  new binary. If a `target/debug` binary is missing, the rebuild stops and
+  says so rather than silently falling back to `PATH`.
 
 > **panschema wasm note:** editing `panschema-viz/src` (the graph viz) does
 > not rebuild the embedded wasm via `cargo build` — `build.rs` only runs
