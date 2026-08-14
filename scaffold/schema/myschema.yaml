@@ -22,6 +22,12 @@ prefixes:
   cco: https://www.commoncoreontologies.org/
 
 default_prefix: myschema
+# Declared once here, and never repeated per slot: a slot that is a string
+# omits `range:` entirely, so a `range:` line always means the slot differs
+# from the default (an enum, a class, a uri, a number). Every generator
+# resolves the default into the slot definitions at load, so the RDF, the
+# SHACL shapes, and validate all type the slot exactly as an explicit
+# `range: string` would.
 default_range: string
 
 # Only linkml:types is imported. External OWL ontologies (BFO, CCO, ...)

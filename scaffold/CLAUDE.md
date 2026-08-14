@@ -128,6 +128,12 @@ enabled it becomes a required preprocessor, so also add it to CI.
   imported). (`class_uri` asserts identity, which ch04 rejects as too
   strong; a slot that needs external grounding would use `slot_uri`,
   but none do yet.)
+- **Declare `default_range` once; never repeat it per slot.** A slot
+  whose range is the default omits `range:` entirely, so a `range:`
+  line always means the slot differs (an enum, a class, a `uri`, a
+  number). Repeating the default buries the two or three ranges that
+  carry information, and the noise is paid on every book page that
+  renders the slot block.
 - **Schema descriptions state domain and purpose, nothing else.**
   `description:` fields ship with the artifact (generated docs, RDF,
   downstream graphs), so they carry only what a consumer of the *artifact*

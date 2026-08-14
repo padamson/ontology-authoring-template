@@ -39,5 +39,7 @@ AUTHORING CHECKLIST:
   [ ] jargon blocks at first use; every # CALLOUT gets a {{#callout}}
   [ ] LESSON (Step 5): derive cardinality/required from the CQs;
       lenient by default (PROV-O stance).
+  [ ] rely on default_range: omit `range:` on any slot the schema's
+      default already covers, so a `range:` line means the slot differs
   [ ] demand check: what does the worked example need at this step?
 -->
