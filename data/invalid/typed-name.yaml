@@ -1,0 +1,5 @@
+# A name that is a number. The `name` slot no longer declares `range:`,
+# so this fixture is what proves `default_range` still types it.
+grapes:
+  - id: gamay
+    name: 42

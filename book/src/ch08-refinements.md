@@ -118,6 +118,26 @@ Riesling — and, because of the new rule, gains it with a reason attached, whic
 is the shape a retrieval-augmented answer wants. The questions did not change;
 the catalog answers them more fully.
 
+## Saying the range once
+
+Even though the schema declared `default_range: string`, four slots
+(`id`, `name`, `rationale`, `source`) repeated the `range: string` declaration.
+We've removed the four redundant entries, so a `range:` line now means that
+the slot differs from the default.
+
+{{#diff wine-yaml-v6 wine-yaml-v7 context=4}}
+
+(The version line is the `v0.2.0` release bump catching up. The v6 listing was
+frozen just before the tag.)
+
+This waited on the toolchain. Until
+[panschema#89](https://github.com/padamson/panschema/issues/89), only the JSON
+Schema writer honored `default_range`. The RDF, the SHACL shapes, and
+`validate` ignored it, so the terse style would have shipped datatype properties
+with no range at all. The fix resolves the default into the slot definitions
+when the schema loads, and the regenerated artifacts are byte-identical to
+before the deletion.
+
 ## Where it stands
 
 The schema is tagged `v0.2.0`. None of these refinements is a new N&M step; each

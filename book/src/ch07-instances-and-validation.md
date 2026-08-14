@@ -172,7 +172,7 @@ class carries `color`, `body`, `flavor`, and `sugar`, plus its grape,
 region, maker, and vintage. The question is about the *model*, and the
 model answers it.
 
-**CQ 2: Is Bordeaux a red or white wine?** The `bordeaux` wine record
+**CQ 2: Is Bordeaux a red or white wine?** The `bordeaux-wine` record
 has `color: red`. A lookup by name, one hop to a value.
 
 **CQ 3: Does Cabernet Sauvignon go well with seafood?** No pairing

@@ -59,3 +59,9 @@ tag = "bad-id-v1"
 source = "../data/invalid/bad-id.yaml"
 frozen = "src/listings/bad-id-v1.yaml"
 sha256 = "3a6c2f86a977d0f512da64c3e3a4ea951f251a60d9ecd2042452e8e27af1ff4b"
+
+[[listing]]
+tag = "wine-yaml-v7"
+source = "../schema/wine.yaml"
+frozen = "src/listings/wine-yaml-v7.yaml"
+sha256 = "59410e2f495e88e5853d80f9eba75ed02e38f0d6a29476055ffb0ee49908a1b0"
