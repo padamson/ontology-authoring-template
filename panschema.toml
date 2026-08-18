@@ -18,3 +18,29 @@ json_schema = "site/artifacts/wine.schema.json"
 ttl = "site/artifacts/wine.ttl"
 instance-graph-json = "site/artifacts/wine-instances.graph.json"
 instances = ["data/wine-instances.yaml"]
+
+# The CQ&A benchmark (data/wine-benchmark.yaml) is instance data of the cqa
+# contract, not of wine, so it validates under its own schema entry. cqa has
+# no released version yet; until it does, the reference is a sibling checkout
+# (CI clones one), and it switches to `source = "github:padamson/cqa-schema"`
+# plus a `version` pin at cqa's first release.
+[schemas.cqa]
+path = "../cqa-schema"
+
+[generate.cqa]
+ttl = "site/artifacts/wine-benchmark.ttl"
+instances = ["data/wine-benchmark.yaml"]
+
+# The anchor cross-check, run by bare `panschema validate` (and by any
+# generate of this entry). Only this repo can run it, because only this
+# repo holds both graphs: resolve_against checks every benchmark IRI in
+# wine's namespace against the IRIs wine's datasets actually mint;
+# verify_absences checks each stated absence (no wine record of the
+# connecting class references all the listed anchors); and
+# require_namespace_coverage rejects a reference whose namespace no
+# resolve_against entry covers, so a typo'd namespace cannot slip past
+# the resolution check as "external, unchecked".
+[check.cqa]
+resolve_against = ["wine"]
+verify_absences = { slot = "unconnected_anchors", via = "connecting_class" }
+require_namespace_coverage = true

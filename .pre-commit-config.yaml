@@ -35,17 +35,28 @@ repos:
         files: ^schema/[^/]+\.yaml$
 
       - id: panschema-validate
-        name: panschema validate (curated instance data conforms)
+        name: panschema validate (manifest datasets conform, anchors resolve)
         # A curated A-box that feature 37 publishes to the docs site is a
-        # conformance claim; publish only warns, so gate it here. Validates
-        # every data/*.yaml against the schema; non-zero on any violation.
+        # conformance claim; publish only warns, so gate it here. Bare
+        # `validate --strict` checks everything panschema.toml declares —
+        # each dataset against its own schema, plus the `[check.cqa]`
+        # cross-graph gates. The manifest's cqa entry needs the sibling
+        # ../cqa-schema checkout; when it is absent (a consumer clone),
+        # fall back to per-file validation of wine's own data and leave
+        # the cqa half to CI, which clones the sibling.
         entry: >-
-          bash -c 'shopt -s nullglob;
+          bash -c 'if [ -d ../cqa-schema ]; then
+          panschema validate --strict;
+          else
+          shopt -s nullglob;
           schema="$(scripts/schema-path.sh)";
           for f in data/*.yaml; do
+          [ "$f" = "data/wine-benchmark.yaml" ] && continue;
           echo "validate $f";
           panschema validate --schema "$schema" --data "$f" || exit 1;
-          done'
+          done;
+          echo "note: ../cqa-schema absent; manifest-wide validate left to CI";
+          fi'
         language: system
         pass_filenames: false
         files: ^(schema/[^/]+\.yaml|data/.*\.yaml)$

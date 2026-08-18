@@ -140,20 +140,28 @@ jobs:
             --locked --force \
             mdbook-admonish
 
+      # --- The cqa contract (sibling checkout) ---
+
+      - name: Fetch the cqa contract
+        # data/wine-benchmark.yaml is instance data of the cqa contract, and
+        # panschema.toml references cqa by sibling path until cqa's first
+        # release gives `source =` a tag to pin. Until then CI provides the
+        # sibling the same way a local co-development checkout does.
+        run: git clone --depth 1 https://github.com/padamson/cqa-schema ../cqa-schema
+
       # --- Build outputs ---
 
-      - name: Validate curated instance data (panschema)
-        # A curated A-box feature 37 publishes to the site is a conformance
-        # claim; `publish` only warns on violations, so fail fast here
-        # before building anything. nullglob makes this a no-op until the
-        # data files land (Step 7), so it is safe to ship ahead of them.
-        run: |
-          shopt -s nullglob
-          schema="$(scripts/schema-path.sh)"
-          for f in data/*.yaml; do
-            echo "validate $f"
-            panschema validate --schema "$schema" --data "$f"
-          done
+      - name: Validate everything the manifest declares (panschema)
+        # Bare `validate` reads panschema.toml and checks it all without
+        # writing outputs: each curated A-box conforms to its own schema
+        # (the wine catalog to wine, the benchmark to cqa), and the
+        # `[check.cqa]` cross-graph gates — every benchmark IRI resolves
+        # to one wine's graph actually mints, every stated absence holds,
+        # no reference lands in an uncovered namespace. This repo is the
+        # one place the cross-graph half is possible, because it holds
+        # both graphs. `publish` only warns on violations, so fail fast
+        # here before building anything.
+        run: panschema validate --strict
 
       - name: Assert invalid fixtures are rejected (panschema)
         # The negative half of validation: every data/invalid/*.yaml MUST

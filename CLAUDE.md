@@ -99,7 +99,14 @@ Preprocessors must be on `PATH`: `mdbook-listings`, and the
 `mdbook-admonish` fork (`feat/mdbook-0.5-compat`); `mdbook-panschema`
 (from the panschema workspace) must be there too — it generates the
 gitignored book→schema toolbar-link assets that `book.toml` references
-(`scripts/install-assets.sh` runs all three installers). The published
+(`scripts/install-assets.sh` runs all three installers).
+
+Manifest-wide `panschema validate` and `panschema generate` need a
+`../cqa-schema` sibling checkout: `panschema.toml` references the cqa
+contract by path until cqa's first release gives `source =` a tag to
+pin. CI clones the sibling; the pre-commit hook falls back to per-file
+wine validation without it. `mdbook build` and the publish path don't
+need it. The published
 docs site (schema HTML + the book) is built and deployed by
 `.github/workflows/docs.yml` via the panschema toolchain on push to
 `main` and on `v*` tags.

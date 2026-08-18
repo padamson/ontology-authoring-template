@@ -46,7 +46,7 @@ per chapter that advances the schema (see "Dogfooding the tooling" and
 ```
 schema/
   wine.yaml               # source of truth (LinkML)
-data/                     # A-box instance data (validated in CI)
+data/                     # A-box instance data (each file validated against its schema in CI)
 book/                     # mdbook documenting the N&M build (Building wine)
 scaffold/                 # blank baseline erect-scaffold restores (Start your own)
 scripts/
@@ -54,7 +54,7 @@ scripts/
   rebuild.sh              # one-shot rebuild (mirrors CI)
   check-line-width.sh     # schema content line-width gate (<=72 cols)
   schema-path.sh          # resolves the schema path from panschema-publish.toml
-panschema.toml            # panschema generate manifest (ttl/shacl/json-schema/...)
+panschema.toml            # panschema manifest: generate (ttl/shacl/...) + check gates
 panschema-publish.toml    # panschema's release + publish manifest
 .claude/skills/           # erect-scaffold, setup-ontology, advance-step
 .github/workflows/
