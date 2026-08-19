@@ -1,64 +1,34 @@
 #!/usr/bin/env bash
 # scripts/rebuild.sh
 #
-# Rebuild the dogfood-loop site: refresh producer debug binaries
-# (panschema, mdbook-listings, mdbook-admonish) via `cargo build`, then
-# rebuild the combined site (book + versioned schema docs) into `site/`.
+# Rebuild the combined site (book + versioned schema docs) into `site/`.
 #
 # Mirrors what `.github/workflows/docs.yml` does in CI (minus the deploy
-# step), but with producer-source changes flowing in via the local debug
-# binaries the user's shell aliases point at (see README "Dogfooding the
-# tooling"). Called by `scripts/dev.sh` for the initial build
-# and re-invoked on every file change via `cargo-watch`.
+# step). Producers (`panschema`, `mdbook-panschema`, `mdbook-listings`,
+# `mdbook-admonish`) are invoked by name and resolve via $PATH — the
+# consumer story, and what CI does. A wrapper that wants this script to
+# use different binaries prepends to PATH before invoking it.
 #
-# Where the producer binaries come from is chosen per producer, via
-# TOOL_SOURCE / MDBOOK_LISTINGS_SOURCE / PANSCHEMA_SOURCE — see
-# scripts/tool-source.sh for the accepted values. The default is `path`,
-# which is what CI uses.
-#
-# Set SKIP_PRODUCER_BUILD=1 to skip the `cargo build` a `sibling` source
-# would otherwise run, and use whatever that checkout last built — useful
-# while iterating on a producer in its own repo, so its slow build doesn't
-# run on every schema change.
+# Called by `scripts/dev.sh` for the initial build and re-invoked on
+# every file change.
 
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
 ts() { date '+%H:%M:%S'; }
 
-# Where each producer's binaries come from (path | sibling | git[:rev] |
-# crates[:version]), per TOOL_SOURCE / MDBOOK_LISTINGS_SOURCE /
-# PANSCHEMA_SOURCE. Default is `path`, matching what CI does.
-# shellcheck source=scripts/tool-source.sh
-. scripts/tool-source.sh
-
-# Shell aliases (e.g. `alias panschema=.../target/debug/panschema` in
-# ~/.zshrc) only load in *interactive* shells — non-interactive scripts
-# like this one resolve `panschema`, `mdbook-listings`, `mdbook-panschema`
-# via $PATH. So a selected source has to reach this script as a PATH
-# prepend, not as an alias.
+# Shell aliases (e.g. `alias panschema=…/target/debug/panschema` in
+# ~/.zshrc) only load in *interactive* shells — a non-interactive script
+# like this one resolves every producer via $PATH. The report makes the
+# resolution visible, which is what catches a stale binary: PATH holding
+# an install built weeks ago while the alias hid it.
+hash -r 2>/dev/null || true
 echo ""
-echo "==> [$(ts)] Resolve producer binaries:"
-for producer in $TOOL_PRODUCERS; do
-  spec="$(tool_source_for "$producer")"
-  if [ "$spec" = "sibling" ] && [ -n "${SKIP_PRODUCER_BUILD:-}" ]; then
-    echo "  - $producer: $spec (build skipped — SKIP_PRODUCER_BUILD set)"
-  else
-    echo "  - $producer: $spec"
-  fi
-  # A silent wait here on `sibling` = another cargo run holds this
-  # producer's target lock. cargo writes to stderr, so that message reaches
-  # the terminal rather than this capture.
-  if ! bin_dir="$(tool_bin_dir "$producer" "$spec")"; then
-    echo "    ❌ could not resolve $producer — bailing this rebuild cycle."
-    exit 1
-  fi
-  [ -n "$bin_dir" ] && export PATH="$bin_dir:$PATH"
+echo "==> [$(ts)] Producer versions in use (via PATH):"
+for producer in panschema mdbook-panschema mdbook-listings mdbook-admonish; do
+  ver="$(command "$producer" --version 2>/dev/null | head -1)"
+  printf '  %-18s %s\n' "$producer" "${ver:-(not found)}"
 done
-
-echo ""
-echo "==> [$(ts)] Producer versions in use:"
-report_tool_versions
 
 echo ""
 echo "==> [$(ts)] Rebuild the combined site:"

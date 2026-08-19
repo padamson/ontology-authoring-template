@@ -55,11 +55,12 @@ jobs:
         id: cache-panschema
         uses: actions/cache@v4
         with:
-          # panschema (schema docs) + mdbook-panschema (book→schema toolbar
-          # link installer) build from the same workspace at the same rev.
-          # The `-bins-` key prefix (vs the old `panschema-`) deliberately
-          # busts pre-mdbook-panschema cache entries that hold only the one
-          # binary.
+          # panschema (schema docs) and mdbook-panschema (book→schema
+          # toolbar link installer) both ship from the one panschema
+          # crate, so a single install produces both executables. The
+          # `-bins-` key prefix (vs the old `panschema-`) deliberately
+          # busts pre-mdbook-panschema cache entries that hold only the
+          # one binary.
           path: |
             ~/.cargo/bin/panschema
             ~/.cargo/bin/mdbook-panschema
@@ -84,10 +85,6 @@ jobs:
             --rev ${{ steps.panschema.outputs.sha }} \
             --locked --force \
             panschema
-          cargo install --git https://github.com/padamson/panschema \
-            --rev ${{ steps.panschema.outputs.sha }} \
-            --locked --force \
-            mdbook-panschema
 
       # --- mdbook + preprocessors ---
 
