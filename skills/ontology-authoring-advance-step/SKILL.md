@@ -1,6 +1,6 @@
 ---
-name: advance-step
-description: Author the next N&M step-chapter of the ontology book — advance the LinkML schema only as the Appendix A worked example demands, add inline callouts, re-freeze a new listing tag (avoiding the stale-frozen-bytes foot-gun), write the chapter prose in the N&M voice, reconcile carried-in deferrals, and verify the build. Use when the user says "write the next chapter", "do Step N", "advance the schema", "work on ch0N", or wants to move the book forward one Noy & McGuinness step.
+name: ontology-authoring-advance-step
+description: Advance a LinkML ontology book one Noy & McGuinness step, in a repo built from the ontology-authoring-template (a `schema/` + `book/` pair with frozen mdbook-listings snapshots). Advances the schema only as the worked example demands, adds inline callouts, re-freezes a new listing tag (avoiding the stale-frozen-bytes foot-gun), writes the chapter prose in the N&M voice, reconciles carried-in deferrals, and verifies the build. Use when the user says "write the next chapter", "do Step N", "advance the schema", "work on ch0N", or wants to move the book forward one N&M step.
 ---
 
 # Advance one N&M step-chapter
@@ -18,8 +18,8 @@ repeated here.
 ## Step 0 — orient
 
 - Derive the schema name from `panschema-publish.toml` (`[schema].name`)
-  or the `schema/*.yaml` filename — never assume `myschema` (the repo may
-  already be renamed via the [[setup-ontology]] skill).
+  or the `schema/*.yaml` filename — never assume `myschema`; derive it,
+  don't hardcode it.
 - Find the next chapter to advance. The Introduction is the unnumbered
   prefix chapter (`introduction.md`); the seven N&M steps are ch01…ch07,
   so the rendered Chapter N is N&M Step N (mapping in CLAUDE.md). The next
@@ -130,4 +130,7 @@ change** (CLAUDE.md: schema edits are chapter-scoped; trunk-based on
 
 - Tool mechanics → the **mdbook-listings** skill.
 - Standing conventions, voice, lessons → **CLAUDE.md**.
-- The one-time placeholder rename → the **setup-ontology** skill.
+- The one-time bootstrap (discarding the template's showcase, renaming
+  the `myschema` placeholder) happens before this skill ever runs, and
+  its skills live only in the template's own checkout. If the schema
+  still has a placeholder name, that bootstrap has not been done.

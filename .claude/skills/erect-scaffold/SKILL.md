@@ -13,7 +13,7 @@ its place, then hands off to `setup-ontology` for the `myschema` → real-name
 rename. Run it once, right after cloning.
 
 The flow for a new ontology is: **erect-scaffold → [[setup-ontology]] →
-[[advance-step]]** (per chapter).
+[[ontology-authoring-advance-step]]** (per chapter).
 
 ## What stays vs. what goes
 
@@ -23,8 +23,9 @@ schema-name-agnostic (CI, hooks, and scripts read the schema path from
 edits and stays exactly as is:
 
 - **Kept:** `.github/`, `.pre-commit-config.yaml`, `.yamllint`,
-  `.gitignore`, `LICENSE`, `scripts/`, and `.claude/skills/`
-  (`advance-step`, `setup-ontology`).
+  `.gitignore`, `LICENSE`, `scripts/`, `skills/`, and `.claude/skills/`
+  (`setup-ontology`, plus the symlink to the shipped authoring skill —
+  `setup-ontology` Step 8 swaps that carried copy for a tracked install).
 - **Replaced from `scaffold/`:** `schema/`, `book/src/`, `book/book.toml`,
   `book/listings.toml`, `panschema.toml`, `panschema-publish.toml`,
   `README.md`, `CLAUDE.md`.
@@ -100,16 +101,17 @@ rm -rf scaffold
 rm -rf .claude/skills/erect-scaffold
 ```
 
-`setup-ontology` and `advance-step` are the only skills left, which is
-correct — they are the bootstrap-rename and per-chapter authoring tools a
-fresh ontology still needs.
+`setup-ontology` and the authoring skill are what remain, which is
+correct — the bootstrap rename still has to run, and the per-chapter
+tooling is what the ontology is built with. `setup-ontology` retires
+itself and converts the authoring skill to an install when it finishes.
 
 ## Step 5 — hand off
 
 Don't commit unless asked (trunk-based on `main` — see the new `CLAUDE.md`).
 Tell the user what changed and what's next: run **setup-ontology** to
 rename `myschema` to their schema's name and set the namespace, then start
-Step 1 with **advance-step**. A quick `git status` shows the swap as a
+Step 1 with **ontology-authoring-advance-step**. A quick `git status` shows the swap as a
 large delete/add set staged for their review.
 
 ## Maintainer note (template repo only)

@@ -33,8 +33,9 @@ using Claude Code? each skill's `SKILL.md` is the by-hand spec):
    in the domain purpose. Grounding is by URI: reference reuse
    vocabularies as prefixes, never LinkML `imports:`.
 
-Then author the ontology one N&M step at a time with the **`advance-step`**
-skill (*"do Step 1"*): write `introduction.md`, then work
+Then author the ontology one N&M step at a time with the
+**`ontology-authoring-advance-step`** skill (*"do Step 1"*): write
+`introduction.md`, then work
 `book/src/ch01`…`ch07` so the rendered Chapter N is N&M Step N. Each step
 stub ships pre-seeded with the verbatim N&M quote(s), a charter, a section
 outline, a deferrals block, and an authoring checklist. Freeze a listing
@@ -56,7 +57,9 @@ scripts/
   schema-path.sh          # resolves the schema path from panschema-publish.toml
 panschema.toml            # panschema manifest: generate (ttl/shacl/...) + check gates
 panschema-publish.toml    # panschema's release + publish manifest
-.claude/skills/           # erect-scaffold, setup-ontology, advance-step
+skills/                   # shipped: ontology-authoring-advance-step
+.claude/skills/           # this checkout only: erect-scaffold, setup-ontology
+                          #   (+ a symlink to the shipped skill above)
 .github/workflows/
   docs.yml                # builds book + versioned schema docs; deploys to Pages
 ```
@@ -164,10 +167,12 @@ releases, the version field carries a `-dev` suffix (e.g.,
 
 ## Authoring
 
-> **Claude Code users:** the **`advance-step`** skill walks one N&M step
-> at a time — advancing the schema (demand-driven), re-freezing the
-> listing tag, writing the chapter, and reconciling deferrals. Say
-> "write the next chapter" or "do Step N".
+> **Claude Code users:** the **`ontology-authoring-advance-step`** skill
+> walks one N&M step at a time — advancing the schema (demand-driven),
+> re-freezing the listing tag, writing the chapter, and reconciling
+> deferrals. Say "write the next chapter" or "do Step N". A repo seeded
+> from this template installs it with
+> `npx skills add padamson/ontology-authoring-template`.
 
 The combined book + versioned schema docs run locally via:
 

@@ -12,8 +12,10 @@ documented chapter by chapter as an mdbook.
 
 ## Authoring the ontology
 
-Work one N&M step at a time with the **`advance-step`** skill
-(*"do Step 1"*): write `book/src/introduction.md`, then `book/src/ch01`…
+Work one N&M step at a time with the
+**`ontology-authoring-advance-step`** skill (*"do Step 1"*), installed
+with `npx skills add padamson/ontology-authoring-template`: write
+`book/src/introduction.md`, then `book/src/ch01`…
 `ch07`, so the rendered Chapter N is N&M Step N. Each step advances
 `schema/myschema.yaml` only as its worked example demands and freezes a
 listing snapshot the chapter embeds. Grounding is by URI — reference reuse
