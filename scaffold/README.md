@@ -30,7 +30,7 @@ cd book && mdbook build   # output to book/build/
 
 Preprocessors must be on `PATH`: `mdbook-listings`, the `mdbook-admonish`
 fork, and `mdbook-panschema` — `scripts/install-assets.sh` installs all
-three. CI (`.github/workflows/docs.yml`) validates the instance data,
+three. CI (`.github/workflows/docs.yml`) verifies the instance data,
 generates the machine-readable formats (via `panschema.toml`), builds the
 book, and deploys the combined site to Pages.
 

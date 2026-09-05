@@ -101,11 +101,11 @@ Preprocessors must be on `PATH`: `mdbook-listings`, and the
 gitignored book→schema toolbar-link assets that `book.toml` references
 (`scripts/install-assets.sh` runs all three installers).
 
-Manifest-wide `panschema validate` and `panschema generate` need a
+Manifest-wide `panschema verify` and `panschema generate` need a
 `../cqa-schema` sibling checkout: `panschema.toml` references the cqa
 contract by path until cqa's first release gives `source =` a tag to
 pin. CI clones the sibling; the pre-commit hook falls back to per-file
-wine validation without it. `mdbook build` and the publish path don't
+wine verification without it. `mdbook build` and the publish path don't
 need it. The published
 docs site (schema HTML + the book) is built and deployed by
 `.github/workflows/docs.yml` via the panschema toolchain on push to
@@ -126,7 +126,7 @@ enabled it becomes a required preprocessor, so also add it to CI.
 - **Demand-driven dogfood.** The schema grows because the worked
   example (Appendix A) needs it, not speculatively. The worked example
   should drive the build from Step 1 — if a class or slot only earns
-  its keep at validation (Step 7), that is a smell.
+  its keep once instances are built (Step 7), that is a smell.
 - **External grounding is by URI, not import.** BFO/CCO/etc. are
   referenced via `subclass_of` + prefixes, *not* LinkML `imports:`
   (which is for other LinkML schemas — only `linkml:types` is
@@ -177,7 +177,7 @@ checklist.
 
 - **Worked example as demand-driver from Step 1.** Pick the worked
   example early and let it pull every class and slot into existence; if
-  something only validates at Step 7, that is a smell.
+  something only earns its keep at Step 7, that is a smell.
 - **Verify the upper-ontology CATEGORY, not just the IRI.** A resolving
   BFO/CCO IRI is not enough — confirm the category fit (e.g. don't
   ground a Quality as an Information Content Entity).

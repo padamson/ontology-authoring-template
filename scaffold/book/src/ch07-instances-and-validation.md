@@ -14,12 +14,12 @@ choosing a class, (2) creating an individual instance of that class, and
 CHARTER: Instantiate the worked example as a LinkML data file under
 data/ (NOT hand-authored OWL/TTL — panschema's instance reader ingests
 LinkML data: a tree_root container class whose multivalued collections
-hold records conforming to the schema). Validate natively with
-`panschema validate --schema schema/myschema.yaml --data data/<file>.yaml`.
+hold records conforming to the schema). Verify conformance natively with
+`panschema verify --schema schema/myschema.yaml --data data/<file>.yaml`.
 Publish the instance graph(s) via [[instances]] in panschema-publish.toml
 so they render on the schema page behind the in-page selector. Run each
 Step-1 competency question as the litmus test. Refine the schema where
-instantiation surfaces a gap — validation and refinement are one
+instantiation surfaces a gap — verification and refinement are one
 interleaved activity (a class or slot that only earns its keep here is a
 smell; see the LESSON).
 
@@ -41,7 +41,7 @@ SECTION OUTLINE:
   - The worked example: the full catalog, large enough to answer every
     competency question, reproduced in Appendix A. Both graphs publish
     behind the selector (mark one exemplar = the default panel).
-  - Validation: `panschema validate` against the schema — the constraints
+  - Verification: `panschema verify` against the schema — the constraints
     Step 6 declared are what it now enforces.
   - The competency-question litmus, each answered by tracing the catalog
     (and, where the graphRAG story is told, as a retrieved subgraph).
@@ -53,8 +53,8 @@ CARRIED-IN DEFERRALS -> this step:
   (land deferrals from earlier chapters here)
 
 AUTHORING CHECKLIST:
-  [ ] worked example is a LinkML data file under data/, validated by
-      `panschema validate` (conforms) — NOT hand-authored TTL
+  [ ] worked example is a LinkML data file under data/, verified by
+      `panschema verify` (conforms) — NOT hand-authored TTL
   [ ] a small preview data file, distinct from the worked example,
       introduced in the intro with the distinction stated in prose
   [ ] both graphs wired into panschema-publish.toml [[instances]] (name
@@ -65,7 +65,7 @@ AUTHORING CHECKLIST:
       context=N sized so each hunk shows its enclosing header
   [ ] jargon blocks at first use; every # CALLOUT gets a {{#callout}}
   [ ] LESSON (Step 7): the worked example should have driven the build
-      FROM Step 1 — if a class or slot only validates here, that is the
+      FROM Step 1 — if a class or slot only earns its keep here, that is the
       smell of reasoning backward from the data.
   [ ] demand check: does every Step-1 competency question get an answer?
       If not, iterate (N&M's second rule) — refine, don't reverse.

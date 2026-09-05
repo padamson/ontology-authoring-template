@@ -8,7 +8,7 @@
 # PATH, matching the dogfood setup (see README "Dogfooding the tooling"), so
 # no remote hook repos are pulled. Required on PATH:
 #   - mdbook-listings (main HEAD — dogfood; see the dogfood-loop notes)
-#   - panschema (main HEAD — validates the curated instance data)
+#   - panschema (main HEAD — verifies the curated instance data)
 #   - awk + git (for the line-width gate; both standard)
 repos:
   - repo: local
@@ -34,28 +34,28 @@ repos:
         pass_filenames: false
         files: ^schema/[^/]+\.yaml$
 
-      - id: panschema-validate
-        name: panschema validate (manifest datasets conform, anchors resolve)
+      - id: panschema-verify
+        name: panschema verify (manifest datasets conform, anchors resolve)
         # A curated A-box that feature 37 publishes to the docs site is a
         # conformance claim; publish only warns, so gate it here. Bare
-        # `validate --strict` checks everything panschema.toml declares —
+        # `verify --strict` checks everything panschema.toml declares —
         # each dataset against its own schema, plus the `[check.cqa]`
         # cross-graph gates. The manifest's cqa entry needs the sibling
         # ../cqa-schema checkout; when it is absent (a consumer clone),
-        # fall back to per-file validation of wine's own data and leave
+        # fall back to per-file verification of wine's own data and leave
         # the cqa half to CI, which clones the sibling.
         entry: >-
           bash -c 'if [ -d ../cqa-schema ]; then
-          panschema validate --strict;
+          panschema verify --strict;
           else
           shopt -s nullglob;
           schema="$(scripts/schema-path.sh)";
           for f in data/*.yaml; do
           [ "$f" = "data/wine-benchmark.yaml" ] && continue;
-          echo "validate $f";
-          panschema validate --schema "$schema" --data "$f" || exit 1;
+          echo "verify $f";
+          panschema verify --schema "$schema" --data "$f" || exit 1;
           done;
-          echo "note: ../cqa-schema absent; manifest-wide validate left to CI";
+          echo "note: ../cqa-schema absent; manifest-wide verify left to CI";
           fi'
         language: system
         pass_filenames: false

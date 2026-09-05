@@ -47,7 +47,7 @@ per chapter that advances the schema (see "Dogfooding the tooling" and
 ```
 schema/
   wine.yaml               # source of truth (LinkML)
-data/                     # A-box instance data (each file validated against its schema in CI)
+data/                     # A-box instance data (each file verified against its schema in CI)
 book/                     # mdbook documenting the N&M build (Building wine)
 scaffold/                 # blank baseline erect-scaffold restores (Start your own)
 scripts/
@@ -104,10 +104,10 @@ cargo install --git https://github.com/padamson/mdbook-admonish \
 cargo install --git https://github.com/padamson/mdbook-listings --locked mdbook-listings
 
 # panschema (schema docs + graph + RDF); wasm-pack builds its embedded viz.
-# mdbook-panschema (same workspace) installs the book→schema toolbar link.
+# One install, two binaries: the panschema crate also ships mdbook-panschema,
+# which installs the book→schema toolbar link.
 cargo install wasm-pack --locked
 cargo install --git https://github.com/padamson/panschema --locked panschema
-cargo install --git https://github.com/padamson/panschema --locked mdbook-panschema
 
 # the dev-loop file watcher
 cargo install watchexec-cli --locked

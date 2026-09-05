@@ -1,7 +1,7 @@
 # Deliberately INVALID. `verdict: goob` is not a permitted VerdictEnum value
-# (exceptional / good / average / poor). Used to prove `panschema validate`
+# (exceptional / good / average / poor). Used to prove `panschema verify`
 # rejects bad data — see the "Validation" section of ch07. This file is
-# excluded from the normal validate loop and asserted to FAIL in its own step.
+# excluded from the normal verify loop and asserted to FAIL in its own step.
 grapes:
   - id: zinfandel
     name: Zinfandel

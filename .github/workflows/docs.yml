@@ -148,8 +148,8 @@ jobs:
 
       # --- Build outputs ---
 
-      - name: Validate everything the manifest declares (panschema)
-        # Bare `validate` reads panschema.toml and checks it all without
+      - name: Verify everything the manifest declares (panschema)
+        # Bare `verify` reads panschema.toml and checks it all without
         # writing outputs: each curated A-box conforms to its own schema
         # (the wine catalog to wine, the benchmark to cqa), and the
         # `[check.cqa]` cross-graph gates — every benchmark IRI resolves
@@ -158,10 +158,10 @@ jobs:
         # one place the cross-graph half is possible, because it holds
         # both graphs. `publish` only warns on violations, so fail fast
         # here before building anything.
-        run: panschema validate --strict
+        run: panschema verify --strict
 
       - name: Assert invalid fixtures are rejected (panschema)
-        # The negative half of validation: every data/invalid/*.yaml MUST
+        # The negative half of verification: every data/invalid/*.yaml MUST
         # fail. If one conforms, the schema stopped catching that error and
         # ch07's "a mistyped verdict fails the check" claim is now false. The
         # top-level data/*.yaml loop above does not recurse, so these stay out
@@ -170,7 +170,7 @@ jobs:
           shopt -s nullglob
           schema="$(scripts/schema-path.sh)"
           for f in data/invalid/*.yaml; do
-            if panschema validate --schema "$schema" --data "$f" >/dev/null 2>&1; then
+            if panschema verify --schema "$schema" --data "$f" >/dev/null 2>&1; then
               echo "FAIL: $f conformed but should have been rejected"; exit 1
             fi
             echo "ok, rejected: $f"
