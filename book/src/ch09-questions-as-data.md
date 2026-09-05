@@ -79,9 +79,17 @@ plus what must hold at the crossing):
 
 {{#include listings/panschema-toml-v1.toml}}
 
-The contract is referenced as a sibling checkout {{#callout dep}} because
-it has no released version yet; CI clones one before running the checks. The
-entry also publishes the benchmark as a self-contained knowledge graph
+The contract is a released dependency {{#callout dep}}: `source` says
+where it is published and `version` pins the release. `panschema fetch`
+resolves the pin once, downloads the tagged release into a local cache,
+and writes `panschema.lock`, which records the checksum the pin resolved
+to and is committed beside the manifest. From then on every run of
+`verify` and `generate` reads the contract the lockfile names, and CI
+runs `fetch --check` first: a fetch that drifts from the lockfile fails
+before the checks start. Moving to a later release is one edit to
+`version` and one re-run of `fetch`, and verification against the new
+contract says whether the benchmark still conforms to it. The entry
+also publishes the benchmark as a self-contained knowledge graph
 {{#callout artifact}} next to `wine.ttl`.
 
 The `[check.cqa]` block declares what must hold at the crossing, and
@@ -126,6 +134,7 @@ note: 28 cross-graph reference(s) leave this dataset and are not checked here:
   ... (26 more lines, one per outbound reference)
 note: schema `cqa`: 28 of 28 cross-graph reference(s) into `wine` namespace(s) resolve
 note: schema `cqa`: 1 of 1 stated absence claim(s) hold against `wine`
+note: schema `cqa`: 2 of 2 version pin(s) agree with `wine`
 ```
 
 The output looks like it contradicts itself ("not checked here," then
@@ -142,14 +151,16 @@ in one word. A file-scoped pass cannot resolve those references, and in
 the general case never could: a benchmark normally points at a graph
 that lives in another repository altogether. So it enumerates them
 instead (the benchmark's entire claim on the catalog, one line per
-reference; the same record IRI can appear on several) and hands off. The two notes after it are the `[check.cqa]` pass, which
+reference; the same record IRI can appear on several) and hands off. The three notes after it are the `[check.cqa]` pass, which
 exists because this repository is the special case where the target
 graph is on hand: it loads wine's datasets, mints their IRIs, and
-discharges the list. Every reference resolves, and the stated absence
-holds.
+discharges the list. Every reference resolves, the stated absence
+holds, and the two versions the benchmark pins are the ones wine's
+package declares.
 
-Each of the three gates (resolution, the absence, namespace coverage)
-was made to fail once during authoring and caught each time. The
+Each of the four gates (resolution, the absence, namespace coverage,
+the version pins) was made to fail once during authoring and caught
+each time. The
 failure modes themselves are the `panschema` and `cqa` toolchain's to test, 
 and its suite pins them; this chapter shows the passing run, which is the state every
 push must reproduce.
@@ -198,11 +209,16 @@ breaks an anchor loudly; *changing* one breaks nothing visible. Correct
 the 2018 vintage assessment's verdict from `good` to `average` and CQ 7's
 anchors still resolve, its citations are still anchors, verification still
 passes — and the benchmark's ground truth is simply wrong. The pinned
-target versions exist for exactly this failure, and it sets a standing
-rule for this repository: any catalog edit that could change an answer bumps the
-package version, corrections included. A consumer pinning the old version
-and a consumer reading `main` may then disagree about what the benchmark
-asserts, but each knows which claim it holds.
+target versions exist for exactly this failure, and they are checked,
+not just declared: cqa says on each version slot which sibling it
+records, and the verifier compares the pin with the version wine's
+package actually declares. A pin that falls behind fails the strict
+run. That sets a standing rule for this repository: any catalog edit
+that could change an answer bumps the package version, corrections
+included, and the bump keeps the build red until the benchmark has
+been re-read against the new graph and re-pinned. A consumer pinning
+the old version and a consumer reading `main` may then disagree about
+what the benchmark asserts, but each knows which claim it holds.
 
 ## The version, decided
 

@@ -21,9 +21,10 @@ ttl = "site/artifacts/wine.ttl"
 instance-graph-json = "site/artifacts/wine-instances.graph.json"
 instances = ["data/wine-instances.yaml"]
 
-# CALLOUT: dep The benchmark is instance data of the cqa contract, not of wine, so it is verified under its own schema entry. cqa has no released version yet, so the reference is a sibling checkout (CI clones one); it becomes `source = "github:padamson/cqa-schema"` plus a `version` pin at cqa's first release.
+# CALLOUT: dep The benchmark is instance data of the cqa contract, not of wine, so it is verified under its own schema entry. The contract is a released dependency: `source` names where it is published, `version` pins the release, and panschema.lock records the checksum a fetch resolved that pin to. CI runs `panschema fetch --check` against the lockfile.
 [schemas.cqa]
-path = "../cqa-schema"
+source = "github:padamson/cqa-schema"
+version = "0.1.0"
 
 # CALLOUT: artifact The benchmark as a self-contained knowledge graph (cqa's classes plus wine's records), published beside wine.ttl.
 [generate.cqa]

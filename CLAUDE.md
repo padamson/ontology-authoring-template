@@ -101,12 +101,16 @@ Preprocessors must be on `PATH`: `mdbook-listings`, and the
 gitignored book→schema toolbar-link assets that `book.toml` references
 (`scripts/install-assets.sh` runs all three installers).
 
-Manifest-wide `panschema verify` and `panschema generate` need a
-`../cqa-schema` sibling checkout: `panschema.toml` references the cqa
-contract by path until cqa's first release gives `source =` a tag to
-pin. CI clones the sibling; the pre-commit hook falls back to per-file
-wine verification without it. `mdbook build` and the publish path don't
-need it. The published
+The cqa contract is a pinned dependency: `panschema.toml` names it by
+`source = "github:padamson/cqa-schema"` plus `version`, and
+`panschema.lock` (committed) records the checksum that pin resolved to.
+Run `panschema fetch` once after cloning to populate the local cache
+(`~/Library/Caches/panschema` on macOS, `~/.cache/panschema` on Linux);
+manifest-wide `panschema verify`, `generate`, and the pre-commit hook
+then run offline. CI runs `panschema fetch --check` instead, which
+fails on lockfile drift. Moving to a newer cqa release is one edit to
+`version` and a re-run of `panschema fetch`. `mdbook build` does not
+need the dependency. The published
 docs site (schema HTML + the book) is built and deployed by
 `.github/workflows/docs.yml` via the panschema toolchain on push to
 `main` and on `v*` tags.

@@ -137,14 +137,16 @@ jobs:
             --locked --force \
             mdbook-admonish
 
-      # --- The cqa contract (sibling checkout) ---
+      # --- The cqa contract (pinned dependency) ---
 
-      - name: Fetch the cqa contract
-        # data/wine-benchmark.yaml is instance data of the cqa contract, and
-        # panschema.toml references cqa by sibling path until cqa's first
-        # release gives `source =` a tag to pin. Until then CI provides the
-        # sibling the same way a local co-development checkout does.
-        run: git clone --depth 1 https://github.com/padamson/cqa-schema ../cqa-schema
+      - name: Check the lockfile (panschema)
+        # data/wine-benchmark.yaml is instance data of the cqa contract.
+        # panschema.toml pins cqa by `source` + `version`, and
+        # panschema.lock records the checksum that pin resolved to. This
+        # downloads the tagged release into the runner's cache and fails
+        # if what it fetched drifts from the lockfile, so every later
+        # step reads exactly the contract the lockfile names.
+        run: panschema fetch --check
 
       # --- Build outputs ---
 

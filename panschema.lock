@@ -1,0 +1,11 @@
+[[schema]]
+name = "cqa"
+version = "0.1.0"
+source = "github:padamson/cqa-schema"
+checksum = "sha256:3d73201562dd4faa24a67ebc1625efa406d91d8d0a811727174e81e853b71e4e"
+
+[[schema]]
+name = "wine"
+version = "0.2.0"
+source = "path:."
+checksum = "sha256:59410e2f495e88e5853d80f9eba75ed02e38f0d6a29476055ffb0ee49908a1b0"

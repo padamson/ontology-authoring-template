@@ -40,23 +40,11 @@ repos:
         # conformance claim; publish only warns, so gate it here. Bare
         # `verify --strict` checks everything panschema.toml declares —
         # each dataset against its own schema, plus the `[check.cqa]`
-        # cross-graph gates. The manifest's cqa entry needs the sibling
-        # ../cqa-schema checkout; when it is absent (a consumer clone),
-        # fall back to per-file verification of wine's own data and leave
-        # the cqa half to CI, which clones the sibling.
-        entry: >-
-          bash -c 'if [ -d ../cqa-schema ]; then
-          panschema verify --strict;
-          else
-          shopt -s nullglob;
-          schema="$(scripts/schema-path.sh)";
-          for f in data/*.yaml; do
-          [ "$f" = "data/wine-benchmark.yaml" ] && continue;
-          echo "verify $f";
-          panschema verify --schema "$schema" --data "$f" || exit 1;
-          done;
-          echo "note: ../cqa-schema absent; manifest-wide verify left to CI";
-          fi'
+        # cross-graph gates. The cqa contract is a pinned dependency
+        # resolved from panschema's local cache, so run `panschema fetch`
+        # once after cloning (CLAUDE.md "Building"); after that the hook
+        # is offline.
+        entry: panschema verify --strict
         language: system
         pass_filenames: false
-        files: ^(schema/[^/]+\.yaml|data/.*\.yaml)$
+        files: ^(schema/[^/]+\.yaml|data/.*\.yaml|panschema\.(toml|lock))$

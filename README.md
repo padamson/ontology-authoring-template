@@ -56,6 +56,7 @@ scripts/
   check-line-width.sh     # schema content line-width gate (<=72 cols)
   schema-path.sh          # resolves the schema path from panschema-publish.toml
 panschema.toml            # panschema manifest: generate (ttl/shacl/...) + check gates
+panschema.lock            # the cqa contract's resolved checksum (written by panschema fetch)
 panschema-publish.toml    # panschema's release + publish manifest
 skills/                   # shipped: ontology-authoring-advance-step
 .claude/skills/           # this checkout only: erect-scaffold, setup-ontology
@@ -210,6 +211,11 @@ First time? Install the toolchain — see **[Toolchain → Install](#install)** 
 > `mdbook build` / `mdbook serve` work. (The `./scripts/dev.sh` loop
 > regenerates them on its own, so this is only for the standalone
 > `mdbook build` path.)
+>
+> Also once after cloning: `panschema fetch`. The benchmark's schema (the
+> cqa contract) is a pinned dependency, and `fetch` downloads the release
+> `panschema.lock` names into panschema's local cache, after which
+> `panschema verify` / `generate` and the pre-commit hook run offline.
 
 ### Other formats
 
