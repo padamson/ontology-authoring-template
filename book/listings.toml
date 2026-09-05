@@ -65,3 +65,15 @@ tag = "wine-yaml-v7"
 source = "../schema/wine.yaml"
 frozen = "src/listings/wine-yaml-v7.yaml"
 sha256 = "59410e2f495e88e5853d80f9eba75ed02e38f0d6a29476055ffb0ee49908a1b0"
+
+[[listing]]
+tag = "wine-benchmark-v1"
+source = "../data/wine-benchmark.yaml"
+frozen = "src/listings/wine-benchmark-v1.yaml"
+sha256 = "d330681b446cfa0de53f7a90c26d10e6dc3915d9af6e68f659de8246fca05b11"
+
+[[listing]]
+tag = "panschema-toml-v1"
+source = "../panschema.toml"
+frozen = "src/listings/panschema-toml-v1.toml"
+sha256 = "7f6d01e9b53b842a7fefee8b9a4cbb9a506e47a3a5e3ad11844a0c6a2545a292"

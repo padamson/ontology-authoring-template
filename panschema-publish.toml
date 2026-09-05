@@ -20,6 +20,7 @@ format = "html"
 # and the github.io deploy). The panschema default "../current/" assumes a
 # standalone schema-only deploy and is wrong for this book-nested layout.
 site_root_url = "../../"
+site_title = "Building wine"
 
 # Curated instance graphs published behind the schema page's in-page
 # selector (panschema feature 37). `name` labels each tab; `data` is
@@ -35,11 +36,33 @@ name = "worked-example"
 data = "data/wine-instances.yaml"
 exemplar = true
 
-# Book→schema toolbar link (the reverse of site_root_url above): a button
-# in the book's toolbar pointing at the published schema docs. Assets are
-# installed by `mdbook-panschema install book` (see scripts/install-assets.sh)
-# and are gitignored like the other generated book assets.
-[book_link]
-enabled = true
+# Naming a dependency schema moves this dataset onto a second published
+# page — the cqa contract rendered with wine's benchmark as its instance
+# graph, at site/schema/cqa/. The page exists only at refs where both
+# the dependency and the data do: today that is `main` alone, since no
+# released version of the package contains the benchmark yet.
+[[instances]]
+name = "benchmark"
+data = "data/wine-benchmark.yaml"
+schema = "cqa"
+
+# The benchmark records lead on that page; the contract's reference
+# section follows them.
+[publishing.pages.cqa]
+layout = "instances-first"
+
+# Book→schema toolbar links (the reverse of site_root_url above): with
+# two published pages, the toolbar button becomes a menu listing each
+# entry by its label. Assets are installed by `mdbook-panschema install
+# book` (see scripts/install-assets.sh) and are gitignored like the
+# other generated book assets.
+[[book_link]]
 schema_path = "schema/current/"
-label = "Schema reference"
+label = "Wine schema"
+
+# The benchmark page has no released version yet, so this entry points
+# at the bleeding edge; it moves to schema/cqa/current/ at the first
+# release whose package contains the benchmark.
+[[book_link]]
+schema_path = "schema/cqa/main/"
+label = "CQ&A benchmark"
