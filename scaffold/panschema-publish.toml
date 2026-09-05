@@ -22,11 +22,38 @@ format = "html"
 # standalone schema-only deploy and is wrong for this book-nested layout.
 site_root_url = "../../"
 
-# Book→schema toolbar link (the reverse of site_root_url above): a button
-# in the book's toolbar pointing at the published schema docs. Assets are
-# installed by `mdbook-panschema install book` (see scripts/install-assets.sh)
-# and are gitignored like the other generated book assets.
-[book_link]
-enabled = true
+# Curated instance graphs published behind the schema page's in-page
+# selector. `name` labels each tab; `data` is repo-relative. Add the
+# worked example here at Step 7 (`exemplar = true` marks the tab the
+# page opens on).
+#
+# Naming a dependency schema moves a dataset onto a second published
+# page: the cqa contract rendered with this repo's benchmark as its
+# instance graph, at site/schema/cqa/. The page exists only at refs
+# where both the dependency and the data do.
+[[instances]]
+name = "benchmark"
+data = "data/myschema-benchmark.yaml"
+schema = "cqa"
+
+# The benchmark records lead on that page; the contract's reference
+# section follows them.
+[publishing.pages.cqa]
+layout = "instances-first"
+
+# Book→schema toolbar links (the reverse of site_root_url above): with
+# two published pages, the toolbar button becomes a menu listing each
+# entry by its label. Assets are installed by `mdbook-panschema install
+# book` (see scripts/install-assets.sh) and are gitignored like the
+# other generated book assets.
+[[book_link]]
 schema_path = "schema/current/"
 label = "Schema reference"
+
+# The benchmark page gains a `current/` alias with the first release,
+# since the benchmark is part of the package from Step 1. Until then this
+# entry points at the bleeding edge; move it to schema/cqa/current/ when
+# `current` above flips.
+[[book_link]]
+schema_path = "schema/cqa/main/"
+label = "CQ&A benchmark"

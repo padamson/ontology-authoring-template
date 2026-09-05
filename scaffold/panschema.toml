@@ -1,15 +1,21 @@
-# panschema consumer manifest — `panschema generate` emits the machine-readable
-# formats to site/artifacts/ (deployed with the docs site). HTML comes from
+# panschema consumer manifest: the schemas and datasets this repo
+# composes, and what must hold across them. Bare `panschema verify`
+# checks everything declared here without writing outputs; `panschema
+# generate` emits the machine-readable formats to site/artifacts/
+# (deployed with the docs site). HTML documentation comes from
 # `panschema publish` + panschema-publish.toml, not here.
 #
-# This blank-slate version lists only the schema-level (T-box) formats, since a
-# fresh ontology has no instance data yet. Once you have an A-box
-# (data/<name>-instances.yaml), add an `instances = ["data/<name>-instances.yaml"]`
-# line and an `instance-graph-json = "site/artifacts/<name>-instances.graph.json"`
-# key to also emit the knowledge graph.
+# This blank-slate version lists the schema-level (T-box) formats for
+# myschema, since a fresh ontology has no instance data of its own yet.
+# Once you have an A-box (data/<name>-instances.yaml), add an
+# `instances = ["data/<name>-instances.yaml"]` line and an
+# `instance-graph-json = "site/artifacts/<name>-instances.graph.json"`
+# key under [generate.myschema] to also emit the knowledge graph.
 #
-# `path = "."` references this repo's own package. Keys are deny_unknown_fields,
-# so a typo is a hard error: note `json_schema` (underscore).
+# `path = "."` references THIS repo's own package (the panschema-publish.toml
+# at the root) — the local-package field, distinct from `source`, which is
+# for remote `github:` dependencies. Keys are deny_unknown_fields, so a typo
+# is a hard error: note `json_schema` (underscore).
 [schemas.myschema]
 path = "."
 
@@ -17,3 +23,34 @@ path = "."
 shacl = "site/artifacts/myschema-shapes.ttl"
 json_schema = "site/artifacts/myschema.schema.json"
 ttl = "site/artifacts/myschema.ttl"
+
+# The competency questions are data from Step 1: data/myschema-benchmark.yaml
+# holds them as records of the cqa contract (a schema for competency
+# question-and-answer benchmarks), not of myschema, so the file is verified
+# under its own schema entry. `source` names where the contract is
+# published and `version` pins the release; panschema.lock records the
+# checksum a `panschema fetch` resolved that pin to. Run `panschema fetch`
+# once after cloning.
+[schemas.cqa]
+source = "github:padamson/cqa-schema"
+version = "0.1.0"
+
+# The benchmark as a self-contained knowledge graph (cqa's classes plus
+# this schema's records), published beside myschema.ttl.
+[generate.cqa]
+ttl = "site/artifacts/myschema-benchmark.ttl"
+instances = ["data/myschema-benchmark.yaml"]
+
+# Step 7 work: once the worked example exists as an A-box listed under
+# [generate.myschema], uncomment this block. It holds the benchmark's
+# claims against that graph: every anchor must name an IRI this package's
+# datasets actually mint, every absence claim the contract declares must
+# hold, and no reference may land in a namespace nothing here covers.
+# Until then the anchors are enumerated as unchecked outbound references,
+# which is what a Step-1 benchmark is: the list of records the worked
+# example must mint. What a benchmark record means is declared in cqa's
+# schema, on the slots themselves; this block only says which graphs to
+# hold the claims against.
+# [check.cqa]
+# resolve_against = ["myschema"]
+# require_namespace_coverage = true

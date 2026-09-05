@@ -1,0 +1,51 @@
+# The competency questions of myschema as a cqa benchmark: one record per
+# question, each pairing the question with the specification of its
+# correct answer over the worked-example graph (Appendix A).
+#
+# Fill this in at Step 1, as the questions are sketched. No record of the
+# worked example exists yet, so an anchor here is a promise: the id a
+# record must be minted under by Step 7. That is the demand-driven build
+# in one file, the questions naming the records the worked example owes.
+# The benchmark verifies against cqa from the start; the cross-graph
+# gates (`[check.cqa]` in panschema.toml) turn on at Step 7, once the
+# graph exists to hold the anchors against.
+#
+# A question the schema itself answers (which characteristics to
+# consider, say) has no record to anchor and stays prose. Say so here in
+# a comment rather than inventing one.
+id: myschema-benchmark
+name: myschema competency questions
+description: >-
+  The competency questions of the myschema ontology, each paired with the
+  specification of its correct answer over the worked-example graph.
+
+# The claims below are about one graph at one version. The schema URI,
+# stated once, is the base every short anchor expands against, and it
+# must equal the schema's `id:`. `target_dataset` names the worked
+# example by its `[[instances]] name` in panschema-publish.toml (added at
+# Step 7). Once `[check.cqa]` is on, the version pins are compared with
+# this package's declared version on every run, so a release the
+# benchmark has not been re-read against fails instead of reading green.
+target_schema: https://w3id.org/myschema/
+target_schema_version: 0.1.0
+target_dataset: worked-example
+target_dataset_version: 0.1.0
+
+# One record per competency question. `answer_kind` names the check a
+# correct answer must survive (a question can carry several, and every
+# kind named is a check that must pass); `expected_anchors` are the
+# records a correct answer must reach, written bare and expanded against
+# target_schema; `expected_citations` (always a subset of the anchors)
+# the ones it must cite; a negative answer states which absence with
+# `unconnected_anchors`. The contract's reference page lists the slots
+# and the rules that tie them together.
+competency_question_answers: []
+#  - id: cq-01
+#    name: <short label>
+#    question: <the question, in the words it would be asked in>
+#    ground_truth: >-
+#      <the correct answer in prose>
+#    answer_kind:
+#      - lookup
+#    expected_anchors:
+#      - <record-id the worked example must mint>

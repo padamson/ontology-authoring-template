@@ -30,18 +30,26 @@ cd book && mdbook build   # output to book/build/
 
 Preprocessors must be on `PATH`: `mdbook-listings`, the `mdbook-admonish`
 fork, and `mdbook-panschema` — `scripts/install-assets.sh` installs all
-three. CI (`.github/workflows/docs.yml`) verifies the instance data,
-generates the machine-readable formats (via `panschema.toml`), builds the
-book, and deploys the combined site to Pages.
+three. Also once after cloning: `panschema fetch`, which downloads the
+cqa contract (the schema the competency-question benchmark conforms to)
+at the release `panschema.lock` pins, after which `panschema verify` /
+`generate` and the pre-commit hook run offline. CI
+(`.github/workflows/docs.yml`) checks the lockfile, verifies the
+instance data, generates the machine-readable formats (via
+`panschema.toml`), builds the book, and deploys the combined site to
+Pages.
 
 ## Layout
 
 ```
 schema/
   myschema.yaml           # source of truth (LinkML)
+data/
+  myschema-benchmark.yaml # the competency questions as cqa benchmark records (Step 1)
 book/                     # mdbook documenting the N&M build
 scripts/                  # dev loop, rebuild, line-width + schema-path helpers
-panschema.toml            # panschema generate manifest (ttl/shacl/json-schema/...)
+panschema.toml            # panschema manifest: generate (ttl/shacl/...) + check gates
+panschema.lock            # the cqa contract's resolved checksum (written by panschema fetch)
 panschema-publish.toml    # panschema's release + publish manifest
 .github/workflows/docs.yml
 ```

@@ -101,7 +101,19 @@ Preprocessors must be on `PATH`: `mdbook-listings`, and the
 `mdbook-admonish` fork (`feat/mdbook-0.5-compat`); `mdbook-panschema`
 (from the panschema workspace) must be there too — it generates the
 gitignored book→schema toolbar-link assets that `book.toml` references
-(`scripts/install-assets.sh` runs all three installers). The published
+(`scripts/install-assets.sh` runs all three installers).
+
+The cqa contract (the schema the competency-question benchmark conforms
+to) is a pinned dependency: `panschema.toml` names it by
+`source = "github:padamson/cqa-schema"` plus `version`, and
+`panschema.lock` (committed) records the checksum that pin resolved to.
+Run `panschema fetch` once after cloning to populate the local cache
+(`~/Library/Caches/panschema` on macOS, `~/.cache/panschema` on Linux);
+manifest-wide `panschema verify`, `generate`, and the pre-commit hook
+then run offline. CI runs `panschema fetch --check` instead, which
+fails on lockfile drift. Moving to a newer cqa release is one edit to
+`version` and a re-run of `panschema fetch`. `mdbook build` does not
+need the dependency. The published
 docs site (schema HTML + the book) is built and deployed by
 `.github/workflows/docs.yml` via the panschema toolchain on push to
 `main` and on `v*` tags.
@@ -122,6 +134,13 @@ enabled it becomes a required preprocessor, so also add it to CI.
   example (Appendix A) needs it, not speculatively. The worked example
   should drive the build from Step 1 — if a class or slot only earns
   its keep once instances are built (Step 7), that is a smell.
+- **Competency questions are data.** From Step 1 they live in
+  `data/myschema-benchmark.yaml` as records of the cqa contract, each
+  with its answer kind and the anchors a correct answer must reach,
+  pinned to this package's version. The anchors are promises until the
+  worked example mints them; `[check.cqa]` in `panschema.toml` turns on
+  at Step 7 and holds them against the graph on every push. A question
+  the schema itself answers stays prose, noted in the file.
 - **External grounding is by URI, not import.** BFO/CCO/etc. are
   referenced via `subclass_of` + prefixes, *not* LinkML `imports:`
   (which is for other LinkML schemas — only `linkml:types` is

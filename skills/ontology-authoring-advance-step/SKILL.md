@@ -48,6 +48,17 @@ Put callouts on what the prose will reference as **inline**
 `# CALLOUT:` markers in the YAML — never sidecar TOML (CLAUDE.md reserves
 sidecar for generated/third-party listings).
 
+The competency questions are data (CLAUDE.md "Competency questions are
+data"). **At Step 1**, write each question as a record in
+`data/<name>-benchmark.yaml` — the cqa contract's `question`,
+`ground_truth`, `answer_kind`, and the `expected_anchors` a correct
+answer must reach. No record exists yet to anchor, so each anchor is the
+id the worked example must mint; `panschema verify --strict` passes with
+the anchors enumerated as outbound references. **At Step 7**, uncomment
+`[check.cqa]` in `panschema.toml` so those anchors resolve against the
+A-box, re-read every record against the finished graph, and re-pin the
+target versions if the package version moved.
+
 ## Step 2 — re-freeze (the foot-gun)
 
 Editing the schema does **not** re-freeze the embedded listing — a frozen
@@ -60,6 +71,8 @@ cd book && mdbook-listings freeze ../schema/<name>.yaml \
 ```
 
 Bump `N` so earlier chapters keep pointing at the snapshot they froze.
+The benchmark freezes the same way (`../data/<name>-benchmark.yaml`, tag
+`<name>-benchmark-vN`) whenever a step changes its records.
 Wire the new tag into this chapter with `{{#include}}` / `{{#callout}}`
 / `{{#diff}}` against the previous tag as the prose needs. For directive
 syntax and the tag/SHA identity model, consult the **mdbook-listings**
@@ -97,8 +110,12 @@ out — those go in private notes.
 - Build and confirm the listing actually rendered:
 
 ```bash
+panschema verify --strict    # every dataset conforms; the [check] gates hold
 cd book && mdbook build      # must exit 0
 ```
+
+`verify` resolves the cqa contract from panschema's local cache; on a
+fresh clone run `panschema fetch` once first (README "Fresh clone").
 
 On a fresh clone this fails on a missing `mdbook-admonish.css` — the
 admonish/listings assets are gitignored and generated. If you hit that,

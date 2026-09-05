@@ -51,6 +51,7 @@ skills (including this one). That's why every command here excludes
 
 ```bash
 git mv schema/myschema.yaml schema/<name>.yaml
+git mv data/myschema-benchmark.yaml data/<name>-benchmark.yaml
 ```
 
 ## Step 3 — the global identifier rename
@@ -65,7 +66,15 @@ mechanical files (do a straight replace):
   `default_prefix:` (set `id:` to the confirmed namespace)
 - `panschema-publish.toml` — `[schema].name`, `[files].main`
 - `panschema.toml` — the `[schemas.<name>]` / `[generate.<name>]` table
-  names and the `site/artifacts/<name>-*` output paths
+  names, the `site/artifacts/<name>-*` output paths, the
+  `data/<name>-benchmark.yaml` instances path under `[generate.cqa]`,
+  and `resolve_against = ["<name>"]` in the commented `[check.cqa]`
+  block (the `[schemas.cqa]` entry itself is not renamed: it names the
+  dependency)
+- `data/<name>-benchmark.yaml` — the benchmark's `id:`/`name:`, the
+  `https://w3id.org/myschema/` target namespace (set it to the confirmed
+  namespace, matching the schema's `id:`)
+- `panschema-publish.toml` — the `[[instances]]` benchmark `data` path
 - `book/book.toml` — `title` ("Building <name>") and `description`. The
   stock description carries a `myschema` token so the blind replace
   catches it, but it's otherwise generic — offer to refine it into a

@@ -21,7 +21,14 @@ so they render on the schema page behind the in-page selector. Run each
 Step-1 competency question as the litmus test. Refine the schema where
 instantiation surfaces a gap — verification and refinement are one
 interleaved activity (a class or slot that only earns its keep here is a
-smell; see the LESSON).
+smell; see the LESSON). Turn on the cross-graph gates: uncomment
+`[check.cqa]` in panschema.toml, so the anchors the Step-1 benchmark
+promised must now resolve against the records the worked example mints.
+`panschema verify --strict` discharges them (resolution, the absence
+claims, namespace coverage, and the version pins against this package's
+declared version). That verifies the answer KEY; answering the questions
+is still a reading of the catalog, and the book keeps "verify" and
+"validate" apart.
 
 What a data file needs that the schema so far did not (add as the data
 demands): a tree_root CONTAINER class holding a multivalued collection
@@ -44,13 +51,23 @@ SECTION OUTLINE:
   - Verification: `panschema verify` against the schema — the constraints
     Step 6 declared are what it now enforces.
   - The competency-question litmus, each answered by tracing the catalog
-    (and, where the graphRAG story is told, as a retrieved subgraph).
+    (and, where the graphRAG story is told, as a retrieved subgraph);
+    the benchmark's anchors now resolve, shown as the `[check.cqa]` diff
+    of panschema.toml and the passing `panschema verify --strict` run.
   - Close on the knowledge graph the schema was always for: RDF T-box +
     A-box are one graph; any reified judgment class carries the rationale
     a bare edge cannot.
 
 CARRIED-IN DEFERRALS -> this step:
-  (land deferrals from earlier chapters here)
+  [ ] from ch01 (the benchmark): uncomment `[check.cqa]`
+      (resolve_against = ["myschema"], require_namespace_coverage = true)
+      once the A-box is listed under [generate.myschema] and published
+      as [[instances]] under the name the benchmark's target_dataset
+      gives (the dataset pin binds by that name); re-read every
+      record against the finished graph, re-pin
+      target_schema_version / target_dataset_version if the package
+      version moved, and re-freeze myschema-benchmark-vN if any record
+      changed
 
 AUTHORING CHECKLIST:
   [ ] worked example is a LinkML data file under data/, verified by
@@ -67,6 +84,11 @@ AUTHORING CHECKLIST:
   [ ] LESSON (Step 7): the worked example should have driven the build
       FROM Step 1 — if a class or slot only earns its keep here, that is the
       smell of reasoning backward from the data.
+  [ ] `[check.cqa]` enabled; `panschema verify --strict` reports every
+      anchor resolving, every absence holding, every version pin
+      agreeing, with zero warnings
   [ ] demand check: does every Step-1 competency question get an answer?
-      If not, iterate (N&M's second rule) — refine, don't reverse.
+      The benchmark says which records each must reach; an anchor the
+      worked example never minted is the smell. If not, iterate (N&M's
+      second rule) — refine, don't reverse.
 -->

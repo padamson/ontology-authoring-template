@@ -43,12 +43,23 @@ just a sketch and do not need to be exhaustive.
 <!--
 CHARTER: Define the ontology's domain and scope — what it covers, what
 it's used for, the competency questions it must answer, who maintains
-it, and (crucially) what it deliberately does NOT model.
+it, and (crucially) what it deliberately does NOT model. The competency
+questions are DATA, not a prose list: each is a record in
+data/myschema-benchmark.yaml (the cqa contract — question, ground_truth,
+answer_kind, and the expected_anchors a correct answer must reach). At
+this step no record exists to anchor, so each anchor is the id the
+worked example must mint by Step 7: the questions name the records the
+build owes. The file verifies against cqa now (`panschema verify
+--strict`; the anchors are enumerated as outbound, not resolved); the
+cross-graph gates turn on at Step 7.
 
 SECTION OUTLINE:
   - What domain does myschema cover?
   - What are we going to use the ontology for? (consumers)
-  - What questions should the ontology answer? (competency questions)
+  - What questions should the ontology answer? (competency questions,
+    shown as the frozen benchmark listing with callouts on the target
+    pins, answer_kind, and expected_anchors; a question the schema
+    itself answers stays prose, and the file says so in a comment)
   - Who will use and maintain the ontology?
   - What myschema does *not* model.
   - On iteration (N&M's three fundamental rules).
@@ -59,9 +70,14 @@ CARRIED-IN DEFERRALS -> this step:
 AUTHORING CHECKLIST:
   [ ] freeze a new myschema-yaml-vN listing tag in the same change
       (the minimal stub committed alongside this chapter)
+  [ ] every competency question is a record in
+      data/myschema-benchmark.yaml; `panschema verify --strict` passes;
+      freeze it as myschema-benchmark-v1 in the same change
   [ ] jargon blocks at first use; every # CALLOUT gets a {{#callout}}
   [ ] LESSON (Step 1): competency questions are a sketch, not a
-      contract; state what's NOT modeled.
+      contract; state what's NOT modeled. A sketch can still be data:
+      the anchors are promises, revised as the model moves.
   [ ] demand check: pick the worked example (Appendix A) NOW — it
-      drives the build from Step 1, not just Step 7.
+      drives the build from Step 1, not just Step 7. The benchmark's
+      anchors are the first list of what it must contain.
 -->
