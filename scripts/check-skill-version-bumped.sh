@@ -26,6 +26,14 @@ skill=skills/ontology-authoring-advance-step/SKILL.md
 # Initial commit: nothing to compare against.
 git rev-parse -q --verify HEAD >/dev/null 2>&1 || exit 0
 
+# Nothing staged under the guarded paths: nothing to guard. pre-commit's
+# `files:` filter already implies this on a real commit, but `run
+# --all-files` runs every hook regardless of what changed, and without this
+# the guard would fail any full-tree run that is not itself a version bump.
+if git diff --cached --quiet -- skills/ .claude-plugin/ 2>/dev/null; then
+  exit 0
+fi
+
 # Empty input is expected, not an error: on the commit that first adds the
 # manifest, `git show HEAD:...` yields nothing. Report no version and let the
 # old/new comparison below decide.
