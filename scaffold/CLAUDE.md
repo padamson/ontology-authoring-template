@@ -113,7 +113,18 @@ manifest-wide `panschema verify`, `generate`, and the pre-commit hook
 then run offline. CI runs `panschema fetch --check` instead, which
 fails on lockfile drift. Moving to a newer cqa release is one edit to
 `version` and a re-run of `panschema fetch`. `mdbook build` does not
-need the dependency. The published
+need the dependency.
+
+The lockfile covers this repo's own schema too, not just the dependency:
+`[schemas.myschema]` declares `path = "."`, so `panschema.lock` carries a
+`myschema` entry whose checksum is the schema file's. Re-run
+`panschema fetch` in the same change as any edit to
+`schema/myschema.yaml`, or CI reds at the lockfile step, ahead of the
+schema, listing, and build gates. (A workaround, not a convention.
+`fetch --check` has no entry selector, so CI cannot be pointed at the real
+dependency alone; this paragraph goes away once it can.)
+
+The published
 docs site (schema HTML + the book) is built and deployed by
 `.github/workflows/docs.yml` via the panschema toolchain on push to
 `main` and on `v*` tags.
