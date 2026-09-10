@@ -11,10 +11,17 @@
         "source": "github",
         "repo": "padamson/panschema"
       }
+    },
+    "ontology-authoring-template": {
+      "source": {
+        "source": "github",
+        "repo": "padamson/ontology-authoring-template"
+      }
     }
   },
   "enabledPlugins": {
     "mdbook-listings@mdbook-listings": true,
-    "panschema@panschema": true
+    "panschema@panschema": true,
+    "ontology-authoring-template@ontology-authoring-template": true
   }
 }

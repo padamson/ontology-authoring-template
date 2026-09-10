@@ -1,6 +1,8 @@
 ---
 name: setup-ontology
 description: Bootstrap a freshly-cloned copy of the ontology-authoring-template — rename the `myschema` placeholder to a real schema name everywhere (schema file, prefixes, w3id namespace, freeze-tag convention, configs, book, scripts), set the schema id/namespace, fill in the domain purpose, and strip the template-bootstrap scaffolding. Use right after cloning / "Use this template", or when the user says "rename myschema", "set up the template", "initialize this ontology", or "do the SETUP steps".
+metadata:
+  internal: true
 ---
 
 # Setup a new ontology from the template
@@ -31,6 +33,23 @@ and grab a **one-sentence domain purpose** for CLAUDE.md / the
 Introduction (`introduction.md`). If the
 user only gives a name, proceed with the default namespace and leave the
 purpose as a clearly-marked TODO rather than inventing a domain.
+
+Finally, ask for the **licence for their ontology**. `schema/<name>.yaml`
+ships `license: TODO`, and that field travels with the artifact and into
+the generated RDF, so it is a claim about the user's work — never one to
+guess or to inherit from the template. Offer the usual three and say what
+each means in a clause: **CC BY 4.0** (published vocabulary, attribution
+required), **Apache-2.0** (permissive, patent grant, the usual pick when
+code is generated from the schema), **CC0** (public domain, no conditions).
+Write the choice as a URL, matching the shape the field already expects
+(e.g. `https://creativecommons.org/licenses/by/4.0/`), and add a matching
+`LICENSE` file plus a README line. If the user declines to decide, leave
+`TODO` and say so in the hand-off — an unlicensed schema is a real gap,
+not a cosmetic one.
+
+Note the repo already carries `LICENSE-APACHE`. That covers the scaffold
+this instance was built from and stays regardless; it is not a statement
+about the user's ontology, and their choice above does not replace it.
 
 ## Step 1 — survey before touching anything
 
@@ -130,6 +149,17 @@ mention you can point to). `.claude/` is excluded on purpose (the skill
 docs keep saying `myschema`). Report any stragglers rather than
 declaring done.
 
+Then check the two placeholders the rename does not touch:
+
+```bash
+grep -n 'license: TODO' schema/*.yaml
+grep -n 'TODO (Step 1)' schema/*.yaml
+```
+
+A `license: TODO` left standing means Step 0's licence question went
+unanswered — say so in the hand-off. The description TODO is Step 1's work
+and is expected to survive setup.
+
 ## Step 7 — hand off
 
 Don't commit unless asked (trunk-based on `main` — see CLAUDE.md). Tell
@@ -152,21 +182,28 @@ by removing it as the **final** action:
    from the template instead of carried, so it stays available." If the
    user declines, stop here and leave everything in place.
 
-2. **Drop the carried copy of the authoring skill and install it
-   instead.** The clone arrived with `skills/` and a symlink to it, but
-   a copy is a fork the moment either side is edited — which is how
-   five instances of this template ended up with five different
-   versions. Take it from the template as a tracked install:
+2. **Drop the carried copy of the authoring skill.** The clone arrived
+   with `skills/` and a symlink to it, but a copy is a fork the moment
+   either side is edited — which is how five instances of this template
+   ended up with five different versions. Delete it:
 
    ```bash
    git rm -r skills/ .claude/skills/ontology-authoring-advance-step
-   npx skills add padamson/ontology-authoring-template
    ```
 
-   Re-run that `npx` command to pick up later improvements. If the user
-   prefers to keep and adapt a local copy, that is a legitimate choice —
-   record it in the repo's CLAUDE.md so the fork is deliberate rather
-   than discovered later.
+   Nothing replaces it in the tree: `.claude/settings.json` (taken from
+   the scaffold by **erect-scaffold**) already enables the
+   `ontology-authoring-template` plugin, which is where the skill now
+   comes from. It updates with `/plugin update`, the same as
+   `panschema` and `mdbook-listings`. Deleting the local copy is what
+   makes the plugin's version authoritative — a project-local skill
+   shadows an installed one of the same name.
+
+   Verify with `/plugin` that all three are listed before finishing.
+
+   If the user prefers to keep and adapt a local copy, that is a
+   legitimate choice — record it in the repo's CLAUDE.md so the fork is
+   deliberate rather than discovered later.
 
 3. **Remove this skill** (the last action — its instructions are already
    loaded, so deleting the files mid-run is fine):

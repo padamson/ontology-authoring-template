@@ -1,6 +1,9 @@
 ---
 name: ontology-authoring-advance-step
 description: Advance a LinkML ontology book one Noy & McGuinness step, in a repo built from the ontology-authoring-template (a `schema/` + `book/` pair with frozen mdbook-listings snapshots). Advances the schema only as the worked example demands, adds inline callouts, re-freezes a new listing tag (avoiding the stale-frozen-bytes foot-gun), writes the chapter prose in the N&M voice, reconciles carried-in deferrals, and verifies the build. Use when the user says "write the next chapter", "do Step N", "advance the schema", "work on ch0N", or wants to move the book forward one N&M step.
+license: Apache-2.0
+metadata:
+  version: "0.1.0"
 ---
 
 # Advance one N&M step-chapter

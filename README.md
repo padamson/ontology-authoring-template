@@ -171,9 +171,22 @@ releases, the version field carries a `-dev` suffix (e.g.,
 > **Claude Code users:** the **`ontology-authoring-advance-step`** skill
 > walks one N&M step at a time — advancing the schema (demand-driven),
 > re-freezing the listing tag, writing the chapter, and reconciling
-> deferrals. Say "write the next chapter" or "do Step N". A repo seeded
-> from this template installs it with
-> `npx skills add padamson/ontology-authoring-template`.
+> deferrals. Say "write the next chapter" or "do Step N".
+>
+> A repo seeded from this template gets it as a plugin, wired into its
+> `.claude/settings.json` by **erect-scaffold**, and updates it with
+> `/plugin update` alongside `panschema` and `mdbook-listings`. To add it
+> to a repo that was not seeded from here:
+>
+> ```
+> /plugin marketplace add padamson/ontology-authoring-template
+> /plugin install ontology-authoring-template@ontology-authoring-template
+> ```
+>
+> Outside Claude Code, `npx skills add padamson/ontology-authoring-template
+> --skill ontology-authoring-advance-step` installs the same skill for the
+> other agents the Skills CLI supports. Name the skill: a bare `add` takes
+> everything a repo publishes, without prompting in an agent session.
 
 The combined book + versioned schema docs run locally via:
 
@@ -280,4 +293,24 @@ knowing about it:
 
 ## License
 
-[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — see [LICENSE](LICENSE).
+Two licenses, split by what the file is for.
+
+| | License | Covers |
+|---|---|---|
+| **Tooling** | [Apache-2.0](LICENSE-APACHE) | `skills/`, `.claude-plugin/`, `scaffold/`, `scripts/`, `.github/`, and the hook and lint configs |
+| **The book** | [CC BY 4.0](LICENSE) | `book/`, `schema/wine.yaml`, and `data/` — the wine showcase and its prose |
+
+The split follows what each part is *for*. `scaffold/` exists to be derived
+from: every repo seeded from this template is a derivative work of it, and
+Apache-2.0 asks such a repo for a preserved notice rather than attribution
+across everything it goes on to build. The same applies to the authoring
+skill, which is functional — Creative Commons recommends against CC licenses
+for software, and Apache-2.0 also carries a patent grant. It matches
+[panschema](https://github.com/padamson/panschema) and
+[mdbook-listings](https://github.com/padamson/mdbook-listings), so a consumer
+of all three reads one license.
+
+*Building wine* is public teaching, and attribution is the point — so the
+book, the wine schema it builds, and its instance data stay CC BY 4.0. A repo
+seeded from this template keeps `LICENSE-APACHE` (covering the scaffold it
+derived) and chooses its own license for its own ontology and book.

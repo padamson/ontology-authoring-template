@@ -9,7 +9,12 @@ description: |-
   TODO (Step 1): one or two sentences stating this ontology's domain
   (what it is about) and purpose (what it is for). Domain and purpose
   only — no methodology, no grounding claims, no book references.
-license: https://creativecommons.org/licenses/by/4.0/
+# Your ontology's licence, not the template's. This ships with the artifact
+# and in the generated RDF, so it is a claim about YOUR work — the template
+# does not make it for you. CC BY 4.0 is a common choice for a published
+# vocabulary (attribution, no other restriction); Apache-2.0 and CC0 are the
+# other usual ones. setup-ontology asks.
+license: TODO
 version: 0.1.0-dev
 
 prefixes:

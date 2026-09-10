@@ -1,0 +1,19 @@
+{
+  "name": "ontology-authoring-template",
+  "version": "0.1.0",
+  "description": "Advance a LinkML ontology book one Noy & McGuinness step: grow the schema as the worked example demands, re-freeze the mdbook-listings snapshot, and write the chapter prose.",
+  "author": {
+    "name": "Paul Adamson",
+    "email": "paul.adamson.01@gmail.com"
+  },
+  "homepage": "https://github.com/padamson/ontology-authoring-template",
+  "repository": "https://github.com/padamson/ontology-authoring-template",
+  "license": "Apache-2.0",
+  "keywords": [
+    "linkml",
+    "ontology",
+    "mdbook",
+    "schema",
+    "bfo"
+  ]
+}

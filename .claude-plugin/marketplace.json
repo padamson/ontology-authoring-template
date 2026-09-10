@@ -1,0 +1,17 @@
+{
+  "name": "ontology-authoring-template",
+  "owner": {
+    "name": "Paul Adamson",
+    "email": "paul.adamson.01@gmail.com"
+  },
+  "description": "Marketplace hosting the ontology-authoring plugin.",
+  "plugins": [
+    {
+      "name": "ontology-authoring-template",
+      "source": "./",
+      "description": "Advance a LinkML ontology book one Noy & McGuinness step, in a repo built from the ontology-authoring-template.",
+      "homepage": "https://github.com/padamson/ontology-authoring-template",
+      "license": "Apache-2.0"
+    }
+  ]
+}
