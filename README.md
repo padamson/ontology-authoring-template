@@ -1,5 +1,7 @@
 # ontology-authoring-template
 
+[![skills.sh](https://skills.sh/b/padamson/ontology-authoring-template)](https://skills.sh/padamson/ontology-authoring-template)
+
 A GitHub-template-ready scaffold for authoring a [LinkML](https://linkml.io)
 ontology — grounded in BFO 2020 and the Common Core Ontologies (CCO) —
 via Noy & McGuinness's *Ontology Development 101* (N&M) method, with the
@@ -97,17 +99,17 @@ in-browser auto-reload).
 
 ```bash
 # mdbook + the admonish fork (adds mdbook 0.5 compatibility)
-cargo install mdbook --locked
+cargo install mdbook --version 0.5.2 --locked
 cargo install --git https://github.com/padamson/mdbook-admonish \
   --branch feat/mdbook-0.5-compat --locked mdbook-admonish
 
 # the frozen-listings preprocessor (central to this template)
-cargo install --git https://github.com/padamson/mdbook-listings --locked mdbook-listings
+cargo install mdbook-listings --version 0.2.1 --locked
 
 # panschema (schema docs + graph + RDF); wasm-pack builds its embedded viz.
 # One install, two binaries: the panschema crate also ships mdbook-panschema,
 # which installs the book→schema toolbar link.
-cargo install wasm-pack --locked
+cargo install wasm-pack --version 0.14.0 --locked
 cargo install --git https://github.com/padamson/panschema --locked panschema
 
 # the dev-loop file watcher
@@ -116,6 +118,10 @@ cargo install watchexec-cli --locked
 # optional: in-browser auto-reload (else refresh manually after each rebuild)
 npm install -g live-server
 ```
+
+The three `--version` pins match the `env:` block in
+`.github/workflows/docs.yml`; when one moves, move both, or your preview
+and the published book render differently.
 
 Confirm the six required tools are on `PATH`: `mdbook`, `mdbook-admonish`,
 `mdbook-listings`, `panschema`, `mdbook-panschema`, `watchexec`
@@ -173,20 +179,20 @@ releases, the version field carries a `-dev` suffix (e.g.,
 > re-freezing the listing tag, writing the chapter, and reconciling
 > deferrals. Say "write the next chapter" or "do Step N".
 >
-> A repo seeded from this template gets it as a plugin, wired into its
-> `.claude/settings.json` by **erect-scaffold**, and updates it with
-> `/plugin update` alongside `panschema` and `mdbook-listings`. To add it
-> to a repo that was not seeded from here:
+> Install it from a plain terminal, not from inside a Claude Code session
+> — the sandbox denies writes under `.claude/skills/`:
 >
-> ```
-> /plugin marketplace add padamson/ontology-authoring-template
-> /plugin install ontology-authoring-template@ontology-authoring-template
+> ```bash
+> npx skills add padamson/ontology-authoring-template \
+>   -s ontology-authoring-advance-step -a claude-code -y
 > ```
 >
-> Outside Claude Code, `npx skills add padamson/ontology-authoring-template
-> --skill ontology-authoring-advance-step` installs the same skill for the
-> other agents the Skills CLI supports. Name the skill: a bare `add` takes
-> everything a repo publishes, without prompting in an agent session.
+> Name the skill with `-s`: a bare `add` takes everything a repo publishes.
+> Commit the resulting `skills-lock.json` and ignore the materialized
+> copies; `npx skills update -p` refreshes, and the installed
+> `SKILL.md`'s `metadata.version` is how you check what you actually have.
+> A repo seeded from this template gets the same install wired up by
+> **erect-scaffold** and **setup-ontology**.
 
 The combined book + versioned schema docs run locally via:
 
@@ -297,7 +303,7 @@ Two licenses, split by what the file is for.
 
 | | License | Covers |
 |---|---|---|
-| **Tooling** | [Apache-2.0](LICENSE-APACHE) | `skills/`, `.claude-plugin/`, `scaffold/`, `scripts/`, `.github/`, and the hook and lint configs |
+| **Tooling** | [Apache-2.0](LICENSE-APACHE) | `skills/`, `scaffold/`, `scripts/`, `.github/`, and the hook and lint configs |
 | **The book** | [CC BY 4.0](LICENSE) | `book/`, `schema/wine.yaml`, and `data/` — the wine showcase and its prose |
 
 The split follows what each part is *for*. `scaffold/` exists to be derived
@@ -305,10 +311,11 @@ from: every repo seeded from this template is a derivative work of it, and
 Apache-2.0 asks such a repo for a preserved notice rather than attribution
 across everything it goes on to build. The same applies to the authoring
 skill, which is functional — Creative Commons recommends against CC licenses
-for software, and Apache-2.0 also carries a patent grant. It matches
-[panschema](https://github.com/padamson/panschema) and
-[mdbook-listings](https://github.com/padamson/mdbook-listings), so a consumer
-of all three reads one license.
+for software, and Apache-2.0 also carries a patent grant. Apache-2.0 is also
+available across the sibling tools —
+[panschema](https://github.com/padamson/panschema) is Apache-2.0 and
+[mdbook-listings](https://github.com/padamson/mdbook-listings) is
+MIT OR Apache-2.0 — so a consumer of all three can read them under one.
 
 *Building wine* is public teaching, and attribution is the point — so the
 book, the wine schema it builds, and its instance data stay CC BY 4.0. A repo

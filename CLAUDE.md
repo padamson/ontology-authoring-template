@@ -38,23 +38,33 @@ external claims backed by citations.
 
 ## Authoring with mdbook-listings
 
-This repo uses the **mdbook-listings** plugin, installed at project
-scope (see `.claude/settings.json`). Its bundled skill documents the
-full mechanics — `freeze`/`list`, the `{{#include}}` / `{{#callout}}`
-/ `{{#diff}}` directives, inline `# CALLOUT:` markers vs. sidecar
-TOML, and the tag/SHA-256 identity model. **Consult that skill
-(`references/cli.md`, `references/directives.md`) for how the tool
-works** — this section records only what's specific to *this* repo.
+This repo consumes the **mdbook-listings** skill as a managed install
+(see "Agent skills" below). It documents the full mechanics —
+`freeze`/`list`, the `{{#include}}` / `{{#callout}}` / `{{#diff}}`
+directives, inline `# CALLOUT:` markers vs. sidecar TOML, the caption
+rules, and the tag/SHA-256 identity model. **Consult that skill
+(`references/cli.md`, `references/directives.md`,
+`references/captions.md`) for how the tool works** — this section records
+only what's specific to *this* repo.
 
 The book embeds **frozen snapshots** of `schema/wine.yaml` so a
 later edit can't silently change what a chapter renders. Repo
-conventions on top of the plugin:
+conventions on top of the tool:
 
 - **Freeze from `book/`**, source `../schema/wine.yaml`, tag
   `wine-yaml-v<N>`. Each chapter that advances the schema bumps
   the tag so earlier chapters keep pointing at the snapshot they
   froze:
   `cd book && mdbook-listings freeze ../schema/wine.yaml --tag wine-yaml-v2 --force`
+- **Captions never name the artifact.** `show-listing-provenance = true`
+  in `book.toml` renders the source path and frozen tag under every
+  caption, so a caption that repeats `schema/wine.yaml` or its tag says it twice. A
+  caption states what the reader is looking at *and why it is here*, or
+  it is omitted — the provenance line already covers what the listing is.
+  The full rule set is `references/captions.md` in the mdbook-listings
+  skill. Keep the local binary at or past the CI pin: 0.2.0 ignores the
+  key silently, so a stale local binary previews without the line CI
+  renders with.
 - **Callouts on files we author here** (e.g. `schema/wine.yaml`)
   go *inline* as `# CALLOUT:` markers — never sidecar TOML, which is
   reserved for generated/third-party/no-comment-syntax listings.
@@ -86,7 +96,7 @@ the freshly built `book/build/<chapter>.html` has `callout-badge`
 elements before debugging anything deeper.
 
 For anything not covered above, defer to the installed mdbook-listings
-plugin skill, then `mdbook-listings <cmd> --help`.
+skill, then `mdbook-listings <cmd> --help`.
 
 ## Building
 
@@ -115,12 +125,54 @@ need the dependency.
 The published
 docs site (schema HTML + the book) is built and deployed by
 `.github/workflows/docs.yml` via the panschema toolchain on push to
-`main` and on `v*` tags.
+`main`. A tag push builds nothing on its own: every push to `main`
+republishes each tag listed in `panschema-publish.toml`'s `versions`, so
+push a release tag together with the commit that lists it.
 
 Math is **opt-in** and not shipped in the stock template: to write `$…$`
 in chapters, enable `mdbook-katex` (pin `0.10.0-alpha`, ordered
 `after = ["admonish"]`) per the README "Math (optional)" section. Once
 enabled it becomes a required preprocessor, so also add it to CI.
+
+## Agent skills
+
+Agent skills are pinned dependencies, the same as the cqa contract.
+`skills-lock.json` (committed) records each source and a content hash;
+`npx skills add` fetches the content. Run the installs once after cloning:
+
+```bash
+npx skills add padamson/mdbook-listings -s mdbook-listings -a claude-code -y
+npx skills add padamson/panschema -s panschema-development -a claude-code -y
+```
+
+This repo is also a skill *producer*: `ontology-authoring-advance-step`
+lives in `skills/` and is reached through a tracked symlink in
+`.claude/skills/`, so it is never installed here. Nor are `erect-scaffold`
+and `setup-ontology`, which are bootstrap-only and marked
+`metadata.internal: true` so the CLI does not offer them.
+
+**Run installs and refreshes from a plain terminal, never from inside a
+Claude Code session.** The sandbox denies writes under `.claude/skills/`;
+the CLI exits 2 on `EPERM: mkdir .claude/skills` having installed nothing
+— no content, no lock entry. Older versions failed *silently* and still
+printed `✓ Updated N skill(s)`, so treat the success message as no
+evidence either way.
+
+Refresh with `npx skills update -p`. Bare `npx skills update` prompts and
+defaults to **Global** scope — choose **Project**. Verify by listing
+`.claude/skills/` and reading `metadata.version` out of an installed
+`SKILL.md`; that field is the only version an installed copy carries.
+
+With `-a claude-code` the CLI writes a real directory per skill under
+`.claude/skills/<name>/` and no `.agents/` hub, so the check is that the
+*entry* exists, not that a symlink resolves. `.gitignore` names the fetched
+skills one at a time rather than ignoring the directory, because most of
+`.claude/skills/` here is tracked on purpose.
+
+The Claude Code plugin channel is **not** used for ecosystem skills, and
+this repo carries no `enabledPlugins` for them. Two channels on the same
+`main` went stale in opposite directions; `.claude/skills/README.md` records
+why.
 
 ## Conventions
 

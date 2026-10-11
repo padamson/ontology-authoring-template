@@ -12,3 +12,17 @@ book/mdbook-listings.js
 book/mdbook-admonish.css
 book/schema-link.css
 book/schema-link.js
+
+# Managed agent skills, materialized by `npx skills add`. The pin lives in
+# skills-lock.json (committed); the content is fetched, like panschema's
+# dependency cache, so it is not vendored here.
+/.agents/
+# Only the FETCHED skills are ignored, named one by one — this repo is a
+# skill producer, so most of `.claude/skills/` is tracked on purpose:
+# erect-scaffold, setup-ontology, README.md, and a symlink to this repo's
+# own `skills/`. The rule is track a skill entry when its target is tracked,
+# ignore it when the target is fetched; a blanket ignore here would invert
+# that for the majority. Add a line when the who-consumes-what table gains
+# a row for this repo.
+/.claude/skills/mdbook-listings/
+/.claude/skills/panschema-development/

@@ -25,23 +25,24 @@ schema-name-agnostic (CI, hooks, and scripts read the schema path from
 edits and stays exactly as is:
 
 - **Kept:** `.github/`, `.pre-commit-config.yaml`, `.yamllint`,
-  `.gitignore`, `LICENSE-APACHE`, `scripts/`, `skills/`, and `.claude/skills/`
+  `LICENSE-APACHE`, `scripts/`, `skills/`, `.claude/settings.json` (the
+  sandbox settings an instance shares with this template), and `.claude/skills/`
   (`setup-ontology`, plus the symlink to the shipped authoring skill —
-  `setup-ontology` Step 8 swaps that carried copy for a tracked install).
+  `setup-ontology` Step 8 swaps that carried copy for a managed install).
 - **Replaced from `scaffold/`:** `schema/`, `data/` (the wine A-box and
   benchmark give way to the blank benchmark stub), `book/src/`,
   `book/book.toml`, `book/listings.toml`, `panschema.toml`,
-  `panschema-publish.toml`, `README.md`, `CLAUDE.md`, and
-  `.claude/settings.json` (the template's copy enables two plugins, the
-  instance's needs three — see below).
-The `.claude/settings.json` swap is the one replacement that is not about
-wine. The template enables the `mdbook-listings` and `panschema` plugins;
-it does not enable its own, because it carries
-`skills/ontology-authoring-advance-step/` directly and a project-local
-copy would shadow the installed one. An instance carries no such copy, so
-its settings file enables all three and the authoring skill arrives
-through `/plugin` like the other two — no `npx skills add`, nothing
-checked in to drift.
+  `panschema-publish.toml`, `README.md`, `CLAUDE.md`, and `.gitignore`
+  (see below).
+
+The `.gitignore` swap is the one replacement that is not about wine. Both
+files ignore the same build output; they differ on managed agent skills.
+This template is a skill *producer*, so most of its `.claude/skills/` is
+tracked and its ignore names the two fetched skills one at a time. An
+instance produces nothing, so every entry there is fetched and the whole
+directory is ignored, with `skills-lock.json` tracked as the pin. Getting
+this backwards is how a seeded repo ends up committing a vendored copy of
+someone else's skill.
 
 `LICENSE-APACHE` is kept because it licenses the scaffold you are about to
 promote, and Apache-2.0 asks a derivative work to carry it. The CC BY
@@ -88,7 +89,7 @@ for f in schema/myschema.yaml data/myschema-benchmark.yaml \
          book/src/SUMMARY.md book/src/introduction.md \
          book/book.toml book/listings.toml panschema.toml \
          panschema-publish.toml README.md CLAUDE.md \
-         .claude/settings.json; do
+         .gitignore; do
   test -e "scaffold/$f" || echo "MISSING: scaffold/$f"
 done
 test -e LICENSE-APACHE || echo "MISSING: LICENSE-APACHE (kept, not promoted)"
@@ -116,7 +117,7 @@ cp scaffold/book/book.toml scaffold/book/listings.toml book/
 cp scaffold/book/soft-wrap.css book/            # harmless if identical
 cp scaffold/panschema.toml scaffold/panschema-publish.toml .
 cp scaffold/README.md scaffold/CLAUDE.md .
-mkdir -p .claude && cp scaffold/.claude/settings.json .claude/settings.json
+cp scaffold/.gitignore .gitignore
 
 # Regenerate the lockfile for the fresh manifest (downloads the pinned
 # cqa contract into panschema's local cache).

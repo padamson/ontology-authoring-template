@@ -49,14 +49,15 @@ repos:
         pass_filenames: false
         files: ^(schema/[^/]+\.yaml|data/.*\.yaml|panschema\.(toml|lock))$
 
-      # plugin.json's version is the `/plugin update` gate: until it moves,
-      # an update reports "already at the latest version" and a skill edit
-      # reaches nobody. Pure bookkeeping, so easy to forget; the hook makes
-      # forgetting impossible, and keeps the frontmatter's version with it.
+      # `npx skills add` copies the skill and has no version concept, so the
+      # frontmatter's `metadata.version` is the only version an installed
+      # copy carries. A content edit that leaves it alone is invisible to
+      # everyone who already has the skill. Pure bookkeeping, so easy to
+      # forget; the hook makes forgetting impossible.
       - id: skill-version-bumped
         name: skill version bumped
-        description: Skill or plugin edits must bump the version consumers update against
+        description: Skill edits must bump the metadata.version consumers refresh against
         entry: scripts/check-skill-version-bumped.sh
         language: system
         pass_filenames: false
-        files: ^(skills/|\.claude-plugin/)
+        files: ^skills/

@@ -20,8 +20,48 @@ concurrency:
 # env block once Node 24 becomes the runner default.
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  # Exact pins, not ranges. This book's premise is frozen listings, so a
+  # rerun of an unchanged commit must render identically, and an unpinned
+  # tool breaks that on a day nobody touched the repo. mdbook-listings
+  # 0.2.1 is the proof that patch releases are not safe here: it changed
+  # rendered output (backticks in a caption became code) within a patch
+  # bump, so semver protects nothing for a tool that renders the published
+  # artifact. Keep each value in step with the local binary the README
+  # installs. The two `--git` installs below (panschema, mdbook-admonish)
+  # deliberately resolve branch tips — the dogfood-matrix convention, not
+  # an oversight.
+  MDBOOK_VERSION: "0.5.2"
+  MDBOOK_LISTINGS_VERSION: "0.2.1"
+  WASM_PACK_VERSION: "0.14.0"
 
 jobs:
+  # The pre-commit hook is per-clone and `--no-verify` skips it, so assert
+  # the same rule on what actually landed. This repo is trunk-based with
+  # direct pushes, so the aggregate to check is the push itself:
+  # `github.event.before`..HEAD. Skipped when that SHA is unusable — the
+  # first push to a branch reports all-zeros, and a force-push can name a
+  # commit this checkout does not have.
+  skill-version-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Skill version bumped since the previous tip
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            echo "No usable previous tip for this event; nothing to compare."
+            exit 0
+          fi
+          if ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            echo "Previous tip $BEFORE is not in this checkout (force-push?); skipping."
+            exit 0
+          fi
+          scripts/check-skill-version-bumped.sh --base "$BEFORE"
+
   build:
     runs-on: ubuntu-latest
     steps:
@@ -72,11 +112,11 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cargo/bin/wasm-pack
-          key: wasm-pack-${{ runner.os }}
+          key: wasm-pack-${{ runner.os }}-${{ env.WASM_PACK_VERSION }}
 
       - name: Install wasm-pack
         if: steps.cache-panschema.outputs.cache-hit != 'true' && steps.cache-wasm-pack.outputs.cache-hit != 'true'
-        run: cargo install wasm-pack --locked
+        run: cargo install wasm-pack --version ${{ env.WASM_PACK_VERSION }} --locked
 
       - name: Install panschema binaries from main
         if: steps.cache-panschema.outputs.cache-hit != 'true'
@@ -88,31 +128,23 @@ jobs:
 
       # --- mdbook + preprocessors ---
 
-      - name: Resolve latest mdbook release version
-        id: mdbook-ver
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          version=$(gh api repos/rust-lang/mdBook/releases/latest --jq .tag_name | sed 's/^v//')
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-
       - name: Cache mdbook binary
         id: cache-mdbook
         uses: actions/cache@v4
         with:
           path: ~/.cargo/bin/mdbook
-          key: mdbook-${{ runner.os }}-${{ steps.mdbook-ver.outputs.version }}
+          key: mdbook-${{ runner.os }}-${{ env.MDBOOK_VERSION }}
 
       - name: Install mdbook
         if: steps.cache-mdbook.outputs.cache-hit != 'true'
-        run: cargo install mdbook --version ${{ steps.mdbook-ver.outputs.version }} --locked
+        run: cargo install mdbook --version ${{ env.MDBOOK_VERSION }} --locked
 
       - name: Cache mdbook-listings binary
         id: cache-mdbook-listings
         uses: actions/cache@v4
         with:
           path: ~/.cargo/bin/mdbook-listings
-          key: mdbook-listings-${{ runner.os }}-0.2.0
+          key: mdbook-listings-${{ runner.os }}-${{ env.MDBOOK_LISTINGS_VERSION }}
 
       - name: Install mdbook-listings from crates.io
         # Switched off git-main to the released crate (v0.1.1, 2026-08-01):
@@ -120,7 +152,7 @@ jobs:
         # captions, list-of-listings, the soft-wrap/font-load badge fixes —
         # is in the release, so there's no reason left to track git.
         if: steps.cache-mdbook-listings.outputs.cache-hit != 'true'
-        run: cargo install mdbook-listings --version 0.2.0 --locked
+        run: cargo install mdbook-listings --version ${{ env.MDBOOK_LISTINGS_VERSION }} --locked
 
       - name: Cache mdbook-admonish binary
         id: cache-mdbook-admonish

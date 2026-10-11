@@ -1,7 +1,7 @@
 # Skills in this repo
 
 Two audiences, two locations — the split is deliberate, so keep it when
-adding a skill or a plugin manifest.
+adding a skill.
 
 ## `skills/<name>/` — shipped
 
@@ -11,32 +11,33 @@ project skills at `.claude/skills/` only; `npx skills add` discovers
 `skills/<name>/`). One source of truth, both audiences.
 
 A repo seeded from this template needs it for the life of its ontology,
-so it installs the skill rather than carrying a copy. Two channels reach
-it, and `.claude-plugin/` is what makes the first one work:
-
-```
-/plugin marketplace add padamson/ontology-authoring-template
-/plugin install ontology-authoring-template@ontology-authoring-template
-```
+so it installs the skill rather than carrying a copy. **One channel:**
 
 ```bash
 npx skills add padamson/ontology-authoring-template \
-  --skill ontology-authoring-advance-step
+  -s ontology-authoring-advance-step -a claude-code -y
 ```
 
-Prefer the plugin in Claude Code: nothing lands in the consumer's tree, so
-nothing can fork, and `/plugin update` gates on `plugin.json`'s version.
-The Skills CLI is for the other agents it supports, and it copies files in,
-which may result in diverged copies of the skill.
-Name the skill either way; a bare `add` takes everything.
+Name the skill with `-s`; a bare `add` takes everything a repo publishes.
+Run it from a plain terminal — inside a Claude Code session the sandbox
+denies writes under `.claude/skills/`, and the CLI exits 2 on
+`EPERM: mkdir .claude/skills` having installed nothing.
 
-The two versions must agree, and a pre-commit hook
-(`scripts/check-skill-version-bumped.sh`) enforces it: `/plugin update`
-reads `plugin.json`, the Skills CLI reads the frontmatter's
-`metadata.version`, and a reader on either channel compares against the
-one they can see. The version is the skill's own — do **not** pin it to
-the schema's `version:`, which is ontology metadata and means something
-else entirely.
+The Claude Code plugin channel was tried here and **retired** ecosystem-wide
+on 2026-09-15. Two channels tracked the same `main` and differed only in the
+gate, so consumers picked one by accident of which note they read last, and
+the plugin copies went stale — one sibling repo sat on a three-month-old
+skill whose `references/` was missing a file the convention depended on. The
+manifests carried no hooks, commands, agents or MCP servers: nothing the
+skill directory does not. So there is no `.claude-plugin/` here, and adding
+one back reopens that decision rather than just adding a file.
+
+`metadata.version` in the frontmatter is the only version an installed copy
+carries, and `scripts/check-skill-version-bumped.sh` enforces a bump on any
+content change under `skills/` — pre-commit per commit, and a CI job against
+the previous tip so `--no-verify` cannot slip past. The version is the
+skill's own: do **not** pin it to the schema's `version:`, which is ontology
+metadata and means something else entirely.
 
 Its name carries the `ontology-authoring-` prefix because a shipped
 skill's name and description are the only things preventing it from
@@ -59,9 +60,8 @@ That marking is load-bearing, and the reason is worth recording: this
 directory is **not** private. `npx skills add` clones the repo and scans
 `.claude/skills/` alongside `skills/<name>/`, so once the root `skills/`
 directory existed the CLI offered all three — including `erect-scaffold`,
-which deletes a showcase. The trigger was the root `skills/` directory,
-not a `.claude-plugin/` manifest (this repo still has none). Adding
-either one re-opens the question for every skill in here.
+which deletes a showcase. The trigger was the root `skills/` directory
+alone; no manifest was involved.
 
 Assert it rather than assuming it — the count is the test:
 

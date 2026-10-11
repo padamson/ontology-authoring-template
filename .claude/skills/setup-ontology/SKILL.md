@@ -191,15 +191,28 @@ by removing it as the **final** action:
    git rm -r skills/ .claude/skills/ontology-authoring-advance-step
    ```
 
-   Nothing replaces it in the tree: `.claude/settings.json` (taken from
-   the scaffold by **erect-scaffold**) already enables the
-   `ontology-authoring-template` plugin, which is where the skill now
-   comes from. It updates with `/plugin update`, the same as
-   `panschema` and `mdbook-listings`. Deleting the local copy is what
-   makes the plugin's version authoritative — a project-local skill
-   shadows an installed one of the same name.
+   Then take it as a managed install instead, along with the two tool
+   skills this repo consumes. **Ask the user to run these from a plain
+   terminal** — inside a Claude Code session the sandbox denies writes
+   under `.claude/skills/` and the CLI exits 2 having installed nothing:
 
-   Verify with `/plugin` that all three are listed before finishing.
+   ```bash
+   npx skills add padamson/mdbook-listings -s mdbook-listings -a claude-code -y
+   npx skills add padamson/panschema -s panschema-development -a claude-code -y
+   npx skills add padamson/ontology-authoring-template \
+     -s ontology-authoring-advance-step -a claude-code -y
+   ```
+
+   Deleting the local copy is what makes the installed version
+   authoritative — a project-local skill shadows an installed one of the
+   same name. Then commit `skills-lock.json`, which is the pin; the
+   fetched content is gitignored by the `.gitignore` **erect-scaffold**
+   promoted.
+
+   Verify by listing `.claude/skills/` (three entries) and reading
+   `metadata.version` out of one installed `SKILL.md`. Do not trust the
+   CLI's success message — older versions printed `✓ Updated N skill(s)`
+   even when the write was denied.
 
    If the user prefers to keep and adapt a local copy, that is a
    legitimate choice — record it in the repo's CLAUDE.md so the fork is

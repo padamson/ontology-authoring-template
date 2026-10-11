@@ -18,6 +18,14 @@ assets_version = "3.1.0" # do not edit: managed by `mdbook-admonish install`
 command = "mdbook-listings"
 before = ["admonish", "links"]
 number-listings = true
+# Renders the source path and frozen tag under each caption, so a reader can
+# see which file a listing is a snapshot of and at which tag. Requires
+# mdbook-listings >= 0.2.1; 0.2.0 silently ignores the key, so keep the local
+# binary in step with the CI pin or the published book and your preview
+# disagree. Because provenance is rendered, a caption must never name the
+# artifact itself -- see `references/captions.md` in the mdbook-listings
+# skill for the full rule set.
+show-listing-provenance = true
 # In-page {{#list-of-listings}} index (see src/list-of-listings.md).
 list-of-listings = true
 # "nested" puts each page's listings under their section heading in the

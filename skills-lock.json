@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "mdbook-listings": {
+      "source": "padamson/mdbook-listings",
+      "sourceType": "github",
+      "skillPath": "skills/mdbook-listings/SKILL.md",
+      "computedHash": "69cb45c4cb7f0ec5e4a8245d7c596aec74e3471a9351d2703398b7185407e63c"
+    },
+    "panschema-development": {
+      "source": "padamson/panschema",
+      "sourceType": "github",
+      "skillPath": "skills/panschema-development/SKILL.md",
+      "computedHash": "07d24e211f7e9fca5869b091b18c1b01a40a41637f285830855309ad6d362621"
+    }
+  }
+}
