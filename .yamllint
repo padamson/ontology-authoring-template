@@ -1,14 +1,14 @@
 # yamllint config for this ontology-authoring repo.
 #
-# Purpose: keep content lines in the schema file (`schema/*.yaml`) within a readable
-# column budget so the frozen mdbook-listings snapshots don't force
-# horizontal scroll in the book. Long `description:` values should be
-# folded with a `>-` block scalar (which yields the identical string to
-# LinkML) rather than left as one long line.
+# Purpose: keep content lines in the schema file (`schema/*.yaml`)
+# within a readable column budget (scripts/check-line-width.sh says why).
+# Long `description:` values should be folded with a `>-` block scalar
+# (which yields the identical string to LinkML) rather than left as one
+# long line.
 #
 # Known caveat: mdbook-listings `# CALLOUT:` marker comments are
 # intentionally long, but they are *stripped from the rendered listing*
-# (their text moves to a hover popover), so they never scroll in the book.
+# (their text moves to a hover popover), so they never appear in the book.
 # yamllint's line-length rule cannot exclude comments, so those marker
 # lines are the expected, known warnings. `level: warning` keeps them from
 # ever failing a run; the rule's real job is flagging new long *value*

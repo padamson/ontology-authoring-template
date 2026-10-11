@@ -55,6 +55,7 @@ scaffold/                 # blank baseline erect-scaffold restores (Start your o
 scripts/
   dev.sh                  # local hot-reload preview (book + versioned schema docs)
   rebuild.sh              # one-shot rebuild (mirrors CI)
+  build-book.sh           # mdbook build that fails on a logged ERROR (CI's gate)
   check-line-width.sh     # schema content line-width gate (<=72 cols)
   schema-path.sh          # resolves the schema path from panschema-publish.toml
 panschema.toml            # panschema manifest: generate (ttl/shacl/...) + check gates
@@ -213,6 +214,7 @@ You can also build the book alone:
 ```bash
 cd book && mdbook serve   # local preview with live reload
 cd book && mdbook build   # output to book/build/
+./scripts/build-book.sh   # the CI gate: mdbook build, failing on a logged ERROR
 ```
 
 First time? Install the toolchain — see **[Toolchain → Install](#install)** above.

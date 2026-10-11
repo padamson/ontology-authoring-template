@@ -9,7 +9,7 @@
 # no remote hook repos are pulled. Required on PATH:
 #   - mdbook-listings (main HEAD — dogfood; see the dogfood-loop notes)
 #   - panschema (main HEAD — verifies the curated instance data)
-#   - awk + git (for the line-width gate; both standard)
+#   - perl + git (for the line-width gate; both standard)
 repos:
   - repo: local
     hooks:
@@ -26,9 +26,9 @@ repos:
 
       - id: schema-line-width
         name: schema content line width (<=72, excl. CALLOUT markers)
-        # Enforces the .yamllint column budget so the frozen listings don't
-        # horizontal-scroll. Comment-aware (skips CALLOUT marker lines),
-        # which yamllint --strict can't do without false-failing on them.
+        # Enforces the .yamllint column budget, counted in characters.
+        # Comment-aware (skips CALLOUT marker lines), which yamllint
+        # --strict can't do without false-failing on them.
         entry: scripts/check-line-width.sh
         language: system
         pass_filenames: false

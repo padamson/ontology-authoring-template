@@ -27,6 +27,7 @@ vocabularies as prefixes, never LinkML `imports:`.
 ```
 cd book && mdbook serve   # local preview with live reload
 cd book && mdbook build   # output to book/build/
+./scripts/build-book.sh   # the CI gate: mdbook build, failing on a logged ERROR
 ```
 
 Preprocessors must be on `PATH`: `mdbook-listings`, the `mdbook-admonish`

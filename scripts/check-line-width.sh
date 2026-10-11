@@ -3,15 +3,24 @@
 #
 # Fail if any *content* line in the schema exceeds the 72-column budget
 # (see .yamllint). Long `description:` values must be folded with a `>-`
-# block scalar so the frozen mdbook-listings snapshots don't force
-# horizontal scroll in the book.
+# block scalar.
+#
+# Why a budget at all, now that book/soft-wrap.css wraps long listing lines
+# instead of scrolling them: soft-wrapped YAML reads worse than soft-wrapped
+# code. Indentation carries the meaning, and a wrapped continuation has no
+# indent marker, so a long `description:` can wrap into something that scans
+# as a new key. GitHub's code view does not wrap at all. Those argue against
+# long lines, not for 72 in particular; 72 is the budget the schema was
+# written to.
+#
+# Width is counted in characters, not bytes: an em-dash is one column on
+# screen and three bytes in UTF-8, and a byte count fails lines that fit.
 #
 # `# CALLOUT:` marker comments are exempt: mdbook-listings strips them from
 # the rendered listing (their text moves to a hover popover), so they never
-# scroll in the book. This is the comment-aware enforcement yamllint can't
-# do — its line-length rule can't exclude comments, which is why .yamllint
-# keeps line-length at `level: warning` (editor/manual lens) and the
-# blocking check lives here.
+# appear in the book. yamllint's line-length rule can't exclude them, which
+# is why .yamllint keeps line-length at `level: warning` (editor/manual
+# lens) and the blocking check lives here.
 #
 # Usage: scripts/check-line-width.sh [file ...]   (defaults to the schema)
 
@@ -22,11 +31,16 @@ cd "$(git rev-parse --show-toplevel)"
 # so this survives the eject and rename without a hardcoded path going stale.
 files=("${@:-$(scripts/schema-path.sh)}")
 
-awk '
-  /# CALLOUT:/ { next }
-  length > 72 {
-    printf "%s:%d: %d cols (>72)\n", FILENAME, FNR, length
-    flag = 1
+# perl -CSD decodes input as UTF-8, so length() counts characters.
+perl -CSD -ne '
+  chomp;
+  next if /# CALLOUT:/;
+  if (length > 72) {
+    printf "%s:%d: %d cols (>72)\n", $ARGV, $., length;
+    $flag = 1;
   }
-  END { exit flag }
+} continue {
+  close ARGV if eof;    # reset $. per file, skipped lines included
+} END {
+  exit $flag
 ' "${files[@]}"

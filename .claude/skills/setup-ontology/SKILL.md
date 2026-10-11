@@ -42,10 +42,12 @@ each means in a clause: **CC BY 4.0** (published vocabulary, attribution
 required), **Apache-2.0** (permissive, patent grant, the usual pick when
 code is generated from the schema), **CC0** (public domain, no conditions).
 Write the choice as a URL, matching the shape the field already expects
-(e.g. `https://creativecommons.org/licenses/by/4.0/`), and add a matching
-`LICENSE` file plus a README line. If the user declines to decide, leave
+(e.g. `https://creativecommons.org/licenses/by/4.0/`), delete the
+instructional comment above `license:`, and add a matching `LICENSE`
+file plus a README line. If the user declines to decide, leave
 `TODO` and say so in the hand-off — an unlicensed schema is a real gap,
-not a cosmetic one.
+not a cosmetic one. Say too that CI stays red until it is set:
+`panschema generate --strict` refuses `TODO` as `Invalid IRI 'TODO'`.
 
 Note the repo already carries `LICENSE-APACHE`. That covers the scaffold
 this instance was built from and stays regardless; it is not a statement
@@ -55,16 +57,18 @@ about the user's ontology, and their choice above does not replace it.
 
 ```bash
 grep -rIl 'myschema' . \
-  --exclude-dir=.git --exclude-dir=build --exclude-dir=site --exclude-dir=.claude
+  --exclude-dir=.git --exclude-dir=build --exclude-dir=site \
+  --exclude-dir=.claude --exclude-dir=skills
 ```
 
 Confirm the surface matches what's below. If extra files show up, fold
 them in — don't silently skip them.
 
-**Never rename inside `.claude/`** — these skill files *document*
-`myschema` as the placeholder name; rewriting them would corrupt the
-skills (including this one). That's why every command here excludes
-`.claude`.
+**Never rename inside `.claude/` or `skills/`** — these skill files
+*document* `myschema` as the placeholder name; rewriting them would
+corrupt the skills (including this one). That's why every command here
+excludes both. (`skills/` is the carried copy of the authoring skill,
+which Step 8 drops anyway.)
 
 ## Step 2 — rename the schema file
 
@@ -106,9 +110,11 @@ The **infrastructure needs no rename**: CI, the pre-commit hooks,
 match the schema file with a name-agnostic `schema/*.yaml` glob, so the
 `[files].main` rename above carries them.
 
-A repo-wide `myschema` → `<name>` replace handles these correctly. **But
-do not blindly run it everywhere** — Steps 4 and 5 cover the files where
-a blind replace produces nonsense.
+A straight `myschema` → `<name>` replace handles these correctly. Run it
+over the files listed here, **never repo-wide**: a token elsewhere may be
+documenting the placeholder, and renaming it makes the documentation
+false. Steps 4 and 5 cover the files where a blind replace produces
+nonsense.
 
 ## Step 4 — README & CLAUDE.md: rewrite, don't find-replace
 
@@ -137,17 +143,21 @@ to write — don't fabricate content, just fix the name.
 
 ```bash
 grep -rIn 'myschema' . \
-  --exclude-dir=.git --exclude-dir=build --exclude-dir=site --exclude-dir=.claude
+  --exclude-dir=.git --exclude-dir=build --exclude-dir=site \
+  --exclude-dir=.claude --exclude-dir=skills
 # fresh clones need the gitignored CSS/JS generated once, or mdbook build
 # fails on a missing mdbook-admonish.css (see README "Fresh clone"):
 ./scripts/install-assets.sh
-cd book && mdbook build      # must exit 0
+./scripts/build-book.sh      # must exit 0
 ```
 
+`build-book.sh` rather than a bare `mdbook build`, which can exit 0 on a
+broken book (the script's header says when).
+
 The grep should return nothing (or only an intentional historical
-mention you can point to). `.claude/` is excluded on purpose (the skill
-docs keep saying `myschema`). Report any stragglers rather than
-declaring done.
+mention you can point to). `.claude/` and `skills/` are excluded on
+purpose (the skill docs keep saying `myschema`). Report any stragglers
+rather than declaring done.
 
 Then check the two placeholders the rename does not touch:
 
@@ -173,8 +183,9 @@ which is the
 This skill is one-time bootstrap tooling. Once the rename is verified and
 handed off, it's dead weight in the instance — pure template scaffolding
 that still says `myschema` throughout (correct for the *template*, stale
-and confusing inside an instantiated repo). Make the instance born clean
-by removing it as the **final** action:
+and confusing inside an instantiated repo). Leave the instance's working
+tree free of it by removing it as the **final** action. (The history keeps
+it, and its removal lands as an ordinary deletion commit.)
 
 1. **Confirm first** — this is an irreversible cleanup of checked-in
    files. Ask: "Bootstrap done — remove the template's bootstrap

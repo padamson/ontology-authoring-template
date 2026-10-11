@@ -47,7 +47,7 @@ echo "==> [$(ts)] Rebuild the combined site:"
   [ -f mdbook-admonish.css ] || mdbook-admonish install . >/dev/null 2>&1
   mdbook-panschema install >/dev/null 2>&1
   mdbook-listings install >/dev/null 2>&1
-  mdbook build
+  ../scripts/build-book.sh
 )
 
 # 2. Versioned schema docs — site/schema/{main,current}/ (plus any

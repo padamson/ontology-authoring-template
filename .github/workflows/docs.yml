@@ -244,8 +244,8 @@ jobs:
 
       - name: Build the book (mdbook)
         # Outputs to book/build/ per the [build] build-dir config.
-        working-directory: book
-        run: mdbook build
+        # build-book.sh also fails on a logged ERROR (see its header).
+        run: ./scripts/build-book.sh
 
       - name: Combine book + schema docs into site/
         # Book lands at site/ root (index.html, theme/, ch*.html);

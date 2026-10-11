@@ -133,14 +133,27 @@ them as the final tree change — this skill's instructions are already
 loaded, so deleting its files mid-run is fine:
 
 ```bash
-rm -rf scaffold
-rm -rf .claude/skills/erect-scaffold
+# git rm, not rm: the promoted .gitignore ignores .claude/skills/, and
+# git add refuses an ignored path even to stage its deletion.
+git rm -rq scaffold .claude/skills/erect-scaffold
+
+# Stage the swap, and only the swap: anything else the user left in the
+# tree stays theirs to stage. setup-ontology's first command is a `git mv`
+# of the promoted schema, which fails on a file git has never seen.
+git add -A schema data book panschema.toml panschema.lock \
+  panschema-publish.toml README.md CLAUDE.md LICENSE .gitignore
 ```
 
 `setup-ontology` and the authoring skill are what remain, which is
 correct — the bootstrap rename still has to run, and the per-chapter
 tooling is what the ontology is built with. `setup-ontology` retires
 itself and converts the authoring skill to an install when it finishes.
+
+This cleans the working tree, not the history. GitHub's "Use this
+template" writes its single initial commit from the whole template, so
+`scaffold/` and both bootstrap skills are already in the instance's
+history, and their removal lands as an ordinary deletion in the next
+commit. That is expected.
 
 ## Step 5 — hand off
 
