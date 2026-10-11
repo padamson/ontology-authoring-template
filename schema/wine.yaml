@@ -7,7 +7,7 @@ description: |-
   dish. It is built for applications that recommend good wine-and-food
   pairings.
 license: https://creativecommons.org/licenses/by/4.0/
-version: 0.2.0
+version: 0.2.1
 
 prefixes:
   # The LinkML metamodel and this schema's own namespace
@@ -152,34 +152,43 @@ classes:
         description: The wine kinds in this catalog.
         range: Wine
         multivalued: true
+        # CALLOUT: inline The catalog is where each record is defined, so its collections hold the records themselves. Without this line LinkML reads a collection whose class carries an identifier as a list of id references, and the data written in full beneath it does not conform.
+        inlined_as_list: true
       foods:
         description: The food kinds in this catalog.
         range: Food
         multivalued: true
+        inlined_as_list: true
       grapes:
         description: The grape varieties in this catalog.
         range: Grape
         multivalued: true
+        inlined_as_list: true
       regions:
         description: The wine regions in this catalog.
         range: WineRegion
         multivalued: true
+        inlined_as_list: true
       wineries:
         description: The wineries in this catalog.
         range: Winery
         multivalued: true
+        inlined_as_list: true
       vintage_years:
         description: The vintage years in this catalog.
         range: VintageYear
         multivalued: true
+        inlined_as_list: true
       pairing_recommendations:
         description: The pairing recommendations in this catalog.
         range: PairingRecommendation
         multivalued: true
+        inlined_as_list: true
       vintage_assessments:
         description: The vintage assessments in this catalog.
         range: VintageAssessment
         multivalued: true
+        inlined_as_list: true
 
 # CALLOUT: slots Most of the remaining Step 3 terms become properties of the classes, N&M's Step 5 rule at work.
 slots:

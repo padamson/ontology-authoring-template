@@ -77,3 +77,9 @@ tag = "panschema-toml-v1"
 source = "../panschema.toml"
 frozen = "src/listings/panschema-toml-v1.toml"
 sha256 = "47c0d80152f9b7bae1c2a8ac1184cb430ef63a4ab828edb416396ce5471c7502"
+
+[[listing]]
+tag = "wine-yaml-v8"
+source = "../schema/wine.yaml"
+frozen = "src/listings/wine-yaml-v8.yaml"
+sha256 = "d922c51d8d5a6655182aea3cddd8ce73d1b38daa83f8df1829c049d33e1ddcfd"

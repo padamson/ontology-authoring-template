@@ -138,8 +138,73 @@ with no range at all. The fix resolves the default into the slot definitions
 when the schema loads, and the regenerated artifacts are byte-identical to
 before the deletion.
 
+## Records or references
+
+Every class in the catalog carries an `id` slot declared `identifier: true`. In
+LinkML, a slot whose range is such a class holds *references* by default: id
+strings that point at records defined somewhere else. That is the right reading for `maker` on a wine, which names a winery by
+its `id` rather than describing it again. It is the wrong reading for the
+catalog's own collections, because the catalog is where every record is
+defined. The data file writes each one out in full under `wines`, `grapes`, and
+the rest, and the schema said those slots held ids.
+
+The two disagreed from Step 7 on, and nothing said so. panschema read each value
+by its shape, a mapping as a record and a string as a reference, so the catalog
+validated clean. LinkML's own validator does not read it that way: run against
+the v7 schema, `linkml-validate` rejects all 37 records in the worked example,
+each with `is not of type 'string'`.
+
+The leniency was panschema's. It tests its own reading of LinkML against the
+reference validator, and when that testing was extended to cross every inlining
+declaration with every way of writing the data, the shape-based reading turned
+out to accept what LinkML rejects. [panschema
+`1145325`](https://github.com/padamson/panschema/commit/1145325) brought the two
+into line, and `verify` now reports the mismatch, once per collection:
+
+```console
+$ panschema verify --strict
+warning: data/wine-instances.yaml: instance `(root)`: slot `wines` declares references to `Wine` (neither `inlined` nor `inlined_as_list`), but 10 records are authored inline there; declare `inlined_as_list: true` for a list of records or `inlined: true` for a dict keyed by id, or author the ids and define the records in their own collection
+…
+Error: 8 schema or conformance finding(s); failing because --strict is set
+```
+
+and under `--strict` the build stops there. The fix is necessary on both
+counts: the schema was wrong about its own data under the reading LinkML
+defines, and the gate that keeps the published catalog conforming can no longer
+pass until the schema says what the data does. Each collection on `WineCatalog`
+declares `inlined_as_list: true` {{#callout inline}}, which tells LinkML to
+expect a list of whole records. The
+other class-ranged slots (`maker`, `region`, `made_from_grape`, `vintage`, and
+the `wine` and `food` a judgment is about) still hold references, and declare
+nothing.
+
+{{#diff wine-yaml-v7 wine-yaml-v8 context=4}}
+
+(The version line is the `v0.2.1` patch release this refinement prompted; the
+next section says why.)
+
+The data did not change, and neither did anything panschema generates: the
+Turtle, the SHACL shapes, the JSON Schema, and the instance graph are
+byte-identical before and after, because panschema's writers already read the
+collections as records. What changed is LinkML's reading: the 37 errors are
+gone, and the schema says in its own terms which slots define a record and which
+point at one.
+
 ## Where it stands
 
-The schema is tagged `v0.2.0`. None of these refinements is a new N&M step; each
-came from using the ontology, not from the method. That is the second rule —
+The schema is tagged `v0.2.1`. "Saying the range once" changed nothing a
+consumer of the schema could see, so it rode the bleeding edge without a
+release. "Records or references" is different. The Turtle, the shapes, and the
+JSON Schema panschema generates are the same before and after, but a reader who
+takes the schema to LinkML's own validator or generators gets a different result
+with the declaration than without it, and `schema/current/` should point at the
+version that loads the catalog. A patch release does that.
+
+(The benchmark Chapter 9 builds pins the version its claims were verified
+against, so its two pins move to `0.2.1`, and every claim re-verifies against
+the new version. `v0.2.1` is also the first release whose package contains the
+benchmark, so its page gains a `current/` alias too.)
+
+None of these refinements is a new N&M step; each came from using the ontology,
+not from the method. That is the second rule —
 development is iterative — exercised through use.

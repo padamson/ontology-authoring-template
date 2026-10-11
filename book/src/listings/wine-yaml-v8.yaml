@@ -1,0 +1,373 @@
+id: https://w3id.org/wine-linkml/
+name: wine
+# CALLOUT: domain The domain and scope settled in this chapter, recorded in the schema itself.
+description: |-
+  An ontology of food and wine: the kinds of wine, the foods they
+  accompany, and the characteristics that make a wine appropriate for a
+  dish. It is built for applications that recommend good wine-and-food
+  pairings.
+license: https://creativecommons.org/licenses/by/4.0/
+version: 0.2.1
+
+prefixes:
+  # The LinkML metamodel and this schema's own namespace
+  linkml: https://w3id.org/linkml/
+  wine: https://w3id.org/wine-linkml/
+
+  # Foundational grounding: BFO and CCO
+  obo: http://purl.obolibrary.org/obo/
+  cco: https://www.commoncoreontologies.org/
+
+default_prefix: wine
+default_range: string
+
+# Only linkml:types is imported. External OWL ontologies (BFO, CCO, ...)
+# are reused by URI (subclass_of to the external term, resolved through
+# the prefixes above), never via imports:, which is reserved for other
+# LinkML schemas.
+imports:
+  - linkml:types
+
+# CALLOUT: classes The Step 3 terms with independent existence, promoted into classes.
+classes:
+
+  Wine:
+    # CALLOUT: kinds An instance of Wine is a named kind of wine, not a bottle: Chapter 1 scoped bottles out, and N&M's own §4.6 makes wine kinds the instances for the pairing application.
+    description: >-
+      A kind of wine, distinguished by its grape, provenance, and
+      characteristics. Instances are named wine kinds such as Bordeaux
+      or Napa Zinfandel, not individual bottles.
+    # CALLOUT: grounding subclass_of asserts rdfs:subClassOf to the external term: Wine is narrower than CCO Portion of Processed Material, not identical to it (which class_uri would claim).
+    subclass_of: cco:ont00001084
+    slots:
+      - id
+      - name
+      - color
+      - body
+      - flavor
+      - sugar
+      - made_from_grape
+      - maker
+      - region
+      - vintage
+
+  Food:
+    description: >-
+      A kind of food or dish that a wine can be recommended for, such
+      as a seafood dish or grilled meat.
+    subclass_of: cco:ont00000307
+    slots:
+      - id
+      - name
+
+  Grape:
+    description: >-
+      A grape variety used to make wine, such as Cabernet Sauvignon or
+      Zinfandel. Instances are varieties, mirroring Wine's
+      kinds-as-instances reading.
+    subclass_of: obo:BFO_0000030
+    slots:
+      - id
+      - name
+
+  WineRegion:
+    description: >-
+      A geographic wine-growing region, such as Napa or Bordeaux.
+    subclass_of: cco:ont00000472
+    slots:
+      - id
+      - name
+
+  Winery:
+    description: >-
+      An organization that produces wine.
+    subclass_of: cco:ont00001180
+    slots:
+      - id
+      - name
+
+  VintageYear:
+    description: >-
+      The harvest year a wine is tied to. The "2018 vintage as a batch
+      of wine" sense is deliberately out of scope.
+    subclass_of: obo:BFO_0000038
+    slots:
+      - id
+      - name
+
+  # CALLOUT: ice A pairing is a claim about a wine and a dish, so it grounds as an Information Content Entity: a recorded thing that is about the pair and can carry rationale, source, and confidence.
+  PairingRecommendation:
+    description: >-
+      A recommendation that a wine suits a food, such as Cabernet
+      Sauvignon with a seafood dish. Grounded as information about the
+      pair rather than as a property of the wine.
+    subclass_of: cco:ont00000958
+    slots:
+      - id
+      - name
+      - wine
+      - food
+      - rationale
+      - source
+      - confidence
+
+  # CALLOUT: assessment The second recorded-judgment class: a sourced verdict on a vintage-specific wine kind, grounded exactly as the pairing recommendation is.
+  VintageAssessment:
+    description: >-
+      A sourced judgment of the quality of a vintage-specific wine
+      kind, such as a vintage chart's verdict on a year's harvest.
+    subclass_of: cco:ont00000958
+    slots:
+      - id
+      - name
+      - wine
+      - verdict
+      - source
+      - confidence
+      - rationale
+    # CALLOUT: rule An exceptional or poor verdict must carry a rationale: the reified assessment enforces the standard that a claim deviating from the average be justified, not merely asserted.
+    rules:
+      - preconditions:
+          slot_conditions:
+            verdict:
+              any_of:
+                - equals_string: exceptional
+                - equals_string: poor
+        postconditions:
+          slot_conditions:
+            rationale:
+              required: true
+        description: >-
+          An exceptional or poor verdict must carry a rationale.
+
+  # CALLOUT: catalog The data container: a validated instance file is one WineCatalog record holding every collection. The class exists because a data file needs a root.
+  WineCatalog:
+    description: >-
+      The container holding a catalog of records: wine kinds, foods,
+      grapes, regions, wineries, vintage years, and the judgments
+      about them.
+    tree_root: true
+    attributes:
+      wines:
+        description: The wine kinds in this catalog.
+        range: Wine
+        multivalued: true
+        # CALLOUT: inline The catalog is where each record is defined, so its collections hold the records themselves. Without this line LinkML reads a collection whose class carries an identifier as a list of id references, and the data written in full beneath it does not conform.
+        inlined_as_list: true
+      foods:
+        description: The food kinds in this catalog.
+        range: Food
+        multivalued: true
+        inlined_as_list: true
+      grapes:
+        description: The grape varieties in this catalog.
+        range: Grape
+        multivalued: true
+        inlined_as_list: true
+      regions:
+        description: The wine regions in this catalog.
+        range: WineRegion
+        multivalued: true
+        inlined_as_list: true
+      wineries:
+        description: The wineries in this catalog.
+        range: Winery
+        multivalued: true
+        inlined_as_list: true
+      vintage_years:
+        description: The vintage years in this catalog.
+        range: VintageYear
+        multivalued: true
+        inlined_as_list: true
+      pairing_recommendations:
+        description: The pairing recommendations in this catalog.
+        range: PairingRecommendation
+        multivalued: true
+        inlined_as_list: true
+      vintage_assessments:
+        description: The vintage assessments in this catalog.
+        range: VintageAssessment
+        multivalued: true
+        inlined_as_list: true
+
+# CALLOUT: slots Most of the remaining Step 3 terms become properties of the classes, N&M's Step 5 rule at work.
+slots:
+
+  # CALLOUT: ids The identifier records use to reference each other; name stays the human label. An earlier chapter said instances would be keyed by name; building the data file refined that.
+  id:
+    description: >-
+      The short, stable identifier a record is referenced by within a
+      catalog.
+    identifier: true
+    # CALLOUT: pattern Identifier hygiene as a checked constraint: ids are lowercase kebab-case, keeping them stable and safe to mint into an IRI.
+    pattern: '^[a-z0-9]+(-[a-z0-9]+)*$'
+
+  name:
+    description: >-
+      The name by which a kind, place, producer, or recommendation is
+      known. Every class carries it.
+    # required: every competency question addresses its entities by
+    # name.
+    required: true
+
+  color:
+    # CALLOUT: colorvalues The Chapter 4 decision lands: the colors are values of a characteristic, not subclasses of Wine. In the BFO reading the color is a quality of the wine, carried here as a value.
+    description: >-
+      The hue a wine kind presents, imparted chiefly by the extent of
+      grape-skin contact during maceration and shifted by variety and
+      age.
+    range: WineColorEnum
+
+  body:
+    description: >-
+      The perceived weight and fullness of a wine kind on the palate,
+      driven by alcohol, extract, and residual sugar.
+    range: BodyEnum
+
+  flavor:
+    # "bouquet" names the same characteristic in one competency
+    # question.
+    description: >-
+      The intensity of the taste and aroma impression a wine kind
+      makes.
+    range: FlavorEnum
+
+  sugar:
+    # "sugar" is the source paper's name for what is often called
+    # sweetness.
+    description: >-
+      The residual sugar a wine kind retains after fermentation,
+      perceived as its sweetness.
+    range: SugarEnum
+
+  # CALLOUT: blends multivalued, because a blend is made from more than one grape variety.
+  made_from_grape:
+    description: >-
+      The grape variety or varieties a wine kind is made from.
+    range: Grape
+    multivalued: true
+    # CALLOUT: required N&M give grape a minimum cardinality of one: a wine is made from at least one variety.
+    required: true
+
+  maker:
+    description: >-
+      The winery that makes a wine kind.
+    range: Winery
+
+  region:
+    description: >-
+      The wine region a wine kind comes from (its appellation), stored
+      rather than derived: a winery's address does not determine where
+      its wine's grapes grow.
+    range: WineRegion
+
+  vintage:
+    description: >-
+      The harvest year a wine kind is tied to. Vintage-specific kinds
+      (the 2018 Napa Zinfandel) are themselves valid Wine instances.
+    range: VintageYear
+
+  # CALLOUT: reified The pairing relation, reified: the recommendation points at the wine and the food, so there is no direct goes_well_with edge to maintain.
+  wine:
+    description: >-
+      The wine kind a recommendation or assessment is about.
+    range: Wine
+    # required: a judgment about nothing is not one.
+    required: true
+
+  food:
+    description: >-
+      The food kind a pairing recommendation is about.
+    range: Food
+    required: true
+
+  rationale:
+    description: >-
+      The reasoning behind a recommendation or a verdict, in prose.
+
+  source:
+    description: >-
+      Where a recommendation or assessment comes from (a sommelier, a
+      text, a dataset).
+
+  confidence:
+    description: >-
+      How strongly the source backs the judgment, from 0 to 1.
+    range: float
+    # CALLOUT: bounds The prose promise "from 0 to 1" becomes a checked constraint.
+    minimum_value: 0
+    maximum_value: 1
+
+  verdict:
+    description: >-
+      The quality judgment an assessment renders on its wine.
+    range: VerdictEnum
+    required: true
+
+enums:
+
+  WineColorEnum:
+    description: >-
+      The hue classifications a wine kind can present.
+    permissible_values:
+      red:
+        description: >-
+          Fermented with extended contact between juice and dark grape
+          skins.
+      white:
+        description: >-
+          Fermented with minimal skin contact, typically from
+          pale-skinned grapes.
+      rosé:
+        description: >-
+          Fermented with brief skin contact, sitting between white and
+          red.
+
+  # CALLOUT: valuesets Flavor's values are N&M's Step 6 set verbatim; body and sugar complete the scales the paper's examples use (light/full, dry/sweet) with the conventional middle value.
+  BodyEnum:
+    description: >-
+      The palate-weight classifications of a wine.
+    permissible_values:
+      light:
+        description: Low perceived weight on the palate.
+      medium:
+        description: Intermediate perceived weight on the palate.
+      full:
+        description: >-
+          High perceived weight, typically with higher alcohol and
+          extract.
+
+  FlavorEnum:
+    description: >-
+      The taste-and-aroma intensity classifications of a wine.
+    permissible_values:
+      delicate:
+        description: A subtle, low-intensity impression.
+      moderate:
+        description: An intermediate-intensity impression.
+      strong:
+        description: A pronounced, high-intensity impression.
+
+  SugarEnum:
+    description: >-
+      The residual-sugar classifications of a wine.
+    permissible_values:
+      dry:
+        description: Little or no perceptible residual sugar.
+      off-dry:
+        description: Slightly perceptible residual sugar.
+      sweet:
+        description: Clearly perceptible residual sugar.
+
+  VerdictEnum:
+    description: >-
+      The quality classifications an assessment can render.
+    permissible_values:
+      exceptional:
+        description: Well above the typical quality of comparable years.
+      good:
+        description: Above typical quality.
+      average:
+        description: Typical quality.
+      poor:
+        description: Below typical quality.

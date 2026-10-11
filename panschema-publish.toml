@@ -1,18 +1,18 @@
 [schema]
 name = "wine"
-version = "0.2.0"
+version = "0.2.1"
 linkml = "1.7.0"
 
 [files]
 main = "schema/wine.yaml"
 
 [publishing]
-versions = ["v0.1.0", "v0.2.0"]
+versions = ["v0.1.0", "v0.2.0", "v0.2.1"]
 edge = "main"
 # On each release: append the new tag to `versions` above and set
 # `current` to it, so `/schema/current/` aliases to the latest release
 # while `/schema/main/` stays the bleeding edge.
-current = "v0.2.0"
+current = "v0.2.1"
 output_dir = "site/schema"
 format = "html"
 # Header brand/home link target. Our publish dir is site/schema/<version>/,
@@ -39,8 +39,8 @@ default = true
 # Naming a dependency schema moves this dataset onto a second published
 # page — the cqa contract rendered with wine's benchmark as its instance
 # graph, at site/schema/cqa/. The page exists only at refs where both
-# the dependency and the data do: today that is `main` alone, since no
-# released version of the package contains the benchmark yet.
+# the dependency and the data do: `v0.2.1` is the first release whose
+# package contains the benchmark, so earlier tags have no such page.
 [[instances]]
 name = "benchmark"
 data = "data/wine-benchmark.yaml"
@@ -60,9 +60,8 @@ layout = "instances-first"
 schema_path = "schema/current/"
 label = "Wine schema"
 
-# The benchmark page has no released version yet, so this entry points
-# at the bleeding edge; it moves to schema/cqa/current/ at the first
-# release whose package contains the benchmark.
+# The benchmark page follows the latest release, the same as the
+# schema's own entry above.
 [[book_link]]
-schema_path = "schema/cqa/main/"
+schema_path = "schema/cqa/current/"
 label = "CQ&A benchmark"

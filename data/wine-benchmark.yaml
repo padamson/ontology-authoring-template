@@ -19,9 +19,9 @@ description: >-
 
 # CALLOUT: target The claims below are about one graph at one version — and the schema URI, stated once, is the base every short anchor in this file expands against. Without the pins, a correct edit to the catalog could silently falsify a ground truth.
 target_schema: https://w3id.org/wine-linkml/
-target_schema_version: 0.2.0
+target_schema_version: 0.2.1
 target_dataset: worked-example
-target_dataset_version: 0.2.0
+target_dataset_version: 0.2.1
 
 competency_question_answers:
   - id: cq-02
