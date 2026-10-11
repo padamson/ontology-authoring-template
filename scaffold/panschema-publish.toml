@@ -24,7 +24,7 @@ site_root_url = "../../"
 
 # Curated instance graphs published behind the schema page's in-page
 # selector. `name` labels each tab; `data` is repo-relative. Add the
-# worked example here at Step 7 (`exemplar = true` marks the tab the
+# worked example here at Step 7 (`default = true` marks the tab the
 # page opens on).
 #
 # Naming a dependency schema moves a dataset onto a second published

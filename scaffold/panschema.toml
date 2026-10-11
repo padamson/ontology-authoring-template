@@ -33,7 +33,7 @@ ttl = "site/artifacts/myschema.ttl"
 # once after cloning.
 [schemas.cqa]
 source = "github:padamson/cqa-schema"
-version = "0.1.0"
+version = "0.1.1"
 
 # The benchmark as a self-contained knowledge graph (cqa's classes plus
 # this schema's records), published beside myschema.ttl.

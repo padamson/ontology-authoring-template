@@ -47,7 +47,7 @@ SECTION OUTLINE:
     shown as a {{#diff}} against the prior tag with callouts.
   - The worked example: the full catalog, large enough to answer every
     competency question, reproduced in Appendix A. Both graphs publish
-    behind the selector (mark one exemplar = the default panel).
+    behind the selector (mark the one the page opens on `default = true`).
   - Verification: `panschema verify` against the schema — the constraints
     Step 6 declared are what it now enforces.
   - The competency-question litmus, each answered by tracing the catalog
@@ -75,7 +75,7 @@ AUTHORING CHECKLIST:
   [ ] a small preview data file, distinct from the worked example,
       introduced in the intro with the distinction stated in prose
   [ ] both graphs wired into panschema-publish.toml [[instances]] (name
-      labels the selector tab; mark one exemplar = the default panel)
+      labels the selector tab; `default = true` marks the panel it opens on)
   [ ] Appendix A embeds the frozen worked-example data listing
   [ ] freeze a new myschema-yaml-vN tag for the schema additions
       (container + id + any refinement); {{#diff}} from the prior tag,
