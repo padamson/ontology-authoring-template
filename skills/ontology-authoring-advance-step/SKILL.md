@@ -3,7 +3,7 @@ name: ontology-authoring-advance-step
 description: Advance a LinkML ontology book one Noy & McGuinness step, in a repo built from the ontology-authoring-template (a `schema/` + `book/` pair with frozen mdbook-listings snapshots). Advances the schema only as the worked example demands, adds inline callouts, re-freezes a new listing tag (avoiding the stale-frozen-bytes foot-gun), writes the chapter prose in the N&M voice, reconciles carried-in deferrals, and verifies the build. Use when the user says "write the next chapter", "do Step N", "advance the schema", "work on ch0N", or wants to move the book forward one N&M step.
 license: Apache-2.0
 metadata:
-  version: "0.1.1"
+  version: "0.1.2"
 ---
 
 # Advance one N&M step-chapter
@@ -91,9 +91,11 @@ quote` blocks; build the discussion around them. Jargon blocks at first
 use. Back external claims with citations. Every `# CALLOUT:` marker needs
 a matching `{{#callout}}` label or `mdbook build` fails.
 
-The book is a **chronological log** — narrate reversals and dead-ends as
-they happened; never retro-edit earlier chapters to hide an abandoned
-path. Keep speculative forward-references (future repo names, roadmap)
+The book is a **chronological log** within its edition — narrate
+reversals and dead-ends as they happened; never retro-edit earlier
+chapters to hide an abandoned path. Only a revised edition (a rewrite of
+the whole book, cut at a minor release) rewrites earlier chapters, and
+advancing a step never is one. Keep speculative forward-references (future repo names, roadmap)
 out — those go in private notes.
 
 ## Step 4 — reconcile deferrals (both directions)

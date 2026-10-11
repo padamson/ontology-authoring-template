@@ -236,6 +236,41 @@ why.
   listing that still carries one shows the reader meta-commentary
   instead of the schema.
 
+## Book editions
+
+The book is the chronological N&M history of the schema, and it stays
+that through every patch release and through any minor release that does
+not need a retelling. A minor release *may* start a revised edition
+instead. The call is made once per minor release (once per major release
+after 1.0), and the default is not to revise.
+
+- **Within an edition, the book is a log.** Narrate reversals and dead
+  ends as they happened, and do not retro-edit earlier chapters to hide a
+  path that was later abandoned. Work that comes from using the ontology
+  rather than from an N&M step goes in the refinements chapter after the
+  seven steps (`ch08-refinements.md` here), one section per refinement,
+  in release order. Wine's `v0.2.0` and `v0.2.1` both landed this way: the
+  model grew and tightened, and no decision ch01–ch07 derive was
+  reversed.
+- **A minor release revises the edition when the log would mislead.** If
+  the release reverses a decision earlier chapters build on, a reader who
+  follows the book from Chapter 1 ends up with a model the schema no
+  longer has, and a refinement section at the back does not fix that. A
+  revised edition rewrites the book in place as the derivation of the new
+  model, with a short preface saying what changed from the previous
+  edition (the way a textbook's second edition does). From then on the
+  revised edition is a log in its own right.
+- **A patch release never revises.** It narrates in the refinements
+  chapter of its own line. A patch to an older line (`v0.1.2` while
+  `main` carries v0.2) is a commit on that line's newest tag, tagged and
+  pushed on its own. There is no long-lived release branch, and a fix
+  that also applies to `main` lands there separately.
+- **Listing tags on a second line carry the line.** A listing frozen on
+  an older patch line, or for a revised edition, puts the minor version
+  in its tag (`wine-yaml-0.1-v7`, `wine-yaml-0.3-v1`), so it cannot
+  collide with a same-numbered tag frozen on `main`. A revised edition
+  re-freezes all its listings under its own series.
+
 ## Lessons
 
 These are lessons-learned baked into the template; each step-chapter
@@ -253,9 +288,10 @@ checklist.
 - **A concern that fights the layer wants a companion ontology.** If a
   concept keeps resisting the foundational grounding, that is a signal
   it belongs in a separate companion ontology, not bolted on here.
-- **The book is a chronological log, not a snapshot.** Narrate
+- **The book is a chronological log within an edition.** Narrate
   reversals and dead-ends as they happened; do not retro-edit earlier
-  chapters to hide a path that was later abandoned.
+  chapters to hide a path that was later abandoned. Only a revised
+  edition, cut at a minor release, rewrites them ("Book editions").
 - **Speculative forward-references stay in private notes.** Keep
   future-repo names, roadmap, and speculative plans out of the public
   book and commits.
