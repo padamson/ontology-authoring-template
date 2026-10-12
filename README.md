@@ -88,14 +88,18 @@ scripts/
   build-book.sh           # mdbook build that fails on a logged ERROR (CI's gate)
   check-line-width.sh     # schema content line-width gate (<=72 cols)
   schema-path.sh          # resolves the schema path from panschema-publish.toml
+  check-tool-pins.sh      # reports docs.yml tool pins that crates.io has moved past
 panschema.toml            # panschema manifest: generate (ttl/shacl/...) + check gates
 panschema.lock            # the cqa contract's resolved checksum (written by panschema fetch)
 panschema-publish.toml    # panschema's release + publish manifest
 skills/                   # shipped: ontology-authoring-advance-step
 .claude/skills/           # this checkout only: erect-scaffold, setup-ontology
                           #   (+ a symlink to the shipped skill above)
-.github/workflows/
-  docs.yml                # builds book + versioned schema docs; deploys to Pages
+.github/
+  dependabot.yml          # weekly, grouped action bumps (one PR, merged by hand)
+  workflows/
+    docs.yml              # builds book + versioned schema docs; deploys to Pages
+    tool-pins.yml         # weekly: opens an issue when a docs.yml tool pin is behind
 ```
 
 ## Toolchain
@@ -153,6 +157,8 @@ npm install -g live-server
 The three `--version` pins match the `env:` block in
 `.github/workflows/docs.yml`; when one moves, move both, or your preview
 and the published book render differently.
+[`.github/workflows/tool-pins.yml`](.github/workflows/tool-pins.yml) opens
+an issue each week for a pin that crates.io has moved past.
 
 Confirm the six required tools are on `PATH`: `mdbook`, `mdbook-admonish`,
 `mdbook-listings`, `panschema`, `mdbook-panschema`, `watchexec`

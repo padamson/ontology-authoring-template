@@ -1,0 +1,25 @@
+version: 2
+updates:
+  # GitHub Actions is the only ecosystem Dependabot can read here. The repo
+  # has no Cargo.lock or package.json, its pre-commit hooks are all `local`
+  # with no `rev:`, and panschema.lock is not a format Dependabot knows.
+  # The build tools pinned in docs.yml are tool-pins.yml's job.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "04:00"
+      timezone: "America/New_York"
+    # Wait a week before proposing a release, so a broken or retracted one
+    # is usually gone before it reaches a PR. Only default-days here:
+    # Dependabot's schema rejects the per-semver keys for github-actions,
+    # and one bad key invalidates this whole file.
+    cooldown:
+      default-days: 7
+    # One PR for the week's action bumps. docs.yml builds and verifies it
+    # without deploying; merge it by hand once that run is green.
+    groups:
+      actions:
+        patterns:
+          - "*"

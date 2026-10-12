@@ -1,0 +1,85 @@
+name: Tool pin check
+
+# Opens a tracking issue for each build tool pinned in docs.yml that
+# crates.io has moved past. Dependabot covers the actions; why these pins
+# get an issue and never a bump is in scripts/check-tool-pins.sh, which also
+# prints this report locally.
+
+on:
+  schedule:
+    # Saturday 10:00 UTC, after Dependabot's 04:00 New York run, so the
+    # week's dependency upkeep arrives together.
+    - cron: "0 10 * * 6"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Open an issue per pin that is behind
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Actions runs this under `bash -e`; the script's 1 (a pin is
+          # behind) is the normal case, so read its status before `-e`.
+          set +e -uo pipefail
+          behind="$RUNNER_TEMP/behind.tsv"
+          scripts/check-tool-pins.sh > "$behind"
+          status=$?
+          cat "$behind"
+          set -e
+          [ -s "$behind" ] || exit $(( status > 1 ))
+
+          label=tool-pin-bump
+          gh label create "$label" --color 1d76db \
+            --description "A build tool pinned in docs.yml has a newer release" \
+            2>/dev/null || true
+          open=$(gh issue list --label "$label" --state open --limit 100 \
+                   --json number,title)
+
+          while IFS=$'\t' read -r crate var pinned latest <&3; do
+            title="Tool pin: $crate $latest available (CI pins $pinned)"
+
+            # Idempotent: an open issue for this exact release means the
+            # bump is already tracked.
+            if jq -e --arg t "$title" 'any(.[]; .title == $t)' <<< "$open" >/dev/null; then
+              echo "Already tracked: $title"
+              continue
+            fi
+
+            body="$RUNNER_TEMP/body.md"
+            cat > "$body" <<EOF
+          crates.io's latest stable \`$crate\` is **$latest**; \`.github/workflows/docs.yml\` pins **$pinned**. Release history: https://crates.io/crates/$crate/versions
+
+          ## To bump
+
+          - Install it locally: \`cargo install $crate --version $latest --locked\`. The local binary stays at or past the CI pin, or a preview renders differently from the published book.
+          - Rebuild with \`./scripts/build-book.sh\` and compare the output with the published site. The book's listings are frozen so that a rerun renders identically, and a new release can still change what a listing, caption or callout looks like.
+          - Move \`$var\` in \`docs.yml\`, and the \`--version\` of any README install command for \`$crate\`, in one commit that closes this issue.
+
+          Opened by \`.github/workflows/tool-pins.yml\`.
+          EOF
+            new=$(gh issue create --label "$label" --title "$title" --body-file "$body")
+            echo "Opened $new"
+
+            # An open issue for an older release of the same crate is now
+            # superseded; close it so only the newest one is open.
+            jq -r --arg p "Tool pin: $crate " --arg t "$title" \
+              '.[] | select((.title | startswith($p)) and .title != $t) | .number' \
+              <<< "$open" |
+            while read -r old; do
+              gh issue close "$old" --comment "Superseded by $new." < /dev/null
+            done
+          done 3< "$behind"
+
+          # A pin the script could not read fails the run, after the issues
+          # for the pins it could read are filed. The output above names it.
+          exit $(( status > 1 ))

@@ -3,16 +3,23 @@ name: Build and publish docs
 on:
   push:
     branches: [main]
+  # A pull request gets the same build and verification as a push, Pages
+  # artifact included, but no deploy. This is what tests a Dependabot PR
+  # before it is merged by hand; the repo itself is trunk-based, so a human
+  # rarely opens one.
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
+# Deploys from main queue behind each other and never cancel. A pull
+# request gets a group of its own, and a new push to it cancels the stale
+# run.
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: ${{ github.event_name == 'pull_request' && github.ref || 'pages' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 # Opt the JS-based actions (actions/cache, actions/checkout,
 # actions/upload-artifact, ...) into Node 24 ahead of the June 2026
@@ -27,8 +34,9 @@ env:
   # rendered output (backticks in a caption became code) within a patch
   # bump, so semver protects nothing for a tool that renders the published
   # artifact. Keep each value in step with the local binary the README
-  # installs. The two `--git` installs below (panschema, mdbook-admonish)
-  # deliberately resolve branch tips — the dogfood-matrix convention, not
+  # installs. tool-pins.yml opens an issue when crates.io moves past one
+  # (scripts/check-tool-pins.sh). The two `--git` installs below
+  # (panschema, mdbook-admonish) deliberately resolve branch tips — the dogfood-matrix convention, not
   # an oversight.
   MDBOOK_VERSION: "0.5.2"
   MDBOOK_LISTINGS_VERSION: "0.2.1"
@@ -38,9 +46,10 @@ jobs:
   # The pre-commit hook is per-clone and `--no-verify` skips it, so assert
   # the same rule on what actually landed. This repo is trunk-based with
   # direct pushes, so the aggregate to check is the push itself:
-  # `github.event.before`..HEAD. Skipped when that SHA is unusable — the
-  # first push to a branch reports all-zeros, and a force-push can name a
-  # commit this checkout does not have.
+  # `github.event.before`..HEAD, or the PR's base for a pull request.
+  # Skipped when that SHA is unusable — the first push to a branch reports
+  # all-zeros, a force-push can name a commit this checkout does not have,
+  # and a manual dispatch has none.
   skill-version-guard:
     runs-on: ubuntu-latest
     steps:
@@ -50,7 +59,7 @@ jobs:
 
       - name: Skill version bumped since the previous tip
         env:
-          BEFORE: ${{ github.event.before }}
+          BEFORE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: |
           if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
             echo "No usable previous tip for this event; nothing to compare."
@@ -288,9 +297,15 @@ jobs:
     # instantiation `deploy-pages` 404s and reds the whole run even though
     # `build` — the real verification — passed. Skip deploying while the repo
     # is private; it resumes automatically if the repo goes public. Skipped
-    # too on a copy of the template not yet bootstrapped (see `build`).
-    if: ${{ !github.event.repository.private && needs.build.outputs.unbootstrapped != 'true' }}
+    # too on a copy of the template not yet bootstrapped (see `build`), and
+    # on a pull request, which only verifies.
+    if: ${{ github.event_name != 'pull_request' && !github.event.repository.private && needs.build.outputs.unbootstrapped != 'true' }}
     runs-on: ubuntu-latest
+    # The only job that writes to Pages, so the only one granted it.
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

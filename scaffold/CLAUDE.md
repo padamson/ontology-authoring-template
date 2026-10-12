@@ -137,6 +137,19 @@ docs site (schema HTML + the book) is built and deployed by
 republishes each tag listed in `panschema-publish.toml`'s `versions`, so
 push a release tag together with the commit that lists it.
 
+`docs.yml` also runs on a pull request into `main`, building and verifying
+everything a push does but deploying nothing. That run is what tests a
+Dependabot PR. `.github/dependabot.yml` proposes action bumps once a week,
+grouped into one PR, which you merge by hand once it is green. Dependabot
+cannot read the build tools pinned in `docs.yml`'s `env:` block, so
+`.github/workflows/tool-pins.yml` checks them against crates.io every
+Saturday and opens a `tool-pin-bump` issue for each one that is behind.
+It never bumps: a new release can change the rendered book, so you install
+it locally, rebuild, compare with the published site, and then move the
+pin (and any README install command that names the version) in one commit.
+`scripts/check-tool-pins.sh` prints the same report locally, and its
+header says which pins it finds.
+
 Math is **opt-in** and not shipped in the stock template: to write `$…$`
 in chapters, enable `mdbook-katex` (pin `0.10.0-alpha`, ordered
 `after = ["admonish"]`) per the README "Math (optional)" section. Once
