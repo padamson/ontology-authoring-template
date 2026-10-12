@@ -19,30 +19,60 @@ discard the showcase first.
 
 ## Start your own
 
-Two one-time bootstrap steps turn the wine showcase into your own blank
-ontology. **Claude Code** runs both as skills (in `.claude/skills/`; not
-using Claude Code? each skill's `SKILL.md` is the by-hand spec):
+Two one-time bootstrap skills turn the wine showcase into your own blank
+ontology, and a third, run once per chapter, writes it. They are written
+for [Claude Code](https://claude.com/claude-code) running under the
+sandbox this repo ships in `.claude/settings.json`, which allows network
+access to `localhost` only. A few bootstrap steps (downloads, and writes
+under `.claude/skills/`) fall outside it on purpose, so each skill hands
+you one block to paste into your own terminal. (Not using Claude Code?
+Each skill's `SKILL.md` is the by-hand spec.)
 
-1. **Erect the scaffold** — say *"erect the scaffold"* (the
-   **`erect-scaffold`** skill). It discards the wine showcase — schema,
-   data, chapters, frozen listings — and raises the blank `scaffold/`
-   baseline in its place. The infrastructure (CI, hooks, scripts) reads
-   the schema path from `panschema-publish.toml`, so none of it needs
-   editing.
-2. **Name it** — say *"set up the template"* (the **`setup-ontology`**
-   skill). It renames the `myschema` placeholder to your schema's name
-   everywhere, sets your `https://w3id.org/<name>/` namespace, and fills
-   in the domain purpose. Grounding is by URI: reference reuse
+The sequence:
+
+1. **Create the repo.** Use GitHub's "Use this template", or
+
+   ```bash
+   gh repo create <owner>/<name> --public --clone \
+     --template padamson/ontology-authoring-template
+   ```
+
+   then open Claude Code in the clone. GitHub runs the docs workflow on the
+   initial commit; it builds and verifies the showcase and skips
+   publishing, because the copied manifest lists release tags your repo
+   does not have.
+2. **Erect the scaffold.** Say *"erect the scaffold"*. The
+   **`erect-scaffold`** skill gives you a terminal block that discards the
+   wine showcase (schema, data, chapters, and frozen listings) and raises
+   the blank `scaffold/` baseline in its place, then checks the result.
+   The infrastructure (CI, hooks, and scripts) reads the
+   schema path from `panschema-publish.toml`, so none of it needs editing.
+3. **Name it.** Say *"set up the template"*. The **`setup-ontology`**
+   skill asks for the schema name, the `https://w3id.org/<name>/`
+   namespace, a one-sentence domain purpose, and a licence for your
+   ontology (the `license:` field ships in the generated RDF, so the skill
+   will not guess it). It renames the `myschema` placeholder, rewrites the
+   README and `CLAUDE.md` to describe your ontology, and builds the book
+   to show the rename is clean. All of this runs inside the session.
+4. **Enable GitHub Pages.** In the repo's Settings → Pages, set the source
+   to "GitHub Actions" (`setup-ontology` offers to do it for you), or the
+   first deploy fails. A private repo skips the deploy, so there is
+   nothing to enable.
+5. **Swap the carried skills for installs.** `setup-ontology` finishes
+   with a second terminal block, which replaces the carried copy of the
+   authoring skill with a managed install pinned in `skills-lock.json`
+   and removes `setup-ontology` itself. The session then checks what got
+   installed.
+6. **Commit and push** to `main`. The docs workflow publishes the book and
+   the schema site.
+7. **Write the book.** Say *"do Step 1"*. The
+   **`ontology-authoring-advance-step`** skill advances the schema one N&M
+   step per chapter, freezes the listing the chapter embeds, and writes
+   the chapter: `introduction.md`, then `book/src/ch01`…`ch07`, so the
+   rendered Chapter N is N&M Step N. Each step stub ships with the
+   verbatim N&M quote(s), a charter, a section outline, a deferrals block,
+   and an authoring checklist. Grounding is by URI: reference reuse
    vocabularies as prefixes, never LinkML `imports:`.
-
-Then author the ontology one N&M step at a time with the
-**`ontology-authoring-advance-step`** skill (*"do Step 1"*): write
-`introduction.md`, then work
-`book/src/ch01`…`ch07` so the rendered Chapter N is N&M Step N. Each step
-stub ships pre-seeded with the verbatim N&M quote(s), a charter, a section
-outline, a deferrals block, and an authoring checklist. Freeze a listing
-per chapter that advances the schema (see "Dogfooding the tooling" and
-`CLAUDE.md`).
 
 ## Layout
 

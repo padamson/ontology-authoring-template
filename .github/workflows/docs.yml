@@ -64,10 +64,31 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    outputs:
+      unbootstrapped: ${{ steps.bootstrap.outputs.unbootstrapped }}
     steps:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0    # panschema publish reads all version tags
+
+      - name: Detect a copy of the template not yet bootstrapped
+        id: bootstrap
+        # "Use this template" copies the wine showcase without its release
+        # tags, so `panschema publish` fails on the tags the showcase
+        # manifest lists, and a new repo has no Pages site to deploy to. A
+        # repo other than the template that still carries scaffold/ has not
+        # run erect-scaffold yet: build and verify the showcase, but publish
+        # and deploy nothing until the scaffold is erected. The template is
+        # recognized by its GitHub template flag or by name, so a rename
+        # alone cannot stop it publishing.
+        env:
+          IS_TEMPLATE: ${{ github.event.repository.is_template }}
+        run: |
+          if [ -d scaffold ] && [ "$IS_TEMPLATE" != "true" ] \
+             && [ "$GITHUB_REPOSITORY" != "padamson/ontology-authoring-template" ]; then
+            echo "unbootstrapped=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::Copy of the template not yet bootstrapped; skipping publish and deploy until erect-scaffold has run."
+          fi
 
       # --- Resolve producer main HEAD SHAs (dogfood-matrix conventions) ---
 
@@ -224,6 +245,7 @@ jobs:
         # Output layout: site/schema/main/ (edge), site/schema/current/
         # (alias for the configured `current` version), plus
         # site/schema/<tag>/ for each release tag in panschema-publish.toml.
+        if: steps.bootstrap.outputs.unbootstrapped != 'true'
         run: panschema publish
 
       - name: Generate book assets (admonish + listings)
@@ -252,9 +274,11 @@ jobs:
         # site/schema/ already populated by `panschema publish`.
         # `cp -r book/build/* site/` is safe because mdbook never
         # produces a `schema/` subdir.
+        if: steps.bootstrap.outputs.unbootstrapped != 'true'
         run: cp -r book/build/* site/
 
       - uses: actions/upload-pages-artifact@v3
+        if: steps.bootstrap.outputs.unbootstrapped != 'true'
         with:
           path: site/
 
@@ -263,8 +287,9 @@ jobs:
     # GitHub Pages on a private repo requires a paid plan, so on a private
     # instantiation `deploy-pages` 404s and reds the whole run even though
     # `build` — the real verification — passed. Skip deploying while the repo
-    # is private; it resumes automatically if the repo goes public.
-    if: ${{ !github.event.repository.private }}
+    # is private; it resumes automatically if the repo goes public. Skipped
+    # too on a copy of the template not yet bootstrapped (see `build`).
+    if: ${{ !github.event.repository.private && needs.build.outputs.unbootstrapped != 'true' }}
     runs-on: ubuntu-latest
     environment:
       name: github-pages

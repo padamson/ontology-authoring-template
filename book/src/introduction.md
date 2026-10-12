@@ -37,9 +37,9 @@ graph, and RDF) is published next to this book under
 
 ## Using this as a template
 
-This repository is also the template the book describes. To build your own
-ontology with the same workflow, clone it (or use GitHub's "Use this
-template"), then run the `setup-ontology` skill: it resets the showcase
-back to a blank scaffold, renames the placeholder to your schema's name,
-and hands off to `advance-step`, which walks one N&M step per chapter. The
-README covers the toolchain and the setup sequence.
+This repository is also the template the book describes. The README's
+["Start your own"](https://github.com/padamson/ontology-authoring-template#start-your-own)
+section walks the whole sequence: create a repo from the template, erect
+the blank scaffold in place of this showcase, name the schema, and write
+one chapter per N&M step with the `ontology-authoring-advance-step` skill.
+The README also covers the toolchain the build needs.

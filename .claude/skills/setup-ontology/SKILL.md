@@ -44,7 +44,20 @@ code is generated from the schema), **CC0** (public domain, no conditions).
 Write the choice as a URL, matching the shape the field already expects
 (e.g. `https://creativecommons.org/licenses/by/4.0/`), delete the
 instructional comment above `license:`, and add a matching `LICENSE`
-file plus a README line. If the user declines to decide, leave
+file plus a README line. The two Creative Commons legal texts ship with
+this skill, because the sandbox allows network access to `localhost` only
+and erect-scaffold has just deleted the one copy in the tree:
+
+```bash
+cp .claude/skills/setup-ontology/licenses/cc-by-4.0.txt LICENSE   # CC BY 4.0
+cp .claude/skills/setup-ontology/licenses/cc0-1.0.txt LICENSE     # CC0
+```
+
+For Apache-2.0, `LICENSE-APACHE` already holds the text, so point the
+README line at it rather than adding a second copy. For any other licence,
+ask the user to put its text in `LICENSE` from their terminal.
+
+If the user declines to decide, leave
 `TODO` and say so in the hand-off — an unlicensed schema is a real gap,
 not a cosmetic one. Say too that CI stays red until it is set:
 `panschema generate --strict` refuses `TODO` as `Invalid IRI 'TODO'`.
@@ -178,6 +191,20 @@ the user what changed and what's left to them: writing the Introduction
 which is the
 [[ontology-authoring-advance-step]] skill's job.
 
+Before the first push, a public repo needs GitHub Pages enabled with
+GitHub Actions as its source, or the docs workflow's deploy job fails with
+`HttpError: Not Found`. (A private repo skips the deploy, so there is
+nothing to enable.) Offer to enable it:
+
+```bash
+gh api -X POST "repos/{owner}/{repo}/pages" -f build_type=workflow
+```
+
+`gh` fills `{owner}/{repo}` from the clone's remote and runs outside the
+sandbox. It changes the repo's settings on GitHub, so ask before running
+it. A `409` means Pages is already enabled. The user can do the same from
+Settings → Pages → Source: "GitHub Actions".
+
 ## Step 8 — remove the bootstrap tooling (self-clean)
 
 This skill is one-time bootstrap tooling. Once the rename is verified and
@@ -193,48 +220,55 @@ it, and its removal lands as an ordinary deletion commit.)
    from the template instead of carried, so it stays available." If the
    user declines, stop here and leave everything in place.
 
-2. **Drop the carried copy of the authoring skill.** The clone arrived
-   with `skills/` and a symlink to it, but a copy is a fork the moment
-   either side is edited — which is how five instances of this template
-   ended up with five different versions. Delete it:
+2. **Hand the user one block for their terminal.** It drops the carried
+   copy of the authoring skill and this skill, and installs the authoring
+   skill and the two tool skills this repo consumes. It runs outside the
+   session because `npx skills add` downloads and then writes under
+   `.claude/skills/`, and the sandbox denies both (the CLI exits 2 having
+   installed nothing). The `git rm` goes in the same block so the user
+   copies once, and the block runs in a subshell with `set -e`, so a
+   failed install stops it without closing the user's terminal:
 
    ```bash
-   git rm -r skills/ .claude/skills/ontology-authoring-advance-step
-   ```
-
-   Then take it as a managed install instead, along with the two tool
-   skills this repo consumes. **Ask the user to run these from a plain
-   terminal** — inside a Claude Code session the sandbox denies writes
-   under `.claude/skills/` and the CLI exits 2 having installed nothing:
-
-   ```bash
+   (
+   set -e
+   command -v npx >/dev/null || { echo "npx is not on PATH"; exit 1; }
+   git rm -rq skills/ .claude/skills/ontology-authoring-advance-step \
+     .claude/skills/setup-ontology
    npx skills add padamson/mdbook-listings -s mdbook-listings -a claude-code -y
    npx skills add padamson/panschema -s panschema-development -a claude-code -y
    npx skills add padamson/ontology-authoring-template \
      -s ontology-authoring-advance-step -a claude-code -y
+   git add skills-lock.json
+   )
    ```
 
-   Deleting the local copy is what makes the installed version
-   authoritative — a project-local skill shadows an installed one of the
-   same name. Then commit `skills-lock.json`, which is the pin; the
-   fetched content is gitignored by the `.gitignore` **erect-scaffold**
-   promoted.
+   If an install fails, the carried copy is already staged for deletion.
+   `git restore --source=HEAD --staged --worktree -- skills
+   .claude/skills/ontology-authoring-advance-step
+   .claude/skills/setup-ontology` puts it back until the install can be
+   retried.
 
-   Verify by listing `.claude/skills/` (three entries) and reading
-   `metadata.version` out of one installed `SKILL.md`. Do not trust the
-   CLI's success message — older versions printed `✓ Updated N skill(s)`
-   even when the write was denied.
+   The clone arrived with `skills/` and a symlink to it, but a copy is a
+   fork the moment either side is edited, which is how five instances of
+   this template ended up with five different versions. Deleting the
+   local copy is also what makes the installed version authoritative: a
+   project-local skill shadows an installed one of the same name.
+   `skills-lock.json` is the pin; the fetched content is gitignored by the
+   `.gitignore` **erect-scaffold** promoted. Removing this skill is safe
+   mid-run, because its instructions are already loaded. (The template's
+   skill-version guard stays behind and passes once `skills/` is gone.)
 
-   If the user prefers to keep and adapt a local copy, that is a
-   legitimate choice — record it in the repo's CLAUDE.md so the fork is
+3. **Verify** once the user says the block ran: list `.claude/skills/`
+   (three entries, no `setup-ontology`), read `metadata.version` out of
+   each installed `SKILL.md`, and check that `skills-lock.json` is staged.
+   Do not trust the CLI's success message; older versions printed
+   `✓ Updated N skill(s)` even when the write was denied.
+
+   If the user prefers to keep and adapt a local copy of the authoring
+   skill, that is a legitimate choice. Leave it out of the `git rm` and
+   the install, and record it in the repo's CLAUDE.md so the fork is
    deliberate rather than discovered later.
-
-3. **Remove this skill** (the last action — its instructions are already
-   loaded, so deleting the files mid-run is fine):
-
-   ```bash
-   git rm -r .claude/skills/setup-ontology/
-   ```
 
 The bootstrapped instance then carries no template tooling of its own,
 which is the point: its authoring skill tracks the template rather than

@@ -13,8 +13,9 @@
 # announce a skill edit would claim a model change that did not happen.
 #
 # The rule: whenever content under `skills/` differs from a base revision,
-# `metadata.version` must differ from it too. The pre-commit hook applies it
-# per commit, index against HEAD. CI applies it with `--base <ref>` to
+# `metadata.version` must differ from it too, unless `skills/` is gone
+# entirely (a repo that ships no skill has no version to bump). The
+# pre-commit hook applies it per commit, index against HEAD. CI applies it with `--base <ref>` to
 # everything since the merge base with that ref — the aggregate that
 # actually lands — because the hook is per-clone and `--no-verify` skips
 # it. The two can disagree on one commit (a bump in one commit and an
@@ -83,6 +84,12 @@ case "$changed" in
     exit 2
     ;;
 esac
+
+# No skill left to version: a repo seeded from the template, once
+# setup-ontology has deleted the carried copy.
+if [ -z "$(git ls-files --cached -- skills/)" ]; then
+  exit 0
+fi
 
 # The one shape: inside the frontmatter, under `metadata:`, an indented
 # `version:` whose value is double-quoted. Anything else prints nothing,
