@@ -38,9 +38,9 @@ env:
   # (scripts/check-tool-pins.sh). The two `--git` installs below
   # (panschema, mdbook-admonish) deliberately resolve branch tips — the dogfood-matrix convention, not
   # an oversight.
-  MDBOOK_VERSION: "0.5.2"
-  MDBOOK_LISTINGS_VERSION: "0.2.1"
-  WASM_PACK_VERSION: "0.14.0"
+  MDBOOK_VERSION: "0.5.4"
+  MDBOOK_LISTINGS_VERSION: "0.2.2"
+  WASM_PACK_VERSION: "0.15.0"
 
 jobs:
   # The pre-commit hook is per-clone and `--no-verify` skips it, so assert

@@ -134,17 +134,17 @@ in-browser auto-reload).
 
 ```bash
 # mdbook + the admonish fork (adds mdbook 0.5 compatibility)
-cargo install mdbook --version 0.5.2 --locked
+cargo install mdbook --version 0.5.4 --locked
 cargo install --git https://github.com/padamson/mdbook-admonish \
   --branch feat/mdbook-0.5-compat --locked mdbook-admonish
 
 # the frozen-listings preprocessor (central to this template)
-cargo install mdbook-listings --version 0.2.1 --locked
+cargo install mdbook-listings --version 0.2.2 --locked
 
 # panschema (schema docs + graph + RDF); wasm-pack builds its embedded viz.
 # One install, two binaries: the panschema crate also ships mdbook-panschema,
 # which installs the book→schema toolbar link.
-cargo install wasm-pack --version 0.14.0 --locked
+cargo install wasm-pack --version 0.15.0 --locked
 cargo install --git https://github.com/padamson/panschema --locked panschema
 
 # the dev-loop file watcher
