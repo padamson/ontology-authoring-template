@@ -176,10 +176,10 @@ Greek symbols, units — `$E_b$`, `$\hbar\omega_\nu$`, `$\pm$`), enable
 build-time KaTeX with [`mdbook-katex`](https://github.com/lzanini/mdbook-katex):
 
 ```bash
-# pin 0.10.0-alpha — it targets official mdbook 0.5. The stable 0.9.x
+# 0.10.0 or later: it targets official mdbook 0.5. The older 0.9.x
 # depends on a *fork* of mdbook and fails against 0.5 with
 # "invalid type: null, expected any valid TOML value".
-cargo install mdbook-katex --version 0.10.0-alpha --locked
+cargo install mdbook-katex --version 0.10.0 --locked
 ```
 
 Then add the preprocessor to `book/book.toml`, ordered **after**
@@ -193,14 +193,16 @@ after = ["admonish"]
 
 Chapters can then write `$…$` / `$$…$$`. Notes:
 
-- **CSS:** 0.10.0-alpha links KaTeX CSS from a CDN (jsDelivr) by default —
+- **CSS:** 0.10.0 links KaTeX CSS from a CDN (jsDelivr) by default —
   fine for the published site. For an offline/self-contained build, set
   `no-css = true` and vendor the KaTeX CSS+fonts (helper crate
   `mdbook_katex_css_download`), referenced via `additional-css`.
 - **CI:** add a matching install step to
-  [`.github/workflows/docs.yml`](.github/workflows/docs.yml) (mirror the
-  `mdbook` install, cache key on the pinned `0.10.0-alpha`) so the
-  published docs render math too.
+  [`.github/workflows/docs.yml`](.github/workflows/docs.yml) so the
+  published docs render math too. Mirror the `mdbook` install: an
+  `MDBOOK_KATEX_VERSION: "0.10.0"` pin in the `env:` block, a cache keyed
+  on it, and `cargo install mdbook-katex --version ${{ env.MDBOOK_KATEX_VERSION }} --locked`.
+  Installed that way, the weekly tool pin check covers it too.
 
 ## Versioning
 

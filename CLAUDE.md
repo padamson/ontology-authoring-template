@@ -148,7 +148,7 @@ pin and the README's matching `--version` together.
 header says which pins it finds.
 
 Math is **opt-in** and not shipped in the stock template: to write `$…$`
-in chapters, enable `mdbook-katex` (pin `0.10.0-alpha`, ordered
+in chapters, enable `mdbook-katex` (pin `0.10.0`, ordered
 `after = ["admonish"]`) per the README "Math (optional)" section. Once
 enabled it becomes a required preprocessor, so also add it to CI.
 

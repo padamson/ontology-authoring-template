@@ -48,7 +48,7 @@ while read -r crate var; do
     continue
   fi
   # Compare by the release a pin leads up to, since sort -V ranks
-  # 0.10.0-alpha above 0.10.0: a prerelease pin is behind once its release
+  # 1.0.0-alpha above 1.0.0: a prerelease pin is behind once its release
   # is out.
   release=${pinned%%-*}
   if [ "$pinned" != "$latest" ] && ! older "$latest" "$release"; then
