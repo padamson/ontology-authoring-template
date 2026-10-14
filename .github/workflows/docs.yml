@@ -53,7 +53,7 @@ jobs:
   skill-version-guard:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -76,7 +76,7 @@ jobs:
     outputs:
       unbootstrapped: ${{ steps.bootstrap.outputs.unbootstrapped }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0    # panschema publish reads all version tags
 
@@ -123,7 +123,7 @@ jobs:
 
       - name: Cache panschema binaries
         id: cache-panschema
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           # panschema (schema docs) and mdbook-panschema (book→schema
           # toolbar link installer) both ship from the one panschema
@@ -139,7 +139,7 @@ jobs:
       - name: Cache wasm-pack binary
         if: steps.cache-panschema.outputs.cache-hit != 'true'
         id: cache-wasm-pack
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cargo/bin/wasm-pack
           key: wasm-pack-${{ runner.os }}-${{ env.WASM_PACK_VERSION }}
@@ -160,7 +160,7 @@ jobs:
 
       - name: Cache mdbook binary
         id: cache-mdbook
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cargo/bin/mdbook
           key: mdbook-${{ runner.os }}-${{ env.MDBOOK_VERSION }}
@@ -171,7 +171,7 @@ jobs:
 
       - name: Cache mdbook-listings binary
         id: cache-mdbook-listings
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cargo/bin/mdbook-listings
           key: mdbook-listings-${{ runner.os }}-${{ env.MDBOOK_LISTINGS_VERSION }}
@@ -186,7 +186,7 @@ jobs:
 
       - name: Cache mdbook-admonish binary
         id: cache-mdbook-admonish
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cargo/bin/mdbook-admonish
           key: mdbook-admonish-${{ runner.os }}-${{ steps.mdbook-admonish.outputs.sha }}
@@ -286,7 +286,7 @@ jobs:
         if: steps.bootstrap.outputs.unbootstrapped != 'true'
         run: cp -r book/build/* site/
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         if: steps.bootstrap.outputs.unbootstrapped != 'true'
         with:
           path: site/
