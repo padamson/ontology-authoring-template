@@ -89,6 +89,7 @@ scripts/
   check-line-width.sh     # schema content line-width gate (<=72 cols)
   schema-path.sh          # resolves the schema path from panschema-publish.toml
   check-tool-pins.sh      # reports docs.yml tool pins that crates.io has moved past
+  grade-baseline.sh       # grades cqa-grader's baseline against the benchmark (CI's gate, Step 7 on)
 panschema.toml            # panschema manifest: generate (ttl/shacl/...) + check gates
 panschema.lock            # the cqa contract's resolved checksum (written by panschema fetch)
 panschema-publish.toml    # panschema's release + publish manifest
@@ -98,7 +99,7 @@ skills/                   # shipped: ontology-authoring-advance-step
 .github/
   dependabot.yml          # weekly, grouped action bumps (one PR, merged by hand)
   workflows/
-    docs.yml              # builds book + versioned schema docs; deploys to Pages
+    docs.yml              # builds book + versioned schema docs, grades the benchmark's baseline; deploys to Pages
     tool-pins.yml         # weekly: opens an issue when a docs.yml tool pin is behind
 ```
 
@@ -163,6 +164,13 @@ an issue each week for a pin that crates.io has moved past.
 Confirm the six required tools are on `PATH`: `mdbook`, `mdbook-admonish`,
 `mdbook-listings`, `panschema`, `mdbook-panschema`, `watchexec`
 (`live-server` is optional).
+
+CI installs one more binary once `[check.cqa]` is on in `panschema.toml`:
+**cqa-grader**, from Git (no release yet), whose naive baseline it grades
+against the benchmark over the generated Turtle
+(`scripts/grade-baseline.sh`). It is not part of the dev loop; install it
+only to run that gate locally:
+`cargo install --git https://github.com/padamson/cqa-grader --locked cqa-grader`.
 
 > The exact pinned revisions CI installs are in
 > [`.github/workflows/docs.yml`](.github/workflows/docs.yml); the commands above

@@ -127,6 +127,21 @@ fails on lockfile drift. Moving to a newer cqa release is one edit to
 `version` and a re-run of `panschema fetch`. `mdbook build` does not
 need the dependency.
 
+CI also grades cqa-grader's naive baseline against the benchmark, over the
+Turtle `panschema generate` just wrote: `scripts/grade-baseline.sh`, which
+reads the dataset, version, and paths from the manifests. The version is
+`[schema] version` in `panschema-publish.toml`, the field panschema's own
+pin check reads, so the two gates agree on which release the graph is;
+grading exits 2 when it is not the one the benchmark pins. The grader is
+installed from its main SHA, as panschema is, since it has no crates.io
+release yet, and both the install and the grade are skipped until
+`[check.cqa]` is on in `panschema.toml`.
+The baseline passes wine with `cq-03` unanswered: it never asserts
+absence, and `--require no-wrong-answers` tolerates that while still
+failing a wrong answer or a question not attempted. To run the gate
+locally, put `cqa-grader` on `PATH`
+(`cargo install --git https://github.com/padamson/cqa-grader --locked cqa-grader`).
+
 The published
 docs site (schema HTML + the book) is built and deployed by
 `.github/workflows/docs.yml` via the panschema toolchain on push to

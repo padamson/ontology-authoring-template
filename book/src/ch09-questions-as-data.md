@@ -167,17 +167,18 @@ push must reproduce.
 
 ## What keeps it true
 
-"Checking the benchmark" can mean two different things, and only one
-of them happens in this repository. `verify --strict` checks the
+"Checking the benchmark" can mean two different things, and this
+repository does both, in that order. `verify --strict` checks the
 answer key itself: every record the key points at exists, and the one
-claim it makes about the graph's shape holds. Nobody here answers the
-questions; that is what the benchmark's other fields are shaped for,
-and it is out of scope for this book. The closed-world negative is the
-boundary case: its correct answer *is* the key's claim about the graph,
-so verifying the claim is as close to answering the question as
-verification gets. For the other kinds, the ground truth's content
-stays a prose claim (nothing checks that `bordeaux-wine` is in fact
-`red`).
+claim it makes about the graph's shape holds. Answering the questions
+is the job of [`cqa-grader`](https://github.com/padamson/cqa-grader),
+the public grader for cqa benchmarks, which the benchmark's other
+fields are shaped for; its baseline's answers are graded at the end of
+this section. The closed-world negative is the boundary case: its
+correct answer *is* the key's claim about the graph, so verifying the
+claim is as close to answering the question as verification gets. For
+the other kinds, the ground truth's content stays a prose claim
+(nothing checks that `bordeaux-wine` is in fact `red`).
 
 ```admonish note title="Verification and validation"
 Systems engineering keeps these words apart: verification asks whether
@@ -197,7 +198,8 @@ neighboring formats keep their own names. Validation in the strict
 sense is the litmus test itself: the competency questions are the
 ontology's requirements, and answering them from the graph is the
 evidence the right ontology was built. Chapters 7 and 8 ran that test
-by hand; nothing in this chapter runs it by machine.
+by hand; the grade at the end of this section runs its retrieval half
+by machine, and judging a prose answer is nobody's job here.
 ```
 
 CI runs the manifest-wide verify on every push, so the litmus test that
@@ -219,6 +221,45 @@ included, and the bump keeps the build red until the benchmark has
 been re-read against the new graph and re-pinned. A consumer pinning
 the old version and a consumer reading `main` may then disagree about
 what the benchmark asserts, but each knows which claim it holds.
+
+One check of the other kind runs too, after the artifacts are
+generated. `cqa-grader` runs its own baseline retriever over
+`wine.ttl` and grades what it found against `wine-benchmark.ttl`,
+requiring no wrong answers (CI reads the four arguments below from the
+manifests, so a renamed copy of this repository runs the same step):
+
+```console
+$ cqa-grader baseline --graph site/artifacts/wine.ttl \
+    --dataset worked-example --dataset-version 0.2.1 \
+    --benchmark site/artifacts/wine-benchmark.ttl --output trace.json
+$ cqa-grader grade --benchmark site/artifacts/wine-benchmark.ttl \
+    --trace trace.json --require no-wrong-answers
+wine-benchmark: grading cqa-grader baseline 0.1.0 over worked-example 0.2.1, requiring no wrong answers
+  cq-02 lookup                  ok          recall 1.00  precision 0.02  retrieved 46
+  cq-03 closed-world-negative   unanswered  recall 1.00  precision 0.18  retrieved 11
+    closed-world-negative: unconnected anchors reached but the attempt does not assert absence
+  cq-04 attribution             ok          recall 1.00  precision 0.06  retrieved 47
+  cq-05 synthesis               ok          recall 1.00  precision 0.13  retrieved 47
+  cq-06 comparison              ok          recall 1.00  precision 0.09  retrieved 46
+  cq-07 comparison+attribution  ok          recall 1.00  precision 0.17  retrieved 23
+6 questions: 5 passed, 1 unanswered, 0 wrong
+```
+
+The baseline is naive on purpose: it links the question's words to
+records by label, expands each by one hop of lookup, and cites
+everything it reached. On a graph of 53 records that reaches almost
+everything (46 or 47 on four of the six questions), so recall of 1.00
+is close to guaranteed here and the pass is a smoke test: it would
+catch a record that lost its label, a label reworded so no question
+word matches it, or a regenerated graph missing records, and it says
+nothing about retrieval quality. The precision column is the cost of
+that recall, and it is the floor a retriever worth shipping has to
+clear, which is what the baseline is for. CQ 3 is left unanswered,
+since the baseline never asserts that something is absent, and the
+requirement tolerates that while still failing a wrong answer or a
+question not attempted; the negative is tested only by the first
+check. The first check shows the key is sound; this one shows its
+records are reachable by lookup alone.
 
 ## The version, decided
 

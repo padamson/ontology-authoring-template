@@ -130,6 +130,21 @@ fails on lockfile drift. Moving to a newer cqa release is one edit to
 `version` and a re-run of `panschema fetch`. `mdbook build` does not
 need the dependency.
 
+CI also grades cqa-grader's naive baseline against the benchmark, over the
+Turtle `panschema generate` just wrote: `scripts/grade-baseline.sh`, which
+reads the dataset, version, and paths from the manifests. The version is
+`[schema] version` in `panschema-publish.toml`, the field panschema's own
+pin check reads, so the two gates agree on which release the graph is;
+grading exits 2 when it is not the one the benchmark pins. The grader is
+installed from its main SHA, as panschema is, since it has no crates.io
+release yet, and both the install and the grade are skipped until
+`[check.cqa]` is on in `panschema.toml`
+(Step 7). The baseline never asserts absence, so a closed-world negative
+ends unanswered; `--require no-wrong-answers` tolerates that and still
+fails a wrong answer or a question not attempted. To run the gate locally,
+put `cqa-grader` on `PATH`
+(`cargo install --git https://github.com/padamson/cqa-grader --locked cqa-grader`).
+
 The published
 docs site (schema HTML + the book) is built and deployed by
 `.github/workflows/docs.yml` via the panschema toolchain on push to
@@ -211,8 +226,9 @@ channels on the same `main`, and they went stale in opposite directions.
   with its answer kind and the anchors a correct answer must reach,
   pinned to this package's version. The anchors are promises until the
   worked example mints them; `[check.cqa]` in `panschema.toml` turns on
-  at Step 7 and holds them against the graph on every push. A question
-  the schema itself answers stays prose, noted in the file.
+  at Step 7 and holds them against the graph on every push, and CI then
+  grades cqa-grader's baseline against them (`scripts/grade-baseline.sh`).
+  A question the schema itself answers stays prose, noted in the file.
 - **External grounding is by URI, not import.** BFO/CCO/etc. are
   referenced via `subclass_of` + prefixes, *not* LinkML `imports:`
   (which is for other LinkML schemas — only `linkml:types` is

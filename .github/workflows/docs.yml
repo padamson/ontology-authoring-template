@@ -35,9 +35,9 @@ env:
   # bump, so semver protects nothing for a tool that renders the published
   # artifact. Keep each value in step with the local binary the README
   # installs. tool-pins.yml opens an issue when crates.io moves past one
-  # (scripts/check-tool-pins.sh). The two `--git` installs below
-  # (panschema, mdbook-admonish) deliberately resolve branch tips — the
-  # dogfood-matrix convention, not an oversight.
+  # (scripts/check-tool-pins.sh). The three `--git` installs below
+  # (panschema, mdbook-admonish, cqa-grader) deliberately resolve branch
+  # tips — the dogfood-matrix convention, not an oversight.
   MDBOOK_VERSION: "0.5.4"
   MDBOOK_LISTINGS_VERSION: "0.2.2"
   WASM_PACK_VERSION: "0.15.0"
@@ -249,6 +249,60 @@ jobs:
         # violations); it is narrower than its name — NOT the
         # unprojected-construct / Postgres-skip / SHACL-skip warnings.
         run: panschema generate --strict
+
+      # --- cqa-grader: grade the benchmark's baseline (Step 7 onward) ---
+      # Installed here rather than with the tools above so that a gate
+      # failing before this point costs no grader build.
+
+      - name: Is the benchmark held against the graph yet
+        id: cqa-gate
+        # The baseline grade turns on with `[check.cqa]` in panschema.toml
+        # (Step 7 work), the same switch as the cross-graph checks. The
+        # script owns that decision; it is asked here so the grader is
+        # not built at all before then, since a repo at Steps 1–6 has no
+        # graph for it to read.
+        run: |
+          if scripts/grade-baseline.sh --enabled; then
+            echo "active=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Resolve latest cqa-grader main SHA
+        if: steps.cqa-gate.outputs.active == 'true'
+        id: cqa-grader
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sha=$(gh api repos/padamson/cqa-grader/commits/main --jq .sha)
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+      - name: Cache cqa-grader binary
+        if: steps.cqa-gate.outputs.active == 'true'
+        id: cache-cqa-grader
+        uses: actions/cache@v6
+        with:
+          path: ~/.cargo/bin/cqa-grader
+          key: cqa-grader-${{ runner.os }}-${{ steps.cqa-grader.outputs.sha }}
+
+      - name: Install cqa-grader from main
+        # No crates.io release yet, so a main-SHA install like panschema's.
+        if: steps.cqa-gate.outputs.active == 'true' && steps.cache-cqa-grader.outputs.cache-hit != 'true'
+        run: |
+          cargo install --git https://github.com/padamson/cqa-grader \
+            --rev ${{ steps.cqa-grader.outputs.sha }} \
+            --locked --force \
+            cqa-grader
+
+      - name: Grade the baseline against the benchmark (cqa-grader)
+        # The benchmark is answerable, not just well-formed: the grader's
+        # naive baseline must reach every anchor over the Turtle just
+        # generated and get no question wrong. A closed-world negative it
+        # leaves unanswered is tolerated, since the baseline never asserts
+        # absence. The script reads the dataset, version, and paths from
+        # the manifests, and grading exits 2 when the package version
+        # (`[schema] version` in panschema-publish.toml, the field
+        # panschema's own pin check reads) is not the release the
+        # benchmark pins. A no-op until [check.cqa] is on (the gate above).
+        run: scripts/grade-baseline.sh
 
       - name: Publish versioned schema docs (panschema)
         # Output layout: site/schema/main/ (edge), site/schema/current/
