@@ -145,6 +145,13 @@ fails a wrong answer or a question not attempted. To run the gate locally,
 put `cqa-grader` on `PATH`
 (`cargo install --git https://github.com/padamson/cqa-grader --locked cqa-grader`).
 
+The baseline expands each record a question names by one hop, so an answer
+whose records sit further out is graded wrong, and so is a negative
+anchored on a record only the answer key names. The benchmark does not say
+how far an answer may reach, so do not pass `--hops` to get green: that
+sets grading policy the benchmark never states. If the gate fails for
+depth, remove the cqa-grader steps from `.github/workflows/docs.yml`.
+
 The published
 docs site (schema HTML + the book) is built and deployed by
 `.github/workflows/docs.yml` via the panschema toolchain on push to

@@ -14,6 +14,15 @@
 # no-wrong-answers` tolerates that and still fails a wrong answer or a
 # question not attempted.
 #
+# The baseline expands each record a question names by one hop
+# (cqa-grader's default `--hops`), so an answer whose records sit further
+# out is graded wrong, and so is a negative anchored on a record only the
+# answer key names, since no question wording reaches it. The benchmark
+# does not say how far an answer may reach, so raising `--hops` here to go
+# green would set grading policy the benchmark never states. When the
+# baseline fails for depth, remove the cqa-grader steps from
+# .github/workflows/docs.yml instead.
+#
 # Inert before Step 7. The benchmark is held against the graph once
 # `[check.cqa]` is on in panschema.toml, and that is also when a worked
 # example exists for the baseline to read, so the same switch turns this
@@ -98,22 +107,20 @@ for f in "$graph" "$benchmark"; do
 done
 
 # An explicit template: without one, macOS mktemp ignores TMPDIR.
-out=$(mktemp -d "${TMPDIR:-/tmp}/grade-baseline.XXXXXX")
-trap 'rm -rf "$out"' EXIT
+trace=$(mktemp "${TMPDIR:-/tmp}/grade-baseline.XXXXXX")
+trap 'rm -f "$trace"' EXIT
 
 echo "grade-baseline: $name $version, dataset $dataset, graph $graph, benchmark $benchmark"
-cqa-grader baseline --graph "$graph" \
+cqa-grader grade --benchmark "$benchmark" --baseline --graph "$graph" \
   --dataset "$dataset" --dataset-version "$version" \
-  --benchmark "$benchmark" --output "$out/trace.json"
-cqa-grader grade --benchmark "$benchmark" --trace "$out/trace.json" \
-  --require no-wrong-answers || {
+  --require no-wrong-answers --save-trace "$trace" || {
   status=$?
   # A failed grade (exit 1): the table above names the question, and the
   # trace says what the baseline retrieved for it, which is where a fix
   # starts. A usage error (exit 2) has already said what is wrong.
   if [ "$status" -eq 1 ]; then
     echo "grade-baseline: the baseline's trace follows" >&2
-    cat "$out/trace.json" >&2
+    cat "$trace" >&2
   fi
   exit "$status"
 }

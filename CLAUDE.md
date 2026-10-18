@@ -138,8 +138,10 @@ release yet, and both the install and the grade are skipped until
 `[check.cqa]` is on in `panschema.toml`.
 The baseline passes wine with `cq-03` unanswered: it never asserts
 absence, and `--require no-wrong-answers` tolerates that while still
-failing a wrong answer or a question not attempted. To run the gate
-locally, put `cqa-grader` on `PATH`
+failing a wrong answer or a question not attempted. Every record wine's
+answers need sits within the baseline's default one hop of a record the
+question names; the script's header says what to do for a benchmark whose
+answers sit further out. To run the gate locally, put `cqa-grader` on `PATH`
 (`cargo install --git https://github.com/padamson/cqa-grader --locked cqa-grader`).
 
 The published
