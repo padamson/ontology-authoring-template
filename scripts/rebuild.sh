@@ -17,17 +17,18 @@ cd "$(git rev-parse --show-toplevel)"
 
 ts() { date '+%H:%M:%S'; }
 
-# Shell aliases (e.g. `alias panschema=…/target/debug/panschema` in
-# ~/.zshrc) only load in *interactive* shells — a non-interactive script
-# like this one resolves every producer via $PATH. The report makes the
-# resolution visible, which is what catches a stale binary: PATH holding
-# an install built weeks ago while the alias hid it.
+# Every producer resolves through $PATH, here and in everything mdbook
+# spawns (a shell alias never reaches either). The report names the binary
+# that answered and its version, which is what catches a stale install.
 hash -r 2>/dev/null || true
 echo ""
-echo "==> [$(ts)] Producer versions in use (via PATH):"
+echo "==> [$(ts)] Producers in use (via PATH):"
 for producer in panschema mdbook-panschema mdbook-listings mdbook-admonish; do
-  ver="$(command "$producer" --version 2>/dev/null | head -1)"
-  printf '  %-18s %s\n' "$producer" "${ver:-(not found)}"
+  bin="$(command -v "$producer")" || { printf '  %-18s (not found)\n' "$producer"; continue; }
+  # `|| true`: a version flag that fails would otherwise end the script
+  # under `set -e`.
+  ver="$("$bin" --version 2>/dev/null | head -1 || true)"
+  printf '  %-18s %s at %s\n' "$producer" "${ver:-(no version)}" "$bin"
 done
 
 echo ""

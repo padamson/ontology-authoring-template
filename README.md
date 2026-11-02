@@ -107,16 +107,18 @@ skills/                   # shipped: ontology-authoring-advance-step
 
 The build uses four Rust binaries and a file watcher (all required for
 the dev loop), plus an optional static server for browser auto-reload.
-Three of the binaries are maintained by this template's author and
-installed **from Git rather than crates.io** — so don't expect a plain
-`cargo install <name>` to find them.
+Three of the binaries are maintained by this template's author.
+`mdbook-listings` is on crates.io; `panschema` and the `mdbook-admonish`
+fork are installed **from Git**, so a plain `cargo install <name>` won't
+find them.
 
-> **Heads up — you're tracking pre-releases and a fork.** `mdbook-admonish`
+> **Heads up — you're tracking a branch tip and a fork.** `mdbook-admonish`
 > is a fork branch (`feat/mdbook-0.5-compat`, pending upstream release),
-> and `mdbook-listings` and `panschema` are not yet published to crates.io.
-> The template dogfoods these in-development tools; pin to a known-good
-> revision if you need stability (see the CI-pinned revs in
-> [`.github/workflows/docs.yml`](.github/workflows/docs.yml)).
+> and `panschema` is not yet published to crates.io. The template dogfoods
+> these in-development tools, and CI installs each from its branch tip,
+> resolved to a commit on every run in
+> [`.github/workflows/docs.yml`](.github/workflows/docs.yml). Pass
+> `--rev <sha>` to `cargo install` if you need a fixed revision.
 
 **Prerequisites:** a Rust toolchain (`cargo`); optionally Node.js (for
 in-browser auto-reload).
@@ -125,7 +127,7 @@ in-browser auto-reload).
 |---|---|---|
 | **mdbook** | renders `book/` to HTML | crates.io (rust-lang) |
 | **mdbook-admonish** *(fork)* | the `admonish` blocks used for N&M quotes and jargon notes | a fork branch — upstream isn't yet compatible with mdbook 0.5; the `feat/mdbook-0.5-compat` branch adds that compat, pending an upstream release |
-| **mdbook-listings** | the frozen-listing preprocessor at the heart of this template: `freeze` a schema snapshot, embed it with `{{#include}}`, annotate with `{{#callout}}`, diff versions with `{{#diff}}` | from Git (not yet on crates.io) |
+| **mdbook-listings** | the frozen-listing preprocessor at the heart of this template: `freeze` a schema snapshot, embed it with `{{#include}}`, annotate with `{{#callout}}`, diff versions with `{{#diff}}` | crates.io |
 | **panschema** | generates the versioned schema HTML docs, an interactive class-graph viz, and RDF from the LinkML schema; needs `wasm-pack` to build its embedded viz | from Git |
 | **mdbook-panschema** | installs the book→schema toolbar link (`schema-link.js`/`.css`), configured by `[book_link]` in `panschema-publish.toml` | from Git (panschema workspace) |
 | **watchexec** *(required)* | the file watcher that drives the `scripts/dev.sh` rebuild-on-save loop | crates.io |
@@ -172,9 +174,9 @@ against the benchmark over the generated Turtle
 only to run that gate locally:
 `cargo install --git https://github.com/padamson/cqa-grader --locked cqa-grader`.
 
-> The exact pinned revisions CI installs are in
-> [`.github/workflows/docs.yml`](.github/workflows/docs.yml); the commands above
-> track the latest of each, which is what you want for local authoring.
+> The Git installs above track each branch's tip, as CI does (it resolves
+> the tip to a commit on every run). To run your own debug builds instead,
+> see "Using local debug builds" below.
 
 ### Math (optional)
 
@@ -295,35 +297,52 @@ TTL (schema + the A-box knowledge graph), and the instance-graph JSON into
 ## Dogfooding the tooling
 
 This template exercises [panschema](https://github.com/padamson/panschema),
-`mdbook-listings`, and the `mdbook-admonish` fork. The scripts resolve
-every producer by name via `$PATH` — the same contract CI uses — and each
-rebuild prints which binary answered and its version, which is what
-catches a stale install masquerading as a fresh one.
+`mdbook-listings`, and the `mdbook-admonish` fork. The scripts call each
+producer by name and resolve it through `$PATH`, the same contract CI
+uses, and every rebuild prints the binary that answered and its version,
+which is what exposes a stale install. They never build a producer: you
+build it in its own checkout.
 
-### The alias pattern
+### Using local debug builds
 
-To make your **interactive shell** use local debug builds, clone the
-producers wherever you like, point `PRODUCER_ROOT` at that directory, and
-alias each producer to its `target/debug` binary:
+To have the scripts, `mdbook`'s preprocessors, the pre-commit hooks, and
+your shell all run your local debug builds, put each producer's
+`target/debug` on `PATH`. An alias is not enough. It reaches only the
+commands you type, while `mdbook build` spawns `mdbook-listings` and
+`mdbook-admonish` itself and reads `PATH`.
 
 ```zsh
 # ~/.zshrc
-export PRODUCER_ROOT="/path/to/producers"    # wherever you cloned them
-alias panschema="$PRODUCER_ROOT/panschema/target/debug/panschema"
-alias mdbook-listings="$PRODUCER_ROOT/mdbook-listings/target/debug/mdbook-listings"
-alias mdbook-admonish="$PRODUCER_ROOT/mdbook-admonish/target/debug/mdbook-admonish"
+export PRODUCER_ROOT="/path/to/producers"   # wherever you cloned them
+for p in panschema mdbook-listings mdbook-admonish; do
+  d="$PRODUCER_ROOT/$p/target/debug"
+  [[ -d $d ]] || continue
+  (( ${path[(Ie)$d]} )) && continue   # already on PATH
+  i=${path[(ie)$HOME/.cargo/bin]}     # one past the end if absent
+  path[i,i-1]=("$d")                  # insert just ahead of ~/.cargo/bin
+done
 ```
 
-Aliases only load in interactive shells, so they never reach the scripts —
-for those, prepend the directory to `PATH` instead:
+The directories go just ahead of `~/.cargo/bin` rather than at the front,
+because a producer workspace builds other binaries into the same directory
+and one with a common name would shadow a system command. So the loop has
+to come after whatever puts `~/.cargo/bin` on `PATH` (a
+`. "$HOME/.cargo/env"` line, say); run before it, the directories land at
+the end of `PATH`. panschema's `target/debug` holds `mdbook-panschema`
+too. If a `cargo install`ed copy of a producer is still in
+`~/.cargo/bin`, a missing debug build silently falls through to it;
+uninstall it to make that fail loudly instead. To check what a script will
+see, ask a non-interactive shell:
 
 ```bash
-PATH="$PRODUCER_ROOT/panschema/target/debug:$PATH" ./scripts/dev.sh
+bash -c 'for t in panschema mdbook-panschema mdbook-listings mdbook-admonish; do command -v $t; $t --version; done'
 ```
 
-`install-assets.sh` ignores `PRODUCER_ROOT` entirely — it's a
-fresh-clone/consumer helper that relies on whatever the README "Install"
-step put on `PATH`.
+CI installs `panschema` and the fork from their branch tips, so a debug
+build of each tip is what CI runs. `mdbook-listings` comes from the
+crates.io release pinned in `docs.yml`, so a debug build of its `main` can
+be ahead of CI, and the published book can render a listing differently
+from your preview.
 
 ### Seams for external tooling
 
