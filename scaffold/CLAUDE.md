@@ -169,8 +169,11 @@ Saturday and opens a `tool-pin-bump` issue for each one that is behind.
 It never bumps: a new release can change the rendered book, so you install
 it locally, rebuild, compare with the published site, and then move the
 pin (and any README install command that names the version) in one commit.
-`scripts/check-tool-pins.sh` prints the same report locally, and its
-header says which pins it finds.
+To stay on the current release, close the issue as not planned; only a
+later release opens a new one.
+`scripts/check-tool-pins.sh` prints the same report locally. Its header
+says which pins it finds, and it exits 2 on a pin it cannot read, so a
+pin written in another form fails the check rather than going stale.
 
 Math is **opt-in** and not shipped in the stock template: to write `$…$`
 in chapters, enable `mdbook-katex` (pin `0.10.0`, ordered

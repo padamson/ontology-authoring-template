@@ -6,6 +6,12 @@
 # .github/workflows/docs.yml together with the value of `<VAR>` in that
 # file's `env:` block. Reading the install line names the crate directly,
 # so any tool installed that way is checked without touching this script.
+# Flags such as `--locked` may come before the crate, and the expression
+# may be quoted, but the whole command sits on one line. A pin in any other
+# form would go stale unreported, so any uncommented line that passes
+# `--version` a value and is not in that form (`--version "$X"`,
+# `--version=X`, a literal version, a `--version` continued from the line
+# above) is unreadable.
 # Dependabot cannot read these pins, and bumping one is a judgment call (a
 # patch release of mdbook-listings once changed rendered output), so this
 # only reports. tool-pins.yml runs it weekly and opens an issue per pin
@@ -27,13 +33,22 @@ workflow=.github/workflows/docs.yml
 # crates.io refuses requests without a User-Agent that identifies the caller.
 ua="tool-pin check (${GITHUB_REPOSITORY:-$(basename "$(pwd)")})"
 
-installs=$(sed -nE 's/.*cargo install ([A-Za-z0-9_-]+) --version \$\{\{ *env\.([A-Za-z0-9_]+) *\}\}.*/\1 \2/p' "$workflow")
+pin='cargo install (--[a-z-]+ )*([A-Za-z0-9_-]+) --version "?\$\{\{ *env\.([A-Za-z0-9_]+) *\}\}"?'
+status=0
+installs=""
+while IFS=: read -r n line; do
+  if [[ $line =~ $pin ]]; then
+    installs+="${installs:+$'\n'}${BASH_REMATCH[2]} ${BASH_REMATCH[3]}"
+  else
+    echo "unreadable pin at $workflow:$n: $line" >&2
+    status=2
+  fi
+done < <(grep -nE -- '--version[ =]+[^ |&;)]' "$workflow" | sed -nE '/^[0-9]+: *#/d; s/^([0-9]+): */\1:/p')
 [ -n "$installs" ] || { echo "no pinned cargo install in $workflow" >&2; exit 2; }
 
 # True when version $1 sorts strictly before version $2.
 older() { [ "$1" != "$2" ] && [ "$(printf '%s\n%s\n' "$1" "$2" | sort -V | head -n1)" = "$1" ]; }
 
-status=0
 while read -r crate var; do
   pinned=$(sed -nE "s/^  $var: *\"?([^\" #]+)\"?.*/\1/p" "$workflow")
   if [ -z "$pinned" ]; then
