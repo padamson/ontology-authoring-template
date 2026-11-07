@@ -145,7 +145,7 @@ cargo install mdbook-listings --version 0.3.0 --locked
 # panschema (schema docs + graph + RDF); wasm-pack builds its embedded viz.
 # One install, two binaries: the panschema crate also ships mdbook-panschema,
 # which installs the book→schema toolbar link.
-cargo install wasm-pack --version 0.15.0 --locked
+cargo install wasm-pack --version 0.15.1 --locked
 cargo install --git https://github.com/padamson/panschema --locked panschema
 
 # the dev-loop file watcher

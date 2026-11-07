@@ -40,7 +40,7 @@ env:
   # tips — the dogfood-matrix convention, not an oversight.
   MDBOOK_VERSION: "0.5.4"
   MDBOOK_LISTINGS_VERSION: "0.3.0"
-  WASM_PACK_VERSION: "0.15.0"
+  WASM_PACK_VERSION: "0.15.1"
 
 jobs:
   # The pre-commit hook is per-clone and `--no-verify` skips it, so assert
@@ -130,11 +130,13 @@ jobs:
           # crate, so a single install produces both executables. The
           # `-bins-` key prefix (vs the old `panschema-`) deliberately
           # busts pre-mdbook-panschema cache entries that hold only the
-          # one binary.
+          # one binary. The wasm-pack pin is in the key because wasm-pack
+          # builds the viz embedded in panschema: without it, a pin bump
+          # waits for panschema's main to move before it takes effect.
           path: |
             ~/.cargo/bin/panschema
             ~/.cargo/bin/mdbook-panschema
-          key: panschema-bins-${{ runner.os }}-${{ steps.panschema.outputs.sha }}
+          key: panschema-bins-${{ runner.os }}-${{ steps.panschema.outputs.sha }}-wasm-pack-${{ env.WASM_PACK_VERSION }}
 
       - name: Cache wasm-pack binary
         if: steps.cache-panschema.outputs.cache-hit != 'true'
