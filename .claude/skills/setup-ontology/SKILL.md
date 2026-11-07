@@ -161,11 +161,9 @@ grep -rIn 'myschema' . \
 # fresh clones need the gitignored CSS/JS generated once, or mdbook build
 # fails on a missing mdbook-admonish.css (see README "Fresh clone"):
 ./scripts/install-assets.sh
-./scripts/build-book.sh      # must exit 0
+mdbook-listings verify --book-root book   # must exit 0
+(cd book && mdbook build)                 # must exit 0
 ```
-
-`build-book.sh` rather than a bare `mdbook build`, which can exit 0 on a
-broken book (the script's header says when).
 
 The grep should return nothing (or only an intentional historical
 mention you can point to). `.claude/` and `skills/` are excluded on

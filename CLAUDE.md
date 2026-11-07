@@ -68,17 +68,25 @@ conventions on top of the tool:
 - **Callouts on files we author here** (e.g. `schema/wine.yaml`)
   go *inline* as `# CALLOUT:` markers — never sidecar TOML, which is
   reserved for generated/third-party/no-comment-syntax listings.
+- **Line-width budget:** `max-line-width = 72` in `book.toml` caps
+  listing lines as they render (`# CALLOUT:` lines are stripped, so
+  they don't count). `freeze` refuses a source with a longer line, so
+  fold a long `description:` with a `>-` block scalar before freezing.
+  Content the book cannot reflow (a third-party file, a listing frozen
+  before the budget) takes `allow-long-lines = true` on its
+  `listings.toml` record. `book.toml` says why 72.
 - **Integrity check:** two gates run. `mdbook-listings verify
   --book-root book` fails on a frozen snapshot whose bytes no longer
-  match `listings.toml` (edited but not re-frozen) or a broken
-  `{{#include}}` / `{{#callout}}`; it is wired into both the
-  `.pre-commit-config.yaml` hook and the `docs.yml` CI (before the
-  build). `mdbook build` additionally fails on a missing `{{#callout}}`
-  label or an include of an unfrozen listing. One hole is left: an
-  `{{#include}}` the listings preprocessor does not handle (one inside
-  an HTML comment, say) reaches mdbook's own include handling, which
-  logs an `ERROR` and still exits 0. `scripts/build-book.sh`, which CI
-  runs, fails on that `ERROR` line; a bare `mdbook build` does not.
+  match `listings.toml` (edited but not re-frozen), a broken
+  `{{#include}}` / `{{#callout}}`, or a line over the budget; it is
+  wired into both the `.pre-commit-config.yaml` hook and the `docs.yml`
+  CI (before the build). `mdbook build` additionally fails on a missing
+  `{{#callout}}` label or an include of an unfrozen listing. Both fail
+  on a `listings/` include mdbook would expand that the preprocessor
+  skips (one inside an HTML comment, say). An `{{#include}}` of any
+  other path is mdbook's own, and a missing one logs an `ERROR` and
+  still exits 0, so a book that includes non-listing files should read
+  the build log for it.
 
 ### Dev loop (`scripts/dev.sh`) and the freeze foot-gun
 
@@ -107,7 +115,6 @@ skill, then `mdbook-listings <cmd> --help`.
 ```
 cd book && mdbook serve   # local preview with live reload
 cd book && mdbook build   # output to book/build/
-./scripts/build-book.sh   # the CI gate: mdbook build, failing on a logged ERROR
 ```
 
 Preprocessors must be on `PATH`: `mdbook-listings`, and the

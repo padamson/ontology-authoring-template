@@ -3,7 +3,7 @@ name: ontology-authoring-advance-step
 description: Advance a LinkML ontology book one Noy & McGuinness step, in a repo built from the ontology-authoring-template (a `schema/` + `book/` pair with frozen mdbook-listings snapshots). Advances the schema only as the worked example demands, adds inline callouts, re-freezes a new listing tag (avoiding the stale-frozen-bytes foot-gun), writes the chapter prose in the N&M voice, reconciles carried-in deferrals, and verifies the build. Use when the user says "write the next chapter", "do Step N", "advance the schema", "work on ch0N", or wants to move the book forward one N&M step.
 license: Apache-2.0
 metadata:
-  version: "0.1.2"
+  version: "0.1.3"
 ---
 
 # Advance one N&M step-chapter
@@ -128,12 +128,12 @@ run `./scripts/install-assets.sh` once (see README "Fresh clone"), then
 rebuild.
 
 `mdbook build` fails on a missing `{{#callout}}` label or an include of
-an unfrozen listing. It does **not** fail on an `{{#include}}` the
-listings preprocessor leaves alone, such as one inside a chapter's
-HTML-comment scaffold: mdbook expands it anyway, logs `ERROR`, and exits
-0. So read the build output for `ERROR`, or run `scripts/build-book.sh`
-where the repo has it, and escape a directive meant as documentation as
-`\{{#include …}}`. If callouts seem missing, suspect a **stale
+an unfrozen listing. From mdbook-listings 0.3.0, `verify` and the build
+also fail on a `listings/` include the preprocessor leaves alone, such
+as one inside a chapter's HTML-comment scaffold, which mdbook would
+expand anyway. (Before 0.3.0 mdbook expanded it, logged `ERROR`, and
+exited 0, so on an older pin read the build output for `ERROR`.) Escape
+a directive meant as documentation as `\{{#include …}}`. If callouts seem missing, suspect a **stale
 `site/`** first — confirm the freshly built `book/build/<chapter>.html`
 has `callout-badge` elements before debugging deeper (CLAUDE.md).
 

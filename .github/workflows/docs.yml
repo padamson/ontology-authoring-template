@@ -39,7 +39,7 @@ env:
   # (panschema, mdbook-admonish, cqa-grader) deliberately resolve branch
   # tips — the dogfood-matrix convention, not an oversight.
   MDBOOK_VERSION: "0.5.4"
-  MDBOOK_LISTINGS_VERSION: "0.2.2"
+  MDBOOK_LISTINGS_VERSION: "0.3.0"
   WASM_PACK_VERSION: "0.15.0"
 
 jobs:
@@ -329,8 +329,8 @@ jobs:
 
       - name: Build the book (mdbook)
         # Outputs to book/build/ per the [build] build-dir config.
-        # build-book.sh also fails on a logged ERROR (see its header).
-        run: ./scripts/build-book.sh
+        working-directory: book
+        run: mdbook build
 
       - name: Combine book + schema docs into site/
         # Book lands at site/ root (index.html, theme/, ch*.html);

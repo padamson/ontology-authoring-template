@@ -27,7 +27,6 @@ vocabularies as prefixes, never LinkML `imports:`.
 ```
 cd book && mdbook serve   # local preview with live reload
 cd book && mdbook build   # output to book/build/
-./scripts/build-book.sh   # the CI gate: mdbook build, failing on a logged ERROR
 ```
 
 Preprocessors must be on `PATH`: `mdbook-listings`, the `mdbook-admonish`
@@ -54,7 +53,7 @@ schema/
 data/
   myschema-benchmark.yaml # the competency questions as cqa benchmark records (Step 1)
 book/                     # mdbook documenting the N&M build
-scripts/                  # dev loop, rebuild, line-width, schema-path, tool-pin, and baseline-grade helpers
+scripts/                  # dev loop, rebuild, schema-path, tool-pin, and baseline-grade helpers
 panschema.toml            # panschema manifest: generate (ttl/shacl/...) + check gates
 panschema.lock            # the cqa contract's resolved checksum (written by panschema fetch)
 panschema-publish.toml    # panschema's release + publish manifest

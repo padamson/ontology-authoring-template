@@ -9,30 +9,20 @@
 # no remote hook repos are pulled. Required on PATH:
 #   - mdbook-listings (main HEAD — dogfood; see the dogfood-loop notes)
 #   - panschema (main HEAD — verifies the curated instance data)
-#   - perl + git (for the line-width gate; both standard)
 repos:
   - repo: local
     hooks:
       - id: mdbook-listings-verify
         name: mdbook-listings verify (frozen listing drift)
         # Fails on a frozen snapshot whose bytes no longer match
-        # listings.toml (edited but not re-frozen), or a broken
-        # {{#include}} / {{#callout}}. The integrity check `mdbook build`
+        # listings.toml (edited but not re-frozen), a broken
+        # {{#include}} / {{#callout}}, or a listing line over book.toml's
+        # max-line-width. The integrity check `mdbook build`
         # does not run on its own. Invoked from the book root.
         entry: mdbook-listings verify --book-root book
         language: system
         pass_filenames: false
-        files: ^(schema/[^/]+\.yaml|book/(src/.*\.md|src/listings/.*|listings\.toml))$
-
-      - id: schema-line-width
-        name: schema content line width (<=72, excl. CALLOUT markers)
-        # Enforces the .yamllint column budget, counted in characters.
-        # Comment-aware (skips CALLOUT marker lines), which yamllint
-        # --strict can't do without false-failing on them.
-        entry: scripts/check-line-width.sh
-        language: system
-        pass_filenames: false
-        files: ^schema/[^/]+\.yaml$
+        files: ^(schema/[^/]+\.yaml|book/(src/.*\.md|src/listings/.*|listings\.toml|book\.toml))$
 
       - id: panschema-verify
         name: panschema verify (manifest datasets conform, anchors resolve)

@@ -67,7 +67,7 @@ jobs:
           ## To bump
 
           - Install it locally: \`cargo install $crate --version $latest --locked\`. The local binary stays at or past the CI pin, or a preview renders differently from the published book.
-          - Rebuild with \`./scripts/build-book.sh\` and compare the output with the published site. The book's listings are frozen so that a rerun renders identically, and a new release can still change what a listing, caption or callout looks like.
+          - Rebuild with \`cd book && mdbook build\` and compare the output with the published site. The book's listings are frozen so that a rerun renders identically, and a new release can still change what a listing, caption or callout looks like.
           - Move \`$var\` in \`docs.yml\`, and the \`--version\` of any README install command for \`$crate\`, in one commit that closes this issue.
 
           To stay on $pinned, close this issue as not planned. The check then opens a new one only when a release after $latest is out.

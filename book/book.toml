@@ -33,6 +33,15 @@ list-of-listings = true
 # whose book-wide section overlays mdbook's TOC with this theme (dogfood
 # finding filed to mdbook-listings 2026-07-27).
 list-of-listings-sidebar = "nested"
+# Column budget for listing lines as they render (CALLOUT marker lines are
+# stripped, so they don't count). `freeze` refuses a source with a longer
+# line and `verify` fails on a frozen listing with one; content the book
+# can't reflow takes `allow-long-lines = true` on its listings.toml record.
+# soft-wrap.css wraps long lines rather than scrolling them, but wrapped
+# YAML reads badly: indentation carries the meaning, so a long
+# `description:` can wrap into something that scans as a new key. Fold
+# long values with a `>-` block scalar. Requires mdbook-listings >= 0.3.0.
+max-line-width = 72
 
 [output]
 

@@ -1,7 +1,8 @@
 # yamllint config for this ontology-authoring repo.
 #
 # Purpose: keep content lines in the schema file (`schema/*.yaml`)
-# within a readable column budget (scripts/check-line-width.sh says why).
+# within a readable column budget (book/book.toml's max-line-width says
+# why).
 # Long `description:` values should be folded with a `>-` block scalar
 # (which yields the identical string to LinkML) rather than left as one
 # long line.
@@ -12,7 +13,7 @@
 # yamllint's line-length rule cannot exclude comments, so those marker
 # lines are the expected, known warnings. `level: warning` keeps them from
 # ever failing a run; the rule's real job is flagging new long *value*
-# lines that should be folded.
+# lines in the editor, before `mdbook-listings freeze` refuses them.
 #
 # Only line-length is enabled (no `extends: default`) to keep the signal
 # focused on the column-width concern.

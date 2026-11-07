@@ -85,8 +85,6 @@ scaffold/                 # blank baseline erect-scaffold restores (Start your o
 scripts/
   dev.sh                  # local hot-reload preview (book + versioned schema docs)
   rebuild.sh              # one-shot rebuild (mirrors CI)
-  build-book.sh           # mdbook build that fails on a logged ERROR (CI's gate)
-  check-line-width.sh     # schema content line-width gate (<=72 cols)
   schema-path.sh          # resolves the schema path from panschema-publish.toml
   check-tool-pins.sh      # reports docs.yml tool pins that crates.io has moved past
   grade-baseline.sh       # grades cqa-grader's baseline against the benchmark (CI's gate, Step 7 on)
@@ -142,7 +140,7 @@ cargo install --git https://github.com/padamson/mdbook-admonish \
   --branch feat/mdbook-0.5-compat --locked mdbook-admonish
 
 # the frozen-listings preprocessor (central to this template)
-cargo install mdbook-listings --version 0.2.2 --locked
+cargo install mdbook-listings --version 0.3.0 --locked
 
 # panschema (schema docs + graph + RDF); wasm-pack builds its embedded viz.
 # One install, two binaries: the panschema crate also ships mdbook-panschema,
@@ -262,7 +260,6 @@ You can also build the book alone:
 ```bash
 cd book && mdbook serve   # local preview with live reload
 cd book && mdbook build   # output to book/build/
-./scripts/build-book.sh   # the CI gate: mdbook build, failing on a logged ERROR
 ```
 
 First time? Install the toolchain — see **[Toolchain → Install](#install)** above.
