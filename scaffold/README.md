@@ -41,9 +41,7 @@ instance data, generates the machine-readable formats (via
 once `[check.cqa]` is on (Step 7), builds the book, and deploys the
 combined site to Pages. A pull request gets the same build without the deploy, which is
 how a Dependabot PR (`.github/dependabot.yml`, weekly action bumps) is
-tested before you merge it. `.github/workflows/tool-pins.yml` opens an
-issue each week for a build tool pinned in `docs.yml` that crates.io has
-moved past.
+tested before you merge it.
 
 ## Layout
 
@@ -53,13 +51,12 @@ schema/
 data/
   myschema-benchmark.yaml # the competency questions as cqa benchmark records (Step 1)
 book/                     # mdbook documenting the N&M build
-scripts/                  # dev loop, rebuild, schema-path, tool-pin, and baseline-grade helpers
+scripts/                  # dev loop, rebuild, schema-path, and baseline-grade helpers
 panschema.toml            # panschema manifest: generate (ttl/shacl/...) + check gates
 panschema.lock            # the cqa contract's resolved checksum (written by panschema fetch)
 panschema-publish.toml    # panschema's release + publish manifest
 .github/dependabot.yml
 .github/workflows/docs.yml
-.github/workflows/tool-pins.yml
 ```
 
 The schema path is read from `panschema-publish.toml` (`[files].main`), so

@@ -86,7 +86,6 @@ scripts/
   dev.sh                  # local hot-reload preview (book + versioned schema docs)
   rebuild.sh              # one-shot rebuild (mirrors CI)
   schema-path.sh          # resolves the schema path from panschema-publish.toml
-  check-tool-pins.sh      # reports docs.yml tool pins that crates.io has moved past
   grade-baseline.sh       # grades cqa-grader's baseline against the benchmark (CI's gate, Step 7 on)
 panschema.toml            # panschema manifest: generate (ttl/shacl/...) + check gates
 panschema.lock            # the cqa contract's resolved checksum (written by panschema fetch)
@@ -98,7 +97,6 @@ skills/                   # shipped: ontology-authoring-advance-step
   dependabot.yml          # weekly, grouped action bumps (one PR, merged by hand)
   workflows/
     docs.yml              # builds book + versioned schema docs, grades the benchmark's baseline; deploys to Pages
-    tool-pins.yml         # weekly: opens an issue when a docs.yml tool pin is behind
 ```
 
 ## Toolchain
@@ -155,11 +153,13 @@ cargo install watchexec-cli --locked
 npm install -g live-server
 ```
 
-The three `--version` pins match the `env:` block in
-`.github/workflows/docs.yml`; when one moves, move both, or your preview
-and the published book render differently.
-[`.github/workflows/tool-pins.yml`](.github/workflows/tool-pins.yml) opens
-an issue each week for a pin that crates.io has moved past.
+The three `--version` pins match what CI installs, or your preview and
+the published book render differently. The `mdbook-listings` pin is the
+`env:` block in [`.github/workflows/docs.yml`](.github/workflows/docs.yml).
+CI installs mdbook and wasm-pack through `taiki-e/install-action`, whose
+pinned SHA fixes their versions, so they move in the weekly Dependabot
+actions PR (its release notes name a tool that moved). When one does,
+move its `--version` here after you merge that PR.
 
 Confirm the six required tools are on `PATH`: `mdbook`, `mdbook-admonish`,
 `mdbook-listings`, `panschema`, `mdbook-panschema`, `watchexec`
@@ -207,10 +207,12 @@ Chapters can then write `$…$` / `$$…$$`. Notes:
   `mdbook_katex_css_download`), referenced via `additional-css`.
 - **CI:** add a matching install step to
   [`.github/workflows/docs.yml`](.github/workflows/docs.yml) so the
-  published docs render math too. Mirror the `mdbook` install: an
-  `MDBOOK_KATEX_VERSION: "0.10.0"` pin in the `env:` block, a cache keyed
-  on it, and `cargo install mdbook-katex --version ${{ env.MDBOOK_KATEX_VERSION }} --locked`.
-  Installed that way, the weekly tool pin check covers it too.
+  published docs render math too. Add a tool to the `install-action`
+  step's `tool:` list when the action's manifest carries it
+  ([`manifests/`](https://github.com/taiki-e/install-action/tree/main/manifests)).
+  It does not carry mdbook-katex, so mirror the `mdbook-listings` install:
+  an `MDBOOK_KATEX_VERSION: "0.10.0"` pin in the `env:` block, a cache
+  keyed on it, and `cargo install mdbook-katex --version ${{ env.MDBOOK_KATEX_VERSION }} --locked`.
 
 ## Versioning
 

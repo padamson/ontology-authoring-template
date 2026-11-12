@@ -169,18 +169,17 @@ push a release tag together with the commit that lists it.
 `docs.yml` also runs on a pull request into `main`, building and verifying
 everything a push does but deploying nothing. That run is what tests a
 Dependabot PR. `.github/dependabot.yml` proposes action bumps once a week,
-grouped into one PR, which you merge by hand once it is green. Dependabot
-cannot read the build tools pinned in `docs.yml`'s `env:` block, so
-`.github/workflows/tool-pins.yml` checks them against crates.io every
-Saturday and opens a `tool-pin-bump` issue for each one that is behind.
-It never bumps: a new release can change the rendered book, so you install
-it locally, rebuild, compare with the published site, and then move the
-pin (and any README install command that names the version) in one commit.
-To stay on the current release, close the issue as not planned; only a
-later release opens a new one.
-`scripts/check-tool-pins.sh` prints the same report locally. Its header
-says which pins it finds, and it exits 2 on a pin it cannot read, so a
-pin written in another form fails the check rather than going stale.
+grouped into one PR, which you merge by hand once it is green. That PR
+also moves mdbook and wasm-pack: `docs.yml` installs both through
+`taiki-e/install-action` with no version, so the action's pinned SHA is
+their pin, and the PR's release notes name a tool that moved. A new
+release can change the rendered book, so before merging a PR that moves
+one, install it locally, rebuild, and compare with the published site;
+after merging, move the version in any README install command that names it.
+To hold a tool back, write `tool: mdbook@<version>` in that step with a
+comment saying why. mdbook-listings is not in the action's manifest, so it
+keeps an exact `env:` pin and a `cargo install --locked` line; nothing
+watches that pin, since its releases are adopted on purpose.
 
 Math is **opt-in** and not shipped in the stock template: to write `$…$`
 in chapters, enable `mdbook-katex` (pin `0.10.0`, ordered

@@ -3,7 +3,10 @@ updates:
   # GitHub Actions is the only ecosystem Dependabot can read here. The repo
   # has no Cargo.lock or package.json, its pre-commit hooks are all `local`
   # with no `rev:`, and panschema.lock is not a format Dependabot knows.
-  # The build tools pinned in docs.yml are tool-pins.yml's job.
+  # It still moves mdbook and wasm-pack: docs.yml installs them through
+  # taiki-e/install-action, whose SHA fixes their versions. Nothing watches
+  # the one `env:` pin, mdbook-listings, a tool this template's author
+  # releases.
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
