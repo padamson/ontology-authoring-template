@@ -182,10 +182,13 @@ echo ""
 echo "Edit any of those to trigger a rebuild. Ctrl+C to stop."
 echo ""
 
+# --shell=none keeps $REBUILD_CMD one argument; otherwise watchexec
+# rejoins the words and a wrapper's arguments are lost.
 watchexec \
   --debounce 500ms \
   --no-vcs-ignore \
   --postpone \
   --clear \
+  --shell=none \
   "${watch_args[@]}" \
   -- sh -c "$REBUILD_CMD"
