@@ -234,7 +234,7 @@ it, and its removal lands as an ordinary deletion commit.)
    git rm -rq skills/ .claude/skills/ontology-authoring-advance-step \
      .claude/skills/setup-ontology
    npx skills add padamson/mdbook-listings -s mdbook-listings -a claude-code -y
-   npx skills add padamson/panschema -s panschema-development -a claude-code -y
+   npx skills add padamson/panschema -s panschema-usage -a claude-code -y
    npx skills add padamson/ontology-authoring-template \
      -s ontology-authoring-advance-step -a claude-code -y
    git add skills-lock.json

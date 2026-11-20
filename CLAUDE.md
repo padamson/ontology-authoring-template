@@ -186,7 +186,7 @@ Agent skills are pinned dependencies, the same as the cqa contract.
 
 ```bash
 npx skills add padamson/mdbook-listings -s mdbook-listings -a claude-code -y
-npx skills add padamson/panschema -s panschema-development -a claude-code -y
+npx skills add padamson/panschema -s panschema-usage -a claude-code -y
 ```
 
 This repo is also a skill *producer*: `ontology-authoring-advance-step`

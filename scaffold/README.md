@@ -15,7 +15,7 @@ documented chapter by chapter as an mdbook.
 Work one N&M step at a time with the
 **`ontology-authoring-advance-step`** skill (*"do Step 1"*), a managed
 install pinned in `skills-lock.json` alongside `mdbook-listings` and
-`panschema-development` (see `CLAUDE.md` "Agent skills"): write
+`panschema-usage` (see `CLAUDE.md` "Agent skills"): write
 `book/src/introduction.md`, then `book/src/ch01`…
 `ch07`, so the rendered Chapter N is N&M Step N. Each step advances
 `schema/myschema.yaml` only as its worked example demands and freezes a

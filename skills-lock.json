@@ -1,17 +1,19 @@
 {
-  "version": 1,
+  "version": 2,
   "skills": {
     "mdbook-listings": {
       "source": "padamson/mdbook-listings",
+      "commit": "dc9fe9f1907e17d0281cf0a655c3b27526c2e908",
       "sourceType": "github",
       "skillPath": "skills/mdbook-listings/SKILL.md",
-      "computedHash": "69cb45c4cb7f0ec5e4a8245d7c596aec74e3471a9351d2703398b7185407e63c"
+      "computedHash": "beda686ba1f361d3c40f5823b3c90049a36ed475effdf972066890ced7500c2a"
     },
-    "panschema-development": {
+    "panschema-usage": {
       "source": "padamson/panschema",
+      "commit": "2850edd2c9872f57e4de8f63f9a4ce852ddc8b11",
       "sourceType": "github",
-      "skillPath": "skills/panschema-development/SKILL.md",
-      "computedHash": "07d24e211f7e9fca5869b091b18c1b01a40a41637f285830855309ad6d362621"
+      "skillPath": "skills/panschema-usage/SKILL.md",
+      "computedHash": "d53f698375230e6b96877f2e390d71afdd864ff44ad1f332d426fd4d4c80917c"
     }
   }
 }

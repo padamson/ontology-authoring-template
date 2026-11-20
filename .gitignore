@@ -25,4 +25,4 @@ book/schema-link.js
 # that for the majority. Add a line when the who-consumes-what table gains
 # a row for this repo.
 /.claude/skills/mdbook-listings/
-/.claude/skills/panschema-development/
+/.claude/skills/panschema-usage/
